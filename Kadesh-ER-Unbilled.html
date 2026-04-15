@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ER Unbilled Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    :root{
+      --bg:#06101d;
+      --panel:#0d1c2f;
+      --panel2:#122844;
+      --line:rgba(255,255,255,.08);
+      --text:#eef4ff;
+      --muted:#9db0cf;
+      --blue:#4f8cff;
+      --blue2:#1f4f9d;
+      --teal:#12a39a;
+      --teal2:#0c6f6b;
+      --gold:#cf8c2d;
+      --gold2:#9a6518;
+      --shadow:0 20px 50px rgba(0,0,0,.35);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(79,140,255,.16), transparent 30%),
+        radial-gradient(circle at top right, rgba(18,163,154,.12), transparent 30%),
+        linear-gradient(180deg,#050c16 0%, #07111f 50%, #09182b 100%);
+    }
+    .hidden{display:none !important}
+    .glass{
+      background:linear-gradient(180deg,rgba(14,27,46,.96),rgba(10,22,38,.94));
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+      backdrop-filter: blur(12px);
+    }
+    .app{max-width:1500px;margin:0 auto;padding:18px}
+    .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .login-card{width:min(460px,100%);padding:30px}
+    .login-title{margin:0 0 6px;font-size:34px;font-weight:900}
+    .sub{color:var(--muted);line-height:1.5}
+    .hero{padding:24px 28px;margin-bottom:18px;position:relative;overflow:hidden}
+    .hero::after{content:"";position:absolute;right:-30px;top:-30px;width:220px;height:220px;background:radial-gradient(circle,rgba(79,140,255,.25),transparent 60%)}
+    .hero-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+    .hero h1{margin:0;font-size:42px;line-height:1.05;font-weight:900}
+    .hero p{margin:10px 0 0;color:var(--muted);font-size:17px}
+    .badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .badge,.pill{
+      display:inline-flex;align-items:center;padding:10px 14px;border-radius:999px;
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-size:13px;color:#e6efff;
+    }
+    .section{padding:20px;margin-bottom:18px}
+    h2{margin:0 0 16px;font-size:28px}
+    .upload-box{border:1px dashed rgba(255,255,255,.12);border-radius:20px;padding:18px;background:rgba(255,255,255,.02)}
+    .btn-row{display:flex;gap:12px;flex-wrap:wrap}
+    button,.file-label{
+      border:0;cursor:pointer;color:white;font-weight:800;padding:14px 18px;border-radius:16px;font-size:15px;
+      background:linear-gradient(180deg,var(--blue),var(--blue2));box-shadow:0 12px 28px rgba(20,44,84,.35);
+      text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:.18s transform,.18s opacity;
+    }
+    button:hover,.file-label:hover{transform:translateY(-1px)}
+    button.secondary{background:linear-gradient(180deg,#1a3558,#152b48)}
+    button.teal{background:linear-gradient(180deg,var(--teal),var(--teal2))}
+    button.gold{background:linear-gradient(180deg,var(--gold),var(--gold2))}
+    button.ghost{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);box-shadow:none}
+    input,select,textarea{
+      width:100%;background:#081426;color:var(--text);border:1px solid rgba(255,255,255,.09);
+      border-radius:14px;padding:13px 14px;font-size:14px;outline:none;
+    }
+    input:focus,select:focus,textarea:focus{border-color:rgba(79,140,255,.6);box-shadow:0 0 0 4px rgba(79,140,255,.14)}
+    .status{margin-top:12px;color:#d7e5ff}
+    .footer-note{margin-top:12px;color:var(--muted);font-size:13px}
+    .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}
+    .metric{padding:22px;border-radius:22px;position:relative;overflow:hidden}
+    .metric::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.06),transparent 60%)}
+    .metric.total{background:linear-gradient(135deg,#1b3765,#112543)}
+    .metric.lab{background:linear-gradient(135deg,#145566,#103a47)}
+    .metric.rad{background:linear-gradient(135deg,#6b4314,#452a0b)}
+    .metric .k{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:#c8d7f6}
+    .metric .v{font-size:52px;font-weight:900;margin-top:8px;line-height:1}
+    .metric .s{margin-top:10px;color:#d5e0f3;font-size:14px}
+    .breakdown-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-top:18px}
+    .card{padding:18px;border-radius:20px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+    .card h3{margin:0 0 14px;font-size:20px}
+    .list{display:grid;gap:10px}
+    .list-item{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05)}
+    .list-item .name{font-weight:800}
+    .list-item .count{font-weight:900}
+    .sticky-filters{position:sticky;top:10px;z-index:10}
+    .filters{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    .filter-box label{display:block;color:var(--muted);font-size:13px;margin-bottom:7px}
+    .table-wrap{margin-top:16px;border:1px solid rgba(255,255,255,.08);border-radius:20px;overflow:hidden;background:rgba(255,255,255,.02)}
+    .table-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.07);flex-wrap:wrap}
+    .table-head h3{margin:0;font-size:22px}
+    .table-tools{display:flex;gap:10px;flex-wrap:wrap}
+    .table-scroll{max-height:560px;overflow:auto}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left;vertical-align:top;white-space:nowrap}
+    th{position:sticky;top:0;z-index:2;background:#10233a;color:#dfe9ff;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+    tr:hover td{background:rgba(255,255,255,.025)}
+    .summary-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+    .summary-box{min-height:220px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical}
+    .inline-info{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    @media (max-width:1200px){
+      .filters{grid-template-columns:repeat(3,1fr)}
+      .breakdown-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:860px){
+      .app{padding:12px}
+      .hero h1{font-size:32px}
+      .metrics{grid-template-columns:1fr}
+      .filters{grid-template-columns:1fr}
+      .table-scroll{max-height:420px}
+    }
+  </style>
+</head>
+<body>
+<div id="loginView" class="login-wrap">
+  <div class="login-card glass">
+    <div class="badge-row" style="margin-top:0;margin-bottom:14px">
+      <div class="badge">AHM</div>
+      <div class="badge">ER</div>
+    </div>
+    <h1 class="login-title">Dashboard Login</h1>
+    <p class="sub">Upload the daily file and get ER unbilled finalized Lab and Radiology services in one clean vertical dashboard.</p>
+    <div style="margin-top:18px">
+      <label class="sub" for="passwordInput">Password</label>
+      <input id="passwordInput" type="password" placeholder="Enter password" />
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button id="loginBtn">Login</button>
+    </div>
+    <div id="loginMsg" class="status"></div>
+  </div>
+</div>
+
+<div id="appView" class="app hidden">
+  <div class="hero glass">
+    <div class="hero-top">
+      <div>
+        <h1>ER Unbilled Lab & Radiology Dashboard</h1>
+        <p>Kaadu..... Kaaaadesh</p>
+      </div>
+      <button class="ghost" id="logoutBtn">Logout</button>
+    </div>
+    <div class="badge-row">
+      <div class="badge">O P I P = E</div>
+      <div class="badge">Invoice No = blank</div>
+      <div class="badge">Department Name = LABORATORY / RADIOLOGY</div>
+      <div class="badge">Diag Status = Result Finalized / Result Entered</div>
+    </div>
+  </div>
+
+  <div class="section glass">
+    <h2>Upload & Dashboard</h2>
+    <div class="upload-box">
+      <div class="btn-row">
+        <label class="file-label" for="fileInput">Upload CSV / Excel</label>
+        <button class="secondary" id="resetAllBtn">Reset filters</button>
+        <button class="secondary" id="reloadRulesBtn">Load sample rules only</button>
+      </div>
+      <input id="fileInput" type="file" accept=".csv,.xlsx,.xls" class="hidden" />
+      <div id="fileStatus" class="status">Ready. Upload your daily file.</div>
+      <div class="footer-note">For best reliability, CSV is preferred. Excel upload works when the browser can load the Excel library.</div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric total">
+        <div class="k">Total Unbilled</div>
+        <div class="v" id="totalUnbilled">0</div>
+        <div class="s">Total Unbilled Service</div>
+      </div>
+      <div class="metric lab">
+        <div class="k">Lab</div>
+        <div class="v" id="labCount">0</div>
+        <div class="s">Laboratory Service</div>
+      </div>
+      <div class="metric rad">
+        <div class="k">Radiology</div>
+        <div class="v" id="radCount">0</div>
+        <div class="s">Radiology Service</div>
+      </div>
+    </div>
+
+    <div class="breakdown-grid">
+      <div class="card">
+        <h3>Radiology Sub Name Breakdown</h3>
+        <div id="radiologyBreakdown" class="list"></div>
+      </div>
+      <div class="card">
+        <h3>Quick Highlights</h3>
+        <div id="quickPills"></div>
+        <div id="highlightsBox" class="list" style="margin-top:14px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section glass sticky-filters">
+    <h2>Filter Options</h2>
+    <div class="filters">
+      <div class="filter-box">
+        <label>Search any text</label>
+        <input id="searchInput" placeholder="Patient, encounter, service, doctor..." />
+      </div>
+      <div class="filter-box">
+        <label>Department</label>
+        <select id="deptFilter"></select>
+      </div>
+      <div class="filter-box">
+        <label>Diag Status</label>
+        <select id="diagFilter"></select>
+      </div>
+      <div class="filter-box">
+        <label>Radiology Sub Name</label>
+        <select id="subNameFilter"></select>
+      </div>
+      <div class="filter-box">
+        <label>Encounter Doctor</label>
+        <select id="doctorFilter"></select>
+      </div>
+      <div class="filter-box">
+        <label>Service Type</label>
+        <select id="serviceTypeFilter"></select>
+      </div>
+      <div class="filter-box">
+        <label>Ordered By</label>
+        <select id="orderedByFilter"></select>
+      </div>
+      <div class="filter-box">
+        <label>Payer Name</label>
+        <select id="payerFilter"></select>
+      </div>
+      <div class="filter-box">
+        <label>Sort by</label>
+        <select id="sortFilter">
+          <option value="">Default</option>
+          <option value="dept_asc">Department A-Z</option>
+          <option value="sub_asc">Sub Name A-Z</option>
+          <option value="service_asc">Service Name A-Z</option>
+          <option value="doctor_asc">Doctor A-Z</option>
+          <option value="date_desc">Order Date Newest</option>
+          <option value="date_asc">Order Date Oldest</option>
+        </select>
+      </div>
+      <div class="filter-box">
+        <label>Rows per page</label>
+        <select id="pageSizeFilter">
+          <option>25</option>
+          <option selected>50</option>
+          <option>100</option>
+          <option>200</option>
+          <option>500</option>
+        </select>
+      </div>
+    </div>
+    <div class="inline-info">
+      <div class="pill">Single page vertical layout</div>
+      <div class="pill">Easy copy for HOD</div>
+      <div class="pill">Extra filters included</div>
+    </div>
+  </div>
+
+  <div class="section glass">
+    <h2>HOD Summary</h2>
+    <div class="summary-actions">
+      <button class="teal" id="copySummaryBtn">Copy HOD summary</button>
+      <button class="secondary" id="copyBreakdownBtn">Copy radiology breakdown</button>
+      <button class="teal" id="copyTableBtn">Copy table</button>
+      <button class="gold" id="exportBtn">Export filtered CSV</button>
+    </div>
+    <textarea id="summaryBox" class="summary-box" placeholder="HOD summary will appear here..."></textarea>
+    <div class="footer-note">Summary wording uses Total Unbilled Service.</div>
+  </div>
+
+  <div class="section glass">
+    <div class="table-head" style="padding:0 0 14px 0;background:none;border:none">
+      <h2 style="margin:0">Filtered Details</h2>
+      <div class="pill" id="resultCountBadge">0 result(s)</div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table id="detailsTable">
+          <thead>
+            <tr>
+              <th>Patient Name</th>
+              <th>Encounter No</th>
+              <th>Encounter Date</th>
+              <th>Department Name</th>
+              <th>Sub Name</th>
+              <th>Service Name</th>
+              <th>Service Type</th>
+              <th>Diag Status</th>
+              <th>Encounter Doctor</th>
+              <th>Ordered By</th>
+              <th>Payer Name</th>
+              <th>Invoice No</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PASSWORD_HASH = '4f5f4e766fc5f679561988e197d7521666a10004010de88e5e92290fa9e09d50';
+const LOGIN_KEY = 'er_unbilled_dashboard_login_ok';
+
+const appState = {
+  rawRows: [],
+  baseRows: [],
+  filteredRows: []
+};
+
+const refs = {
+  loginView: document.getElementById('loginView'),
+  appView: document.getElementById('appView'),
+  passwordInput: document.getElementById('passwordInput'),
+  loginBtn: document.getElementById('loginBtn'),
+  loginMsg: document.getElementById('loginMsg'),
+  logoutBtn: document.getElementById('logoutBtn'),
+  fileInput: document.getElementById('fileInput'),
+  fileStatus: document.getElementById('fileStatus'),
+  totalUnbilled: document.getElementById('totalUnbilled'),
+  labCount: document.getElementById('labCount'),
+  radCount: document.getElementById('radCount'),
+  radiologyBreakdown: document.getElementById('radiologyBreakdown'),
+  highlightsBox: document.getElementById('highlightsBox'),
+  quickPills: document.getElementById('quickPills'),
+  summaryBox: document.getElementById('summaryBox'),
+  detailsTableBody: document.querySelector('#detailsTable tbody'),
+  resultCountBadge: document.getElementById('resultCountBadge'),
+  searchInput: document.getElementById('searchInput'),
+  deptFilter: document.getElementById('deptFilter'),
+  diagFilter: document.getElementById('diagFilter'),
+  subNameFilter: document.getElementById('subNameFilter'),
+  doctorFilter: document.getElementById('doctorFilter'),
+  serviceTypeFilter: document.getElementById('serviceTypeFilter'),
+  orderedByFilter: document.getElementById('orderedByFilter'),
+  payerFilter: document.getElementById('payerFilter'),
+  sortFilter: document.getElementById('sortFilter'),
+  pageSizeFilter: document.getElementById('pageSizeFilter'),
+  copySummaryBtn: document.getElementById('copySummaryBtn'),
+  copyBreakdownBtn: document.getElementById('copyBreakdownBtn'),
+  copyTableBtn: document.getElementById('copyTableBtn'),
+  exportBtn: document.getElementById('exportBtn'),
+  resetAllBtn: document.getElementById('resetAllBtn'),
+  reloadRulesBtn: document.getElementById('reloadRulesBtn')
+};
+
+function norm(v){
+  if (v === null || v === undefined) return '';
+  return String(v).replace(/\s+/g,' ').trim();
+}
+function upper(v){ return norm(v).toUpperCase(); }
+function isBlank(v){ return norm(v) === ''; }
+function get(row, key){ return row[key] ?? ''; }
+function getDateValue(v){
+  const s = norm(v);
+  if (!s) return null;
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : d.getTime();
+}
+function uniqueSorted(values){
+  return [...new Set(values.map(norm).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+}
+function escapeHtml(str){
+  return String(str)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#39;');
+}
+function setSelectOptions(selectEl, values, allLabel='All'){
+  const current = selectEl.value;
+  selectEl.innerHTML = `<option value="">${allLabel}</option>` + values.map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+  if ([...selectEl.options].some(o=>o.value===current)) selectEl.value = current;
+}
+
+function computeSHA256(text){
+  const enc = new TextEncoder().encode(text);
+  return crypto.subtle.digest('SHA-256', enc).then(buf => Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''));
+}
+
+async function doLogin(){
+  const pwd = refs.passwordInput.value;
+  if (!pwd){ refs.loginMsg.textContent = 'Please enter password.'; return; }
+  const hash = await computeSHA256(pwd);
+  if (hash === PASSWORD_HASH){
+    localStorage.setItem(LOGIN_KEY,'1');
+    refs.loginView.classList.add('hidden');
+    refs.appView.classList.remove('hidden');
+    refs.loginMsg.textContent = '';
+  } else {
+    refs.loginMsg.textContent = 'Invalid password.';
+  }
+}
+function doLogout(){
+  localStorage.removeItem(LOGIN_KEY);
+  refs.appView.classList.add('hidden');
+  refs.loginView.classList.remove('hidden');
+  refs.passwordInput.value = '';
+}
+
+function extractRows(rows){
+  return rows.map(r => {
+    const obj = {};
+    Object.keys(r).forEach(k => obj[norm(k)] = r[k]);
+    return obj;
+  });
+}
+
+function applyBaseRules(rows){
+  return rows.filter(row => {
+    const opip = upper(get(row,'O P I P'));
+    const invoice = norm(get(row,'Invoice No'));
+    const dept = upper(get(row,'Department Name'));
+    const diag = upper(get(row,'Diag Status'));
+    const deptOk = dept === 'LABORATORY' || dept === 'RADIOLOGY';
+    const diagOk = diag === 'RESULT FINALIZED' || diag === 'RESULT ENTERED';
+    return opip === 'E' && isBlank(invoice) && deptOk && diagOk;
+  });
+}
+
+function loadSampleRulesOnly(){
+  appState.rawRows = [];
+  appState.baseRows = [];
+  appState.filteredRows = [];
+  refs.fileStatus.textContent = 'Sample mode only loaded. Upload your daily file to see counts and details.';
+  populateFilters([]);
+  updateDashboard([]);
+  renderTable([]);
+}
+
+function populateFilters(rows){
+  setSelectOptions(refs.deptFilter, uniqueSorted(rows.map(r=>get(r,'Department Name'))), 'All Departments');
+  setSelectOptions(refs.diagFilter, uniqueSorted(rows.map(r=>get(r,'Diag Status'))), 'All Diag Status');
+  setSelectOptions(refs.subNameFilter, uniqueSorted(rows.filter(r=>upper(get(r,'Department Name'))==='RADIOLOGY').map(r=>get(r,'Sub Name'))), 'All Radiology Sub Names');
+  setSelectOptions(refs.doctorFilter, uniqueSorted(rows.map(r=>get(r,'Encounter Doctor'))), 'All Doctors');
+  setSelectOptions(refs.serviceTypeFilter, uniqueSorted(rows.map(r=>get(r,'Service Type'))), 'All Service Types');
+  setSelectOptions(refs.orderedByFilter, uniqueSorted(rows.map(r=>get(r,'Ordered By'))), 'All Ordered By');
+  setSelectOptions(refs.payerFilter, uniqueSorted(rows.map(r=>get(r,'Payer Name'))), 'All Payers');
+}
+
+function getFilteredRows(){
+  let rows = [...appState.baseRows];
+  const search = upper(refs.searchInput.value);
+  if (search){
+    rows = rows.filter(r => upper(Object.values(r).join(' | ')).includes(search));
+  }
+  if (refs.deptFilter.value) rows = rows.filter(r => norm(get(r,'Department Name')) === refs.deptFilter.value);
+  if (refs.diagFilter.value) rows = rows.filter(r => norm(get(r,'Diag Status')) === refs.diagFilter.value);
+  if (refs.subNameFilter.value) rows = rows.filter(r => norm(get(r,'Sub Name')) === refs.subNameFilter.value);
+  if (refs.doctorFilter.value) rows = rows.filter(r => norm(get(r,'Encounter Doctor')) === refs.doctorFilter.value);
+  if (refs.serviceTypeFilter.value) rows = rows.filter(r => norm(get(r,'Service Type')) === refs.serviceTypeFilter.value);
+  if (refs.orderedByFilter.value) rows = rows.filter(r => norm(get(r,'Ordered By')) === refs.orderedByFilter.value);
+  if (refs.payerFilter.value) rows = rows.filter(r => norm(get(r,'Payer Name')) === refs.payerFilter.value);
+
+  const sortVal = refs.sortFilter.value;
+  if (sortVal){
+    rows.sort((a,b) => {
+      switch(sortVal){
+        case 'dept_asc': return norm(get(a,'Department Name')).localeCompare(norm(get(b,'Department Name')));
+        case 'sub_asc': return norm(get(a,'Sub Name')).localeCompare(norm(get(b,'Sub Name')));
+        case 'service_asc': return norm(get(a,'Service Name')).localeCompare(norm(get(b,'Service Name')));
+        case 'doctor_asc': return norm(get(a,'Encounter Doctor')).localeCompare(norm(get(b,'Encounter Doctor')));
+        case 'date_desc': return (getDateValue(get(b,'Order Date')) || 0) - (getDateValue(get(a,'Order Date')) || 0);
+        case 'date_asc': return (getDateValue(get(a,'Order Date')) || 0) - (getDateValue(get(b,'Order Date')) || 0);
+        default: return 0;
+      }
+    });
+  }
+  return rows;
+}
+
+function updateDashboard(rows){
+  const total = rows.length;
+  const labRows = rows.filter(r => upper(get(r,'Department Name')) === 'LABORATORY');
+  const radRows = rows.filter(r => upper(get(r,'Department Name')) === 'RADIOLOGY');
+  refs.totalUnbilled.textContent = total;
+  refs.labCount.textContent = labRows.length;
+  refs.radCount.textContent = radRows.length;
+
+  const subCounts = {};
+  radRows.forEach(r => {
+    const key = norm(get(r,'Sub Name')) || 'Unspecified';
+    subCounts[key] = (subCounts[key] || 0) + 1;
+  });
+  const sortedSub = Object.entries(subCounts).sort((a,b)=>b[1]-a[1] || a[0].localeCompare(b[0]));
+  refs.radiologyBreakdown.innerHTML = sortedSub.length
+    ? sortedSub.map(([name,count]) => `<div class="list-item"><div class="name">${escapeHtml(name)}</div><div class="count">${count}</div></div>`).join('')
+    : '<div class="sub">No radiology sub name details to show.</div>';
+
+  const topServiceCounts = {};
+  rows.forEach(r => {
+    const key = norm(get(r,'Service Name')) || 'Unspecified Service';
+    topServiceCounts[key] = (topServiceCounts[key] || 0) + 1;
+  });
+  const topServices = Object.entries(topServiceCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  refs.highlightsBox.innerHTML = topServices.length
+    ? topServices.map(([name,count])=>`<div class="list-item"><div class="name">${escapeHtml(name)}</div><div class="count">${count}</div></div>`).join('')
+    : '<div class="sub">No service details.</div>';
+
+  refs.quickPills.innerHTML = `
+    <div class="pill">Filtered result: <b style="margin-left:6px">${total}</b></div>
+    <div class="pill">Lab: <b style="margin-left:6px">${labRows.length}</b></div>
+    <div class="pill">Radiology: <b style="margin-left:6px">${radRows.length}</b></div>
+    ${sortedSub.slice(0,8).map(([name,count]) => `<div class="pill">${escapeHtml(name)}: <b style="margin-left:6px">${count}</b></div>`).join('')}
+  `;
+
+  buildSummary(rows, sortedSub, labRows.length, radRows.length);
+}
+
+function buildSummary(rows, sortedSub, labCount, radCount){
+  const lines = [];
+  lines.push('ER UNBILLED LAB & RADIOLOGY SUMMARY');
+  lines.push('');
+  lines.push(`Total Unbilled Service: ${rows.length}`);
+  lines.push(`Lab: ${labCount}`);
+  lines.push(`Radiology: ${radCount}`);
+  lines.push('');
+  lines.push('Radiology Sub Name Breakdown:');
+  if (sortedSub.length){
+    sortedSub.forEach(([name,count]) => lines.push(`- ${name}: ${count}`));
+  } else {
+    lines.push('- No radiology services in current result');
+  }
+  lines.push('');
+  lines.push('This list contains only ER cases with blank invoice number, department as Laboratory or Radiology, and diag status as Result Finalized / Result Entered.');
+  refs.summaryBox.value = lines.join('\n');
+}
+
+function renderTable(rows){
+  appState.filteredRows = rows;
+  refs.resultCountBadge.textContent = `${rows.length} result(s)`;
+  const limit = parseInt(refs.pageSizeFilter.value || '50', 10);
+  const showRows = rows.slice(0, limit);
+  refs.detailsTableBody.innerHTML = showRows.length ? showRows.map(r => `
+    <tr>
+      <td>${escapeHtml(norm(get(r,'Patient Name')))}</td>
+      <td>${escapeHtml(norm(get(r,'Encounter No')))}</td>
+      <td>${escapeHtml(norm(get(r,'Encounter Date')))}</td>
+      <td>${escapeHtml(norm(get(r,'Department Name')))}</td>
+      <td>${escapeHtml(norm(get(r,'Sub Name')))}</td>
+      <td>${escapeHtml(norm(get(r,'Service Name')))}</td>
+      <td>${escapeHtml(norm(get(r,'Service Type')))}</td>
+      <td>${escapeHtml(norm(get(r,'Diag Status')))}</td>
+      <td>${escapeHtml(norm(get(r,'Encounter Doctor')))}</td>
+      <td>${escapeHtml(norm(get(r,'Ordered By')))}</td>
+      <td>${escapeHtml(norm(get(r,'Payer Name')))}</td>
+      <td>${escapeHtml(norm(get(r,'Invoice No')))}</td>
+    </tr>
+  `).join('') : '<tr><td colspan="12" class="sub">No matching result.</td></tr>';
+}
+
+function refreshAll(){
+  const rows = getFilteredRows();
+  updateDashboard(rows);
+  renderTable(rows);
+}
+
+function resetFilters(){
+  refs.searchInput.value = '';
+  refs.deptFilter.value = '';
+  refs.diagFilter.value = '';
+  refs.subNameFilter.value = '';
+  refs.doctorFilter.value = '';
+  refs.serviceTypeFilter.value = '';
+  refs.orderedByFilter.value = '';
+  refs.payerFilter.value = '';
+  refs.sortFilter.value = '';
+  refs.pageSizeFilter.value = '50';
+  refreshAll();
+}
+
+async function handleFile(file){
+  try{
+    refs.fileStatus.textContent = `Loading ${file.name} ...`;
+    let rows = [];
+    const ext = file.name.toLowerCase().split('.').pop();
+    if (ext === 'csv'){
+      const text = await file.text();
+      rows = parseCSV(text);
+    } else {
+      if (typeof XLSX === 'undefined') throw new Error('Excel library not loaded. Use CSV or connect internet once.');
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, {type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+    }
+    const extracted = extractRows(rows);
+    appState.rawRows = extracted;
+    appState.baseRows = applyBaseRules(extracted);
+    populateFilters(appState.baseRows);
+    refreshAll();
+    refs.fileStatus.textContent = `Loaded ${file.name}. Raw rows: ${appState.rawRows.length}. Matching unbilled ER records: ${appState.baseRows.length}.`;
+  }catch(err){
+    console.error(err);
+    alert(err.message || 'Unable to load file.');
+    refs.fileStatus.textContent = 'Error while loading file.';
+  }
+}
+
+function parseCSV(text){
+  const rows = [];
+  const lines = [];
+  let cur = '', row = [], inQuotes = false;
+  for (let i=0;i<text.length;i++){
+    const ch = text[i], next = text[i+1];
+    if (ch === '"'){
+      if (inQuotes && next === '"'){ cur += '"'; i++; }
+      else inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes){ row.push(cur); cur=''; }
+    else if ((ch === '\n' || ch === '\r') && !inQuotes){
+      if (ch === '\r' && next === '\n') i++;
+      row.push(cur); lines.push(row); row=[]; cur='';
+    } else cur += ch;
+  }
+  if (cur.length || row.length){ row.push(cur); lines.push(row); }
+  if (!lines.length) return [];
+  const headers = lines[0].map(norm);
+  for (let i=1;i<lines.length;i++){
+    const obj = {};
+    headers.forEach((h, idx) => obj[h] = lines[i][idx] ?? '');
+    rows.push(obj);
+  }
+  return rows;
+}
+
+function copyText(text){ navigator.clipboard.writeText(text); }
+function copyTable(){
+  const headers = ['Patient Name','Encounter No','Encounter Date','Department Name','Sub Name','Service Name','Service Type','Diag Status','Encounter Doctor','Ordered By','Payer Name','Invoice No'];
+  const lines = [headers.join('\t')];
+  appState.filteredRows.forEach(r => lines.push(headers.map(h => norm(get(r,h))).join('\t')));
+  copyText(lines.join('\n'));
+}
+function copyRadiologyBreakdown(){
+  const radRows = appState.filteredRows.filter(r => upper(get(r,'Department Name')) === 'RADIOLOGY');
+  const counts = {};
+  radRows.forEach(r => { const k = norm(get(r,'Sub Name')) || 'Unspecified'; counts[k]=(counts[k]||0)+1; });
+  const lines = Object.entries(counts).sort((a,b)=>b[1]-a[1] || a[0].localeCompare(b[0])).map(([k,v]) => `${k}: ${v}`);
+  copyText(lines.join('\n') || 'No radiology breakdown available');
+}
+function exportCSV(){
+  const headers = ['Patient Name','Encounter No','Encounter Date','Department Name','Sub Name','Service Name','Service Type','Diag Status','Encounter Doctor','Ordered By','Payer Name','Invoice No'];
+  const esc = s => '"' + String(s ?? '').replaceAll('"','""') + '"';
+  const csv = [headers.map(esc).join(',')].concat(appState.filteredRows.map(r => headers.map(h => esc(norm(get(r,h)))).join(','))).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'er_unbilled_filtered.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+refs.loginBtn.addEventListener('click', doLogin);
+refs.passwordInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+refs.logoutBtn.addEventListener('click', doLogout);
+refs.fileInput.addEventListener('change', e => { const f = e.target.files?.[0]; if (f) handleFile(f); });
+['searchInput','deptFilter','diagFilter','subNameFilter','doctorFilter','serviceTypeFilter','orderedByFilter','payerFilter','sortFilter','pageSizeFilter']
+  .forEach(id => refs[id].addEventListener('input', refreshAll));
+refs.copySummaryBtn.addEventListener('click', ()=>copyText(refs.summaryBox.value));
+refs.copyBreakdownBtn.addEventListener('click', copyRadiologyBreakdown);
+refs.copyTableBtn.addEventListener('click', copyTable);
+refs.exportBtn.addEventListener('click', exportCSV);
+refs.resetAllBtn.addEventListener('click', resetFilters);
+refs.reloadRulesBtn.addEventListener('click', loadSampleRulesOnly);
+
+(function init(){
+  refs.loginView.classList.remove('hidden');
+  refs.appView.classList.add('hidden');
+  localStorage.removeItem(LOGIN_KEY);
+  loadSampleRulesOnly();
+})();
+</script>
+</body>
+</html>

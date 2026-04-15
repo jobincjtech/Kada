@@ -1,0 +1,87 @@
+
+<style>
+  @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pulseRing{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.6);opacity:0}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @keyframes shimmer{0%{left:-100%}100%{left:200%}}
+  *{box-sizing:border-box;margin:0;padding:0}
+  .root{background:#06101d;min-height:500px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;font-family:var(--font-sans);gap:0}
+  .badge{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:rgba(255,255,255,.45);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:28px;animation:fadeUp .5s .1s ease both}
+  .live{width:8px;height:8px;border-radius:50%;background:#14b8a6;position:relative}
+  .live::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1.5px solid #14b8a6;animation:pulseRing 1.9s ease infinite}
+  .title{font-size:48px;font-weight:700;color:#fff;letter-spacing:-1.5px;line-height:1.05;text-align:center;animation:fadeUp .5s .2s ease both}
+  .title span{background:linear-gradient(100deg,#4f8cff 20%,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .sub{font-size:15px;color:rgba(255,255,255,.35);margin-top:10px;margin-bottom:44px;text-align:center;animation:fadeUp .5s .3s ease both}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:580px}
+  .card{position:relative;border-radius:20px;padding:32px 28px;display:flex;flex-direction:column;gap:20px;cursor:pointer;overflow:hidden;text-decoration:none;transition:transform .25s cubic-bezier(.34,1.56,.64,1),filter .25s;animation:fadeUp .55s ease both}
+  .card:nth-child(1){animation-delay:.4s;background:linear-gradient(145deg,#0f2554,#1a3f9e)}
+  .card:nth-child(2){animation-delay:.52s;background:linear-gradient(145deg,#063328,#0a5c47)}
+  .card::before{content:'';position:absolute;inset:0;border-radius:20px;border:1px solid rgba(255,255,255,.1)}
+  .card::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);animation:shimmer 3.5s ease infinite}
+  .card:nth-child(2)::after{animation-delay:1.2s}
+  .card:hover{transform:translateY(-6px) scale(1.02);filter:brightness(1.12)}
+  .card:active{transform:scale(.98)}
+  .icon-wrap{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;animation:float 3s ease infinite}
+  .card:nth-child(1) .icon-wrap{background:rgba(79,140,255,.2);border:1px solid rgba(79,140,255,.3);animation-delay:.4s}
+  .card:nth-child(2) .icon-wrap{background:rgba(20,184,166,.15);border:1px solid rgba(20,184,166,.3);animation-delay:.8s}
+  .card-title{font-size:22px;font-weight:600;color:#fff;letter-spacing:-.3px}
+  .card-desc{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6}
+  .card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
+  .card-tag{font-size:11px;padding:4px 10px;border-radius:999px;font-weight:500}
+  .card:nth-child(1) .card-tag{background:rgba(79,140,255,.2);color:#7eb3ff;border:1px solid rgba(79,140,255,.25)}
+  .card:nth-child(2) .card-tag{background:rgba(20,184,166,.15);color:#2dd4bf;border:1px solid rgba(20,184,166,.25)}
+  .arrow-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;transition:transform .2s}
+  .card:nth-child(1) .arrow-circle{background:rgba(79,140,255,.25);color:#7eb3ff}
+  .card:nth-child(2) .arrow-circle{background:rgba(20,184,166,.2);color:#2dd4bf}
+  .card:hover .arrow-circle{transform:translateX(4px)}
+  .footer{margin-top:32px;font-size:12px;color:rgba(255,255,255,.18);animation:fadeUp .5s .7s ease both;text-align:center}
+  @media(max-width:480px){.cards{grid-template-columns:1fr}.title{font-size:34px}}
+</style>
+
+<div class="root">
+  <div class="badge"><span class="live"></span>Hospital Dashboard Portal</div>
+  <div class="title">ER <span>Dashboard</span></div>
+  <div class="sub">Select a dashboard to get started</div>
+
+  <div class="cards">
+    <a class="card" href="page1.html">
+      <div class="icon-wrap">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="3" width="7" height="7" rx="2" fill="rgba(79,140,255,.9)"/>
+          <rect x="14" y="3" width="7" height="7" rx="2" fill="rgba(79,140,255,.5)"/>
+          <rect x="3" y="14" width="7" height="7" rx="2" fill="rgba(79,140,255,.5)"/>
+          <rect x="14" y="14" width="7" height="7" rx="2" fill="rgba(79,140,255,.75)"/>
+        </svg>
+      </div>
+      <div>
+        <div class="card-title">Dashboard 1</div>
+        <div class="card-desc">Operational overview, live patient flow and triage status.</div>
+      </div>
+      <div class="card-footer">
+        <span class="card-tag">Operational</span>
+        <div class="arrow-circle">→</div>
+      </div>
+    </a>
+
+    <a class="card" href="page2.html">
+      <div class="icon-wrap">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <polyline points="3,17 8,11 13,14 21,5" stroke="rgba(20,184,166,.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="8" cy="11" r="2" fill="rgba(20,184,166,.6)"/>
+          <circle cx="13" cy="14" r="2" fill="rgba(20,184,166,.6)"/>
+          <circle cx="21" cy="5" r="2" fill="rgba(20,184,166,.9)"/>
+        </svg>
+      </div>
+      <div>
+        <div class="card-title">Dashboard 2</div>
+        <div class="card-desc">Analytics, trends and historical ER performance data.</div>
+      </div>
+      <div class="card-footer">
+        <span class="card-tag">Analytics</span>
+        <div class="arrow-circle">→</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="footer">Keep index.html and both dashboard files in the same folder</div>
+</div>
