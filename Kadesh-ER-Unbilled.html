@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>ER Revenue Leakage · AHM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root{
@@ -22,29 +22,32 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;height:100%}
-body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+body{font-family:'IBM Plex Sans',sans-serif;font-weight:500;background:var(--bg);color:var(--text);min-height:100vh;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 10% -10%,rgba(30,111,255,.1),transparent),radial-gradient(ellipse 50% 40% at 90% 110%,rgba(0,191,165,.07),transparent);}
 .hidden{display:none!important}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:9px}
 
 /* LOGIN */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;z-index:1}
-.login-card{width:min(440px,100%);background:linear-gradient(145deg,rgba(11,21,37,.98),rgba(8,15,28,.98));border:1px solid var(--b2);border-radius:20px;padding:40px;position:relative;overflow:hidden;}
-.login-card::after{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(30,111,255,.18),transparent 70%);pointer-events:none;}
-.lc-tag{display:inline-flex;align-items:center;gap:6px;margin-bottom:20px;border:1px solid rgba(30,111,255,.3);border-radius:99px;padding:4px 12px;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#6ea8fe;background:rgba(30,111,255,.08);}
-.login-card h1{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;line-height:1.15;margin-bottom:8px}
-.login-card p{color:var(--muted);font-size:13px;line-height:1.65;margin-bottom:28px}
-.fl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block}
-input,select,textarea{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--b2);border-radius:var(--r2);color:var(--text);padding:11px 14px;font-size:13px;font-family:'IBM Plex Sans',sans-serif;outline:none;transition:border-color .18s,box-shadow .18s;}
+.login-card{width:min(460px,100%);background:linear-gradient(145deg,rgba(11,21,37,.99),rgba(6,12,24,.99));border:1px solid var(--b2);border-radius:22px;padding:44px;position:relative;overflow:hidden;}
+.login-card::after{content:'';position:absolute;top:-70px;right:-70px;width:220px;height:220px;background:radial-gradient(circle,rgba(30,111,255,.2),transparent 70%);pointer-events:none;}
+.login-card::before{content:'';position:absolute;bottom:-50px;left:-50px;width:180px;height:180px;background:radial-gradient(circle,rgba(0,191,165,.1),transparent 70%);pointer-events:none;}
+.lc-tag{display:inline-flex;align-items:center;gap:6px;margin-bottom:22px;border:1px solid rgba(30,111,255,.35);border-radius:99px;padding:5px 14px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6ea8fe;background:rgba(30,111,255,.1);}
+.login-card h1{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;line-height:1.1;margin-bottom:10px;letter-spacing:-.02em}
+.login-card p{color:var(--muted);font-size:14px;font-weight:500;line-height:1.65;margin-bottom:32px}
+.fl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block}
+.login-divider{display:flex;align-items:center;gap:12px;margin:6px 0 20px;color:var(--dim);font-size:10px;font-weight:600;letter-spacing:.08em}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--b1)}
+input,select,textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--b2);border-radius:var(--r2);color:var(--text);padding:11px 14px;font-size:13px;font-weight:600;font-family:'IBM Plex Sans',sans-serif;outline:none;transition:border-color .18s,box-shadow .18s;}
 input:focus,select:focus,textarea:focus{border-color:rgba(30,111,255,.5);box-shadow:0 0 0 3px rgba(30,111,255,.1)}
-select option{background:#0b1525}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:0;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:12px;padding:9px 16px;border-radius:var(--r2);transition:all .16s;white-space:nowrap;letter-spacing:.01em;}
+select option{background:#0b1525;font-weight:500}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:0;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;font-weight:700;font-size:12px;padding:9px 16px;border-radius:var(--r2);transition:all .16s;white-space:nowrap;letter-spacing:.01em;}
 .btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.btn:active{transform:none;filter:brightness(.95)}
 .btn-p{background:var(--a);color:#fff;box-shadow:0 6px 20px var(--ag)}
 .btn-g{background:rgba(255,255,255,.05);border:1px solid var(--b1);color:var(--muted)}.btn-g:hover{color:var(--text)}
 .btn-teal{background:rgba(0,191,165,.15);border:1px solid rgba(0,191,165,.3);color:var(--teal)}
-.btn-login{width:100%;padding:12px;font-size:14px;margin-top:16px;background:var(--a);color:#fff;box-shadow:0 8px 28px var(--ag)}
-.lerr{margin-top:10px;color:#f87171;font-size:12px}
+.btn-login{width:100%;padding:14px;font-size:15px;font-weight:800;margin-top:16px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;box-shadow:0 8px 28px var(--ag);letter-spacing:.02em}
+.lerr{margin-top:10px;color:#f87171;font-size:12px;font-weight:600}
 
 /* TOPBAR */
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 20px;height:52px;background:rgba(8,15,28,.92);border-bottom:1px solid var(--b1);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100;}
@@ -63,17 +66,17 @@ select option{background:#0b1525}
 .file-label-top{cursor:pointer}
 
 /* MAIN */
-.main{position:relative;z-index:1;padding:14px 20px;display:flex;flex-direction:column;gap:12px}
+.main{position:relative;z-index:1;padding:14px 20px;display:flex;flex-direction:column;gap:12px;min-width:0;overflow-x:hidden}
 
 /* KPI STRIP */
 .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .kpi{border-radius:var(--r);padding:14px 16px;border:1px solid var(--b1);position:relative;overflow:hidden;transition:border-color .2s;}
 .kpi:hover{border-color:var(--b2)}
 .kpi-glow{position:absolute;top:-30px;right:-30px;width:90px;height:90px;border-radius:50%;opacity:.45;pointer-events:none}
-.kpi-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.kpi-lbl{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
 .kpi-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1;margin-bottom:2px}
-.kpi-aed{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;margin-top:1px}
-.kpi-tag{font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:99px;display:inline-block;margin-top:5px}
+.kpi-aed{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;margin-top:1px}
+.kpi-tag{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:99px;display:inline-block;margin-top:5px}
 .k-blue{background:linear-gradient(135deg,rgba(30,111,255,.12),rgba(30,111,255,.04))}
 .k-red{background:linear-gradient(135deg,rgba(224,52,72,.14),rgba(224,52,72,.04))}
 .k-teal{background:linear-gradient(135deg,rgba(0,191,165,.12),rgba(0,191,165,.04))}
@@ -82,31 +85,43 @@ select option{background:#0b1525}
 /* ROWS */
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .row3{display:grid;grid-template-columns:1.1fr 1fr .9fr;gap:12px}
+.row4{display:grid;grid-template-columns:1.1fr 1.1fr .9fr .85fr;gap:12px;min-width:0}
 
 /* PANEL */
-.panel{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:14px}
-.panel-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.02em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.pt-icon{font-size:12px}
-.pt-c{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted)}
+.panel{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:14px;min-width:0;overflow:hidden}
+.panel-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:800;letter-spacing:.03em;margin-bottom:10px;display:flex;align-items:center;gap:6px;color:#c8dcf8;min-width:0}
+.pt-icon{font-size:12px;flex-shrink:0}
+.pt-c{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;color:var(--muted);white-space:nowrap;flex-shrink:0}
 
 /* BREAKDOWN LIST */
-.blist{display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto}
-.bi{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:var(--r2);background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);transition:background .15s;}
-.bi:hover{background:rgba(255,255,255,.04)}
-.bi-r{width:17px;height:17px;border-radius:4px;background:rgba(255,255,255,.05);font-size:8px;font-weight:700;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.bi-name{flex:1;font-size:11px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bi-cnt{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);flex-shrink:0}
-.bi-bar-w{width:36px;height:3px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;flex-shrink:0}
+.blist{display:flex;flex-direction:column;gap:4px;max-height:190px;overflow-y:auto;min-width:0}
+.blist-short{max-height:150px}
+.bi{display:flex;align-items:center;gap:6px;padding:7px 9px;border-radius:var(--r2);background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);transition:background .15s;min-width:0;overflow:hidden}
+.bi:hover{background:rgba(255,255,255,.05)}
+.bi-r{width:16px;height:16px;border-radius:4px;background:rgba(255,255,255,.06);font-size:8px;font-weight:700;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bi-name{flex:1;font-size:11px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;letter-spacing:.01em}
+/* COUNT BADGE — highlighted pill */
+.bi-cnt{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;
+  min-width:26px;padding:2px 6px;border-radius:99px;flex-shrink:0;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+  color:#e0eaff;letter-spacing:.02em;white-space:nowrap;
+}
+.bi-cnt-rad{background:rgba(232,160,32,.18);border-color:rgba(232,160,32,.35);color:#fbbf24}
+.bi-cnt-lab{background:rgba(0,191,165,.15);border-color:rgba(0,191,165,.3);color:#5eead4}
+.bi-cnt-svc{background:rgba(110,168,254,.14);border-color:rgba(110,168,254,.28);color:#93c5fd}
+.bi-bar-w{width:28px;height:3px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;flex-shrink:0}
 .bi-bar{height:100%;border-radius:99px}
-.bi-amt{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:500;color:#fbbf24;flex-shrink:0;min-width:80px;text-align:right}
+.bi-amt{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;color:#fbbf24;flex-shrink:0;min-width:70px;text-align:right;white-space:nowrap}
 
 /* RISK INDICATORS */
-.risk-list{display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto}
-.ri{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:var(--r2);border:1px solid;transition:all .15s;}
+.risk-list{display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto;min-width:0}
+.ri{display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:var(--r2);border:1px solid;transition:all .15s;min-width:0;overflow:hidden}
 .ri:hover{filter:brightness(1.06)}
 .ri-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.ri-label{flex:1;font-size:10.5px;font-weight:500}
-.ri-val{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;flex-shrink:0}
+.ri-label{flex:1;font-size:10px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ri-val{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;flex-shrink:0;white-space:nowrap;margin-left:4px}
 .risk-crit{background:rgba(224,52,72,.07);border-color:rgba(224,52,72,.2)}.risk-crit .ri-dot{background:var(--red);box-shadow:0 0 4px var(--rg)}.risk-crit .ri-val{color:var(--red)}
 .risk-warn{background:rgba(232,160,32,.06);border-color:rgba(232,160,32,.18)}.risk-warn .ri-dot{background:var(--amber)}.risk-warn .ri-val{color:var(--amber)}
 .risk-ok{background:rgba(0,191,165,.05);border-color:rgba(0,191,165,.15)}.risk-ok .ri-dot{background:var(--teal)}.risk-ok .ri-val{color:var(--teal)}
@@ -121,7 +136,7 @@ select option{background:#0b1525}
 .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);pointer-events:none}
 .filter-meta{font-size:10px;color:var(--muted);white-space:nowrap;font-family:'IBM Plex Mono',monospace}
 .filter-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:7px}
-.ftag{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block}
+.ftag{font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block}
 .active-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}
 .atag{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:500;padding:3px 8px;border-radius:99px;cursor:pointer;background:rgba(30,111,255,.1);border:1px solid rgba(30,111,255,.2);color:#6ea8fe;transition:all .15s;}
 .atag:hover{background:rgba(224,52,72,.12);border-color:rgba(224,52,72,.25);color:#f87171}
@@ -141,8 +156,8 @@ select option{background:#0b1525}
 .tbl-scroll{max-height:480px;overflow:auto;border-radius:var(--r2);border:1px solid var(--b1)}
 table{width:100%;border-collapse:collapse;font-size:11.5px}
 thead{position:sticky;top:0;z-index:5}
-th{padding:8px 11px;text-align:left;white-space:nowrap;background:var(--s2);border-bottom:1px solid var(--b2);font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);}
-td{padding:7px 11px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+th{padding:8px 11px;text-align:left;white-space:nowrap;background:var(--s2);border-bottom:1px solid var(--b2);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+td{padding:7px 11px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(255,255,255,.02)}
 .td-m{font-family:'IBM Plex Mono',monospace;font-size:10.5px}
@@ -169,8 +184,9 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .main>*:nth-child(1){animation-delay:.04s}.main>*:nth-child(2){animation-delay:.09s}.main>*:nth-child(3){animation-delay:.13s}.main>*:nth-child(4){animation-delay:.17s}.main>*:nth-child(5){animation-delay:.2s}.main>*:nth-child(6){animation-delay:.23s}.main>*:nth-child(7){animation-delay:.26s}
 
 /* RESPONSIVE */
-@media(max-width:1200px){.kpi-strip{grid-template-columns:repeat(2,1fr)}.filter-grid{grid-template-columns:repeat(4,1fr)}.row3{grid-template-columns:1fr 1fr}}
-@media(max-width:860px){.main{padding:10px 12px}.kpi-strip{grid-template-columns:1fr 1fr}.row2,.row3{grid-template-columns:1fr}.filter-grid{grid-template-columns:repeat(2,1fr)}.tb-chips{display:none}.topbar{padding:0 12px}}
+@media(max-width:1400px){.row4{grid-template-columns:1fr 1fr 1fr 1fr}}
+@media(max-width:1200px){.kpi-strip{grid-template-columns:repeat(2,1fr)}.filter-grid{grid-template-columns:repeat(4,1fr)}.row3{grid-template-columns:1fr 1fr}.row4{grid-template-columns:1fr 1fr}}
+@media(max-width:860px){.main{padding:10px 12px}.kpi-strip{grid-template-columns:1fr 1fr}.row2,.row3,.row4{grid-template-columns:1fr}.filter-grid{grid-template-columns:repeat(2,1fr)}.tb-chips{display:none}.topbar{padding:0 12px}}
 @media(max-width:560px){.kpi-strip{grid-template-columns:1fr}.tb-status{display:none}}
 </style>
 </head>
@@ -179,14 +195,14 @@ tr:hover td{background:rgba(255,255,255,.02)}
 <!-- LOGIN -->
 <div id="loginView" class="login-wrap">
   <div class="login-card">
-    <div class="lc-tag">🏥 AHM · ER Kadesh</div>
+    <div class="lc-tag">🏥 AHM · ER </div>
     <h1>ER Revenue<br>Leakage Tracker</h1>
     <p>Identify every unbilled Lab & Radiology service in the ER — quantify revenue at risk in AED before it escapes billing.</p>
     <label class="fl" for="pwdInput">Password</label>
     <input id="pwdInput" type="password" placeholder="Enter access password…"/>
     <button class="btn btn-login" id="loginBtn">Access Dashboard →</button>
     <div id="loginMsg" class="lerr"></div>
-    <div style="margin-top:12px;font-size:11px;color:var(--dim);text-align:center">Kaaadu *** Kaadesh***</div>
+    <div style="margin-top:12px;font-size:11px;color:var(--dim);text-align:center">**JobinTech**</div>
   </div>
 </div>
 
@@ -199,7 +215,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="tb-mark">ER</div>
       <div>
         <div class="tb-title">Revenue Leakage Dashboard</div>
-        <div class="tb-sub">ER · Lab & Radiology · Unbilled Analysis</div>
+        <div class="tb-sub">ER · Lab & Radiology · Kaadesh ** Kaadu </div>
       </div>
       <div class="tb-chips" style="margin-left:10px">
         <span class="chip-tag ct-b">OPIP = E</span>
@@ -252,15 +268,19 @@ tr:hover td{background:rgba(255,255,255,.02)}
       </div>
     </div>
 
-    <!-- BREAKDOWN + RISK ROW -->
-    <div class="row3">
+    <!-- BREAKDOWN + RISK ROW (4 panels) -->
+    <div class="row4">
       <div class="panel">
-        <div class="panel-title"><span class="pt-icon">🩻</span> Radiology Sub Name<span class="pt-c" id="radSubC">0 types</span></div>
+        <div class="panel-title"><span class="pt-icon">🩻</span> Radiology <span class="pt-c" id="radSubC">0 types</span></div>
         <div id="radBreak" class="blist"><div style="color:var(--muted);font-size:11px">Upload file to see breakdown.</div></div>
       </div>
       <div class="panel">
+        <div class="panel-title"><span class="pt-icon">🔬</span> Laboratory <span class="pt-c" id="labSubC">0 types</span></div>
+        <div id="labBreak" class="blist"><div style="color:var(--muted);font-size:11px">Upload file to see breakdown.</div></div>
+      </div>
+      <div class="panel">
         <div class="panel-title"><span class="pt-icon">📊</span> Top Services · AED<span class="pt-c" id="topSvcC">—</span></div>
-        <div id="topSvc" class="blist"><div style="color:var(--muted);font-size:11px">Upload file to see services.</div></div>
+        <div id="topSvc" class="blist blist-short"><div style="color:var(--muted);font-size:11px">Upload file to see services.</div></div>
       </div>
       <div class="panel">
         <div class="panel-title"><span class="pt-icon">⚡</span> Leakage Risk Indicators</div>
@@ -280,10 +300,11 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <div class="filter-meta" id="filterMeta">0 results · AED 0</div>
         <button class="btn btn-g" id="resetBtn" style="font-size:11px;padding:6px 11px">Reset</button>
       </div>
-      <div class="filter-grid">
+      <div class="filter-grid" style="grid-template-columns:repeat(9,1fr)">
         <div><span class="ftag">Department</span><select id="deptF"></select></div>
         <div><span class="ftag">Diag Status</span><select id="diagF"></select></div>
         <div><span class="ftag">Rad Sub Name</span><select id="subF"></select></div>
+        <div><span class="ftag">Lab Sub Name</span><select id="labSubF"></select></div>
         <div><span class="ftag">Enc. Doctor</span><select id="docF"></select></div>
         <div><span class="ftag">Ordered By</span><select id="ordF"></select></div>
         <div><span class="ftag">Service Type</span><select id="svcTypeF"></select></div>
@@ -308,7 +329,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <!-- SUMMARY + PAYER ROW -->
     <div class="row2">
       <div class="panel">
-        <div class="panel-title"><span class="pt-icon">📋</span> HOD Summary Report</div>
+        <div class="panel-title"><span class="pt-icon">📋</span> Copy Summary Report</div>
         <div class="summ-row">
           <textarea id="summBox" class="summary-box" placeholder="Auto-generated HOD summary will appear here after upload…"></textarea>
           <div class="summ-btns">
@@ -361,6 +382,182 @@ tr:hover td{background:rgba(255,255,255,.02)}
 <script>
 const PWD_HASH='4f5f4e766fc5f679561988e197d7521666a10004010de88e5e92290fa9e09d50';
 const AMT_KEYS=['service amount','amount','net amount','total amount','charge amount','bill amount','price','gross amount','billed amount','standard amount','service price','unit price','service charge'];
+
+// ── LAB SERVICE SHORT NAME DICTIONARY ────────
+// Maps fragments found in long lab service names → short clinical label
+// Used for grouping & display in the Lab Sub Name breakdown panel
+const LAB_SHORT = [
+  // Cardiac markers
+  {k:'TROPONIN',s:'Troponin'},
+  {k:'TROP I',s:'Troponin I'},
+  {k:'TROP T',s:'Troponin T'},
+  {k:'BNP',s:'BNP'},
+  {k:'NT-PRO',s:'NT-proBNP'},
+  {k:'CK-MB',s:'CK-MB'},
+  {k:'CREATINE KINASE',s:'CK Total'},
+  {k:'MYOGLOBIN',s:'Myoglobin'},
+  {k:'D-DIMER',s:'D-Dimer'},
+  {k:'DDIMER',s:'D-Dimer'},
+  // CBC / Haematology
+  {k:'COMPLETE BLOOD COUNT',s:'CBC'},
+  {k:'FULL BLOOD COUNT',s:'CBC'},
+  {k:'CBC',s:'CBC'},
+  {k:'FBC',s:'CBC'},
+  {k:'HAEMOGLOBIN',s:'Haemoglobin'},
+  {k:'HEMOGLOBIN',s:'Haemoglobin'},
+  {k:'PLATELET',s:'Platelet Count'},
+  {k:'WBC',s:'WBC'},
+  {k:'WHITE BLOOD',s:'WBC'},
+  {k:'RBC',s:'RBC'},
+  {k:'RED BLOOD',s:'RBC'},
+  {k:'ESR',s:'ESR'},
+  {k:'PERIPHERAL SMEAR',s:'Peripheral Smear'},
+  {k:'RETICULOCYTE',s:'Reticulocyte'},
+  {k:'PT ',s:'PT/INR'},
+  {k:'PROTHROMBIN',s:'PT/INR'},
+  {k:'INR',s:'PT/INR'},
+  {k:'APTT',s:'APTT'},
+  {k:'PTT',s:'APTT'},
+  {k:'FIBRINOGEN',s:'Fibrinogen'},
+  // Metabolic / Chemistry
+  {k:'GLUCOSE',s:'Glucose'},
+  {k:'BLOOD SUGAR',s:'Blood Sugar'},
+  {k:'HBA1C',s:'HbA1c'},
+  {k:'HAEMOGLOBIN A1C',s:'HbA1c'},
+  {k:'CREATININE',s:'Creatinine'},
+  {k:'UREA',s:'Urea'},
+  {k:'BUN',s:'BUN'},
+  {k:'URIC ACID',s:'Uric Acid'},
+  {k:'eGFR',s:'eGFR'},
+  {k:'GLOMERULAR',s:'eGFR'},
+  {k:'SODIUM',s:'Sodium'},
+  {k:'POTASSIUM',s:'Potassium'},
+  {k:'CHLORIDE',s:'Chloride'},
+  {k:'BICARBONATE',s:'Bicarbonate'},
+  {k:'CALCIUM',s:'Calcium'},
+  {k:'PHOSPHATE',s:'Phosphate'},
+  {k:'PHOSPHORUS',s:'Phosphate'},
+  {k:'MAGNESIUM',s:'Magnesium'},
+  {k:'ELECTROLYTE',s:'Electrolytes'},
+  {k:'URINE ROUTINE',s:'Urine R/E'},
+  {k:'URINALYSIS',s:'Urine R/E'},
+  {k:'URINE R/E',s:'Urine R/E'},
+  {k:'URINE ANALYSIS',s:'Urine R/E'},
+  {k:'URINE CULTURE',s:'Urine Culture'},
+  // Liver / LFT
+  {k:'BILIRUBIN',s:'Bilirubin'},
+  {k:'ALT',s:'ALT'},
+  {k:'ALANINE',s:'ALT'},
+  {k:'AST',s:'AST'},
+  {k:'ASPARTATE',s:'AST'},
+  {k:'ALP',s:'ALP'},
+  {k:'ALKALINE PHOSPHATASE',s:'ALP'},
+  {k:'GGT',s:'GGT'},
+  {k:'GAMMA GT',s:'GGT'},
+  {k:'ALBUMIN',s:'Albumin'},
+  {k:'TOTAL PROTEIN',s:'Total Protein'},
+  {k:'LIVER FUNCTION',s:'LFT Panel'},
+  {k:'LFT',s:'LFT Panel'},
+  // Lipids
+  {k:'CHOLESTEROL',s:'Cholesterol'},
+  {k:'TRIGLYCERIDE',s:'Triglycerides'},
+  {k:'HDL',s:'HDL'},
+  {k:'LDL',s:'LDL'},
+  {k:'LIPID PROFILE',s:'Lipid Profile'},
+  // Thyroid
+  {k:'TSH',s:'TSH'},
+  {k:'THYROID STIMULATING',s:'TSH'},
+  {k:'FREE T3',s:'Free T3'},
+  {k:'FREE T4',s:'Free T4'},
+  {k:'FT3',s:'Free T3'},
+  {k:'FT4',s:'Free T4'},
+  {k:'T3',s:'T3'},
+  {k:'T4',s:'T4'},
+  // Inflammatory
+  {k:'CRP',s:'CRP'},
+  {k:'C-REACTIVE',s:'CRP'},
+  {k:'PROCALCITONIN',s:'Procalcitonin'},
+  {k:'PCT',s:'Procalcitonin'},
+  {k:'FERRITIN',s:'Ferritin'},
+  {k:'IL-6',s:'IL-6'},
+  {k:'INTERLEUKIN',s:'IL-6'},
+  {k:'LDH',s:'LDH'},
+  {k:'LACTATE DEHYDROGENASE',s:'LDH'},
+  {k:'LACTATE',s:'Lactate'},
+  // Blood Gas
+  {k:'ARTERIAL BLOOD GAS',s:'ABG'},
+  {k:'ABG',s:'ABG'},
+  {k:'BLOOD GAS',s:'Blood Gas'},
+  {k:'VENOUS GAS',s:'VBG'},
+  // Microbiology
+  {k:'BLOOD CULTURE',s:'Blood Culture'},
+  {k:'SPUTUM CULTURE',s:'Sputum Culture'},
+  {k:'WOUND CULTURE',s:'Wound Culture'},
+  {k:'CULTURE AND SENSITIVITY',s:'C&S'},
+  {k:'C&S',s:'C&S'},
+  {k:'SENSITIVITY',s:'C&S'},
+  {k:'COVID',s:'COVID-19'},
+  {k:'SARS-COV',s:'COVID-19'},
+  {k:'INFLUENZA',s:'Influenza'},
+  {k:'RSV',s:'RSV'},
+  {k:'MALARIA',s:'Malaria'},
+  {k:'DENGUE',s:'Dengue'},
+  {k:'HEPATITIS B',s:'Hepatitis B'},
+  {k:'HBV',s:'Hepatitis B'},
+  {k:'HEPATITIS C',s:'Hepatitis C'},
+  {k:'HCV',s:'Hepatitis C'},
+  {k:'HIV',s:'HIV'},
+  {k:'WIDAL',s:'Widal / Typhoid'},
+  // Hormones / Misc
+  {k:'BETA HCG',s:'Beta-hCG'},
+  {k:'HCG',s:'Beta-hCG'},
+  {k:'PREGNANCY',s:'Pregnancy Test'},
+  {k:'PSA',s:'PSA'},
+  {k:'VITAMIN D',s:'Vitamin D'},
+  {k:'VIT D',s:'Vitamin D'},
+  {k:'VITAMIN B12',s:'Vitamin B12'},
+  {k:'B12',s:'Vitamin B12'},
+  {k:'FOLATE',s:'Folate'},
+  {k:'FOLIC',s:'Folate'},
+  {k:'IRON',s:'Iron Studies'},
+  {k:'TRANSFERRIN',s:'Iron Studies'},
+  {k:'TIBC',s:'Iron Studies'},
+  {k:'AMMONIA',s:'Ammonia'},
+  {k:'AMYLASE',s:'Amylase'},
+  {k:'LIPASE',s:'Lipase'},
+  {k:'CORTISOL',s:'Cortisol'},
+  {k:'INSULIN',s:'Insulin'},
+  {k:'C-PEPTIDE',s:'C-Peptide'},
+  {k:'VANCOMYCIN',s:'Vancomycin Level'},
+  {k:'GENTAMICIN',s:'Gentamicin Level'},
+  {k:'DIGOXIN',s:'Digoxin Level'},
+  {k:'DRUG LEVEL',s:'Drug Level'},
+  {k:'TOXICOLOGY',s:'Toxicology'},
+  {k:'PARACETAMOL',s:'Paracetamol Level'},
+  {k:'ACETAMINOPHEN',s:'Paracetamol Level'},
+  {k:'SALICYLATE',s:'Salicylate Level'},
+  {k:'ETHANOL',s:'Ethanol Level'},
+  {k:'ALCOHOL',s:'Ethanol Level'},
+  // Coagulation
+  {k:'COAGULATION',s:'Coagulation'},
+  {k:'ANTI XA',s:'Anti-Xa'},
+  {k:'ANTI-XA',s:'Anti-Xa'},
+  {k:'THROMBIN',s:'Thrombin Time'},
+  // Urinary
+  {k:'MICROALBUMIN',s:'Microalbuminuria'},
+  {k:'URINE PROTEIN',s:'Urine Protein'},
+  {k:'URINE CREATININE',s:'Urine Creatinine'},
+];
+
+function labShortName(serviceName){
+  const u=serviceName.toUpperCase();
+  for(const {k,s} of LAB_SHORT){ if(u.includes(k)) return s; }
+  // fallback: trim prefix words like "ASSAY OF", "DETERMINATION OF", "MEASUREMENT OF"
+  const clean=serviceName.replace(/^(ASSAY OF|DETERMINATION OF|MEASUREMENT OF|ESTIMATION OF|QUANTITATIVE|QUALITATIVE|STAT |URGENT )/i,'').trim();
+  // truncate to 22 chars with ellipsis if still long
+  return clean.length>22 ? clean.slice(0,21)+'…' : clean;
+}
+
 const S={raw:[],base:[],filtered:[],amtCol:null,page:1};
 const $=id=>document.getElementById(id);
 const R={
@@ -368,10 +565,11 @@ const R={
   logoutBtn:$('logoutBtn'),fileInput:$('fileInput'),statusDot:$('statusDot'),tbStatus:$('tbStatus'),
   kTot:$('kTot'),kTotA:$('kTotA'),kAmt:$('kAmt'),kAvg:$('kAvg'),
   kLab:$('kLab'),kLabA:$('kLabA'),kRad:$('kRad'),kRadA:$('kRadA'),
-  radBreak:$('radBreak'),topSvc:$('topSvc'),riskBox:$('riskBox'),
-  radSubC:$('radSubC'),topSvcC:$('topSvcC'),payerBreak:$('payerBreak'),payerC:$('payerC'),
+  radBreak:$('radBreak'),labBreak:$('labBreak'),topSvc:$('topSvc'),riskBox:$('riskBox'),
+  radSubC:$('radSubC'),labSubC:$('labSubC'),topSvcC:$('topSvcC'),
+  payerBreak:$('payerBreak'),payerC:$('payerC'),
   searchInput:$('searchInput'),filterMeta:$('filterMeta'),
-  deptF:$('deptF'),diagF:$('diagF'),subF:$('subF'),docF:$('docF'),
+  deptF:$('deptF'),diagF:$('diagF'),subF:$('subF'),labSubF:$('labSubF'),docF:$('docF'),
   ordF:$('ordF'),svcTypeF:$('svcTypeF'),payF:$('payF'),sortF:$('sortF'),
   resetBtn:$('resetBtn'),activeTags:$('activeTags'),
   summBox:$('summBox'),copySumm:$('copySumm'),copyBreak:$('copyBreak'),
@@ -405,7 +603,11 @@ function applyRules(rows){return rows.filter(r=>{const opip=up(get(r,'O P I P'))
 function populateFilters(rows){
   selOpt(R.deptF,uniq(rows.map(r=>get(r,'Department Name'))),'All Departments');
   selOpt(R.diagF,uniq(rows.map(r=>get(r,'Diag Status'))),'All Diag Status');
-  selOpt(R.subF,uniq(rows.filter(r=>up(get(r,'Department Name'))==='RADIOLOGY').map(r=>get(r,'Sub Name'))),'All Sub Names');
+  selOpt(R.subF,uniq(rows.filter(r=>up(get(r,'Department Name'))==='RADIOLOGY').map(r=>get(r,'Sub Name'))),'All Rad Sub');
+  // Lab sub names: derive short names and populate unique sorted list
+  const labRows=rows.filter(r=>up(get(r,'Department Name'))==='LABORATORY');
+  const labShorts=uniq(labRows.map(r=>labShortName(norm(get(r,'Service Name')))));
+  selOpt(R.labSubF,labShorts,'All Lab Sub');
   selOpt(R.docF,uniq(rows.map(r=>get(r,'Encounter Doctor'))),'All Doctors');
   selOpt(R.ordF,uniq(rows.map(r=>get(r,'Ordered By'))),'All');
   selOpt(R.svcTypeF,uniq(rows.map(r=>get(r,'Service Type'))),'All Types');
@@ -418,6 +620,7 @@ function getFiltered(){
   if(R.deptF.value)rows=rows.filter(r=>norm(get(r,'Department Name'))===R.deptF.value);
   if(R.diagF.value)rows=rows.filter(r=>norm(get(r,'Diag Status'))===R.diagF.value);
   if(R.subF.value)rows=rows.filter(r=>norm(get(r,'Sub Name'))===R.subF.value);
+  if(R.labSubF.value)rows=rows.filter(r=>up(get(r,'Department Name'))==='LABORATORY'&&labShortName(norm(get(r,'Service Name')))===R.labSubF.value);
   if(R.docF.value)rows=rows.filter(r=>norm(get(r,'Encounter Doctor'))===R.docF.value);
   if(R.ordF.value)rows=rows.filter(r=>norm(get(r,'Ordered By'))===R.ordF.value);
   if(R.svcTypeF.value)rows=rows.filter(r=>norm(get(r,'Service Type'))===R.svcTypeF.value);
@@ -427,8 +630,8 @@ function getFiltered(){
   return rows;
 }
 
-function buildBreakList(list,maxA,barColor){
-  return list.map(([name,{c,a}],i)=>`<div class="bi"><div class="bi-r">${i+1}</div><div class="bi-name" title="${esc(name)}">${esc(name)}</div><div class="bi-cnt">${c}×</div><div class="bi-bar-w"><div class="bi-bar" style="width:${maxA>0?(a/maxA*100).toFixed(1):0}%;background:${barColor}"></div></div><div class="bi-amt">${fmtA(a)}</div></div>`).join('');
+function buildBreakList(list,maxA,barColor,cntCls=''){
+  return list.map(([name,{c,a}],i)=>`<div class="bi"><div class="bi-r">${i+1}</div><div class="bi-name" title="${esc(name)}">${esc(name)}</div><div class="bi-cnt ${cntCls}">${c}×</div><div class="bi-bar-w"><div class="bi-bar" style="width:${maxA>0?(a/maxA*100).toFixed(1):0}%;background:${barColor}"></div></div><div class="bi-amt">${fmtA(a)}</div></div>`).join('');
 }
 
 function buildRisk(rows,lab,rad,labA,radA,totA){
@@ -463,44 +666,62 @@ function updateDash(rows){
   R.kLab.textContent=lab.length; R.kLabA.textContent=fmtAK(labA);
   R.kRad.textContent=rad.length; R.kRadA.textContent=fmtAK(radA);
 
+  // Radiology sub breakdown (by Sub Name column)
   const subMap={};
   rad.forEach(r=>{const k=norm(get(r,'Sub Name'))||'Unspecified';if(!subMap[k])subMap[k]={c:0,a:0};subMap[k].c++;subMap[k].a+=getAmt(r);});
   const subList=Object.entries(subMap).sort((a,b)=>b[1].a-a[1].a);
   const maxSubA=subList[0]?.[1]?.a||1;
   R.radSubC.textContent=`${subList.length} types`;
-  R.radBreak.innerHTML=subList.length?buildBreakList(subList,maxSubA,'var(--amber)'):'<div style="color:var(--muted);font-size:11px">No radiology services.</div>';
+  R.radBreak.innerHTML=subList.length?buildBreakList(subList,maxSubA,'var(--amber)','bi-cnt-rad'):'<div style="color:var(--muted);font-size:11px">No radiology services.</div>';
 
+  // Lab sub breakdown (by derived short name from Service Name)
+  const labSubMap={};
+  lab.forEach(r=>{
+    const k=labShortName(norm(get(r,'Service Name')));
+    if(!labSubMap[k])labSubMap[k]={c:0,a:0};
+    labSubMap[k].c++;labSubMap[k].a+=getAmt(r);
+  });
+  const labSubList=Object.entries(labSubMap).sort((a,b)=>b[1].a-a[1].a);
+  const maxLabSubA=labSubList[0]?.[1]?.a||1;
+  R.labSubC.textContent=`${labSubList.length} types`;
+  R.labBreak.innerHTML=labSubList.length?buildBreakList(labSubList,maxLabSubA,'var(--teal)','bi-cnt-lab'):'<div style="color:var(--muted);font-size:11px">No laboratory services.</div>';
+
+  // Top services by amount
   const svcMap={};
   rows.forEach(r=>{const k=norm(get(r,'Service Name'))||'Unknown';if(!svcMap[k])svcMap[k]={c:0,a:0};svcMap[k].c++;svcMap[k].a+=getAmt(r);});
   const svcList=Object.entries(svcMap).sort((a,b)=>b[1].a-a[1].a).slice(0,10);
   const maxSvcA=svcList[0]?.[1]?.a||1;
   R.topSvcC.textContent=`${svcList.length} unique`;
-  R.topSvc.innerHTML=svcList.length?buildBreakList(svcList,maxSvcA,'var(--teal)'):'<div style="color:var(--muted);font-size:11px">No service details.</div>';
+  R.topSvc.innerHTML=svcList.length?buildBreakList(svcList,maxSvcA,'#6ea8fe','bi-cnt-svc'):'<div style="color:var(--muted);font-size:11px">No service details.</div>';
 
+  // Payer breakdown
   const payMap={};
   rows.forEach(r=>{const k=norm(get(r,'Payer Name'))||'Unknown';if(!payMap[k])payMap[k]={c:0,a:0};payMap[k].c++;payMap[k].a+=getAmt(r);});
   const payList=Object.entries(payMap).sort((a,b)=>b[1].a-a[1].a).slice(0,8);
   const maxPayA=payList[0]?.[1]?.a||1;
   R.payerC.textContent=`${payList.length} payers`;
-  R.payerBreak.innerHTML=payList.length?buildBreakList(payList,maxPayA,'#6ea8fe'):'<div style="color:var(--muted);font-size:11px">No payer data.</div>';
+  R.payerBreak.innerHTML=payList.length?buildBreakList(payList,maxPayA,'var(--orange)','bi-cnt-svc'):'<div style="color:var(--muted);font-size:11px">No payer data.</div>';
 
   buildRisk(rows,lab,rad,labA,radA,totA);
-  buildSummary(rows,subList,lab,rad,labA,radA,totA);
+  buildSummary(rows,subList,labSubList,lab,rad,labA,radA,totA);
   updateActiveTags();
 }
 
-function buildSummary(rows,subList,lab,rad,labA,radA,totA){
+function buildSummary(rows,subList,labSubList,lab,rad,labA,radA,totA){
   const today=new Date().toLocaleDateString('en-AE',{day:'2-digit',month:'short',year:'numeric'});
   const avg=rows.length?totA/rows.length:0;
   const lines=[`ER UNBILLED LAB & RADIOLOGY — REVENUE LEAKAGE REPORT`,`Date: ${today}`,``,`━━━ SUMMARY ━━━`,`Total Unbilled Services : ${rows.length}`,`Total Unbilled Amount   : ${fmtA(totA)}`,`Average per Service     : ${fmtA(avg)}`,``,`━━━ BY DEPARTMENT ━━━`,`Laboratory  : ${lab.length} services  |  ${fmtA(labA)}`,`Radiology   : ${rad.length} services  |  ${fmtA(radA)}`,``,`━━━ RADIOLOGY SUB NAME ━━━`];
   if(subList.length)subList.forEach(([n,{c,a}])=>lines.push(`  ${n.padEnd(28)} ${String(c).padStart(3)}×   ${fmtA(a)}`));
   else lines.push('  No radiology services in filter.');
+  lines.push(``);lines.push(`━━━ LAB SUB NAME (SHORT) ━━━`);
+  if(labSubList.length)labSubList.forEach(([n,{c,a}])=>lines.push(`  ${n.padEnd(28)} ${String(c).padStart(3)}×   ${fmtA(a)}`));
+  else lines.push('  No laboratory services in filter.');
   lines.push(``);lines.push(`Criteria: OPIP=E · Invoice blank · Dept: Lab/Rad · Diag: Result Finalized/Entered`);
   R.summBox.value=lines.join('\n');
 }
 
 function updateActiveTags(){
-  const fs=[{el:R.deptF,l:'Dept'},{el:R.diagF,l:'Diag'},{el:R.subF,l:'Sub'},{el:R.docF,l:'Doctor'},{el:R.ordF,l:'Ordered'},{el:R.svcTypeF,l:'Type'},{el:R.payF,l:'Payer'},{el:R.sortF,l:'Sort'}];
+  const fs=[{el:R.deptF,l:'Dept'},{el:R.diagF,l:'Diag'},{el:R.subF,l:'Rad Sub'},{el:R.labSubF,l:'Lab Sub'},{el:R.docF,l:'Doctor'},{el:R.ordF,l:'Ordered'},{el:R.svcTypeF,l:'Type'},{el:R.payF,l:'Payer'},{el:R.sortF,l:'Sort'}];
   const q=R.searchInput.value.trim();
   let html='';
   if(q)html+=`<span class="atag" data-c="s">🔍 "${esc(q)}" ×</span>`;
@@ -547,7 +768,7 @@ function buildPgR(cur,total){
 }
 
 function refresh(){S.page=1;const rows=getFiltered();updateDash(rows);renderTable(rows);}
-function resetFilters(){R.searchInput.value='';[R.deptF,R.diagF,R.subF,R.docF,R.ordF,R.svcTypeF,R.payF,R.sortF].forEach(e=>e.value='');R.psF.value='50';refresh();}
+function resetFilters(){R.searchInput.value='';[R.deptF,R.diagF,R.subF,R.labSubF,R.docF,R.ordF,R.svcTypeF,R.payF,R.sortF].forEach(e=>e.value='');R.psF.value='50';refresh();}
 
 async function handleFile(file){
   try{
@@ -560,7 +781,8 @@ async function handleFile(file){
     S.amtCol=detectAmt(extracted);S.raw=extracted;S.base=applyRules(extracted);
     populateFilters(S.base);refresh();
     R.amtHint.innerHTML=`💡 ${S.amtCol?`Amount column: <strong>"${esc(S.amtCol)}"</strong> detected.`:`⚠ No amount column found — amounts show as —.`} All amounts in <strong>AED</strong>.`;
-    R.tbStatus.textContent=`${file.name} · ${S.raw.length} rows · ${S.base.length} unbilled`;
+    const today=new Date().toLocaleDateString('en-AE',{day:'2-digit',month:'short',year:'numeric'});
+    R.tbStatus.textContent=`${file.name} · ${S.base.length} unbilled · ${today}`;
     R.statusDot.classList.add('on');
   }catch(err){console.error(err);alert(err.message||'Failed to load file.');R.tbStatus.textContent='Error loading file.';}
 }
@@ -582,7 +804,7 @@ R.loginBtn.addEventListener('click',doLogin);
 R.pwd.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 R.logoutBtn.addEventListener('click',doLogout);
 R.fileInput.addEventListener('change',e=>{const f=e.target.files?.[0];if(f)handleFile(f);});
-['searchInput','deptF','diagF','subF','docF','ordF','svcTypeF','payF','sortF','psF'].forEach(id=>$(id).addEventListener('input',refresh));
+['searchInput','deptF','diagF','subF','labSubF','docF','ordF','svcTypeF','payF','sortF','psF'].forEach(id=>$(id).addEventListener('input',refresh));
 R.resetBtn.addEventListener('click',resetFilters);
 R.copySumm.addEventListener('click',()=>cpTxt(R.summBox.value));
 R.copyBreak.addEventListener('click',copyBreak);
