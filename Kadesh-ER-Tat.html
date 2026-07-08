@@ -69,7 +69,6 @@ header{
 
 main{max-width:1360px;margin:0 auto;padding:26px 20px 70px}
 
-/* Upload */
 .upload{
   background:linear-gradient(180deg,rgba(15,23,42,.58),rgba(15,23,42,.42));
   border:1.5px dashed rgba(125,211,252,.34);border-radius:22px;
@@ -87,13 +86,11 @@ main{max-width:1360px;margin:0 auto;padding:26px 20px 70px}
 .exts{display:inline-flex;gap:7px;margin-top:12px;flex-wrap:wrap}
 .ext{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:5px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;color:#cbd5e1}
 
-/* Filebar */
 .filebar{display:none;align-items:center;gap:9px;background:rgba(16,185,129,.14);border:1px solid rgba(16,185,129,.32);border-radius:16px;padding:12px 16px;margin-bottom:18px;font-size:13px;color:#d1fae5;box-shadow:var(--shadow);backdrop-filter:blur(14px)}
 .filebar.on{display:flex}
 .filebar svg{stroke:#22c55e;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .filebar b{color:#bbf7d0}
 
-/* Filters */
 .filters{display:none;background:linear-gradient(180deg,rgba(15,23,42,.58),rgba(15,23,42,.44));border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:18px 18px 16px;margin-bottom:18px;box-shadow:var(--shadow);backdrop-filter:blur(14px)}
 .filters.on{display:block}
 .filt-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;gap:10px}
@@ -114,20 +111,19 @@ main{max-width:1360px;margin:0 auto;padding:26px 20px 70px}
 .btn-apply:hover,.btn-dl:hover,.login-btn:hover,.lock-btn:hover{transform:translateY(-1px)}
 .btn-rst,.lock-btn{padding:11px 14px;background:rgba(255,255,255,.06);color:#dbeafe;border:1px solid rgba(255,255,255,.08)}
 
-/* Actbar */
 .actbar{display:none;align-items:center;gap:10px;margin-bottom:18px}
 .actbar.on{display:flex;flex-wrap:wrap}
 .btn-dl{display:inline-flex;align-items:center;gap:7px}
 .btn-dl svg{stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .rec-pill{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:10px 14px;font-size:12px;color:#dbeafe;backdrop-filter:blur(14px)}
 
-/* KPI section */
 .sec-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#7dd3fc;margin-bottom:12px}
 .kpi-wrap{display:none;margin-bottom:20px}
 .kpi-wrap.on{display:block}
-.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
 
-/* KPI card */
+/* ── KPI grid: 6 columns on desktop ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+
 .kcard{
   background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.86));
   border:1px solid rgba(255,255,255,.55);color:var(--txt-dark);
@@ -135,38 +131,39 @@ main{max-width:1360px;margin:0 auto;padding:26px 20px 70px}
   position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;
   animation:riseUp .55s ease both;
 }
-.kcard:nth-child(2){animation-delay:.06s}.kcard:nth-child(3){animation-delay:.12s}.kcard:nth-child(4){animation-delay:.18s}.kcard:nth-child(5){animation-delay:.24s}
+.kcard:nth-child(2){animation-delay:.06s}.kcard:nth-child(3){animation-delay:.12s}
+.kcard:nth-child(4){animation-delay:.18s}.kcard:nth-child(5){animation-delay:.24s}
+.kcard:nth-child(6){animation-delay:.30s}
 @keyframes riseUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .kcard:hover{box-shadow:var(--shadow2);transform:translateY(-2px)}
 .kcard::before{content:'';position:absolute;inset:0 0 auto;height:4px}
 .kcard.blue::before{background:linear-gradient(90deg,#38bdf8,#2563eb)}
 .kcard.green::before{background:linear-gradient(90deg,#34d399,#16a34a)}
 .kcard.amber::before{background:linear-gradient(90deg,#fbbf24,#f59e0b)}
+.kcard.orange::before{background:linear-gradient(90deg,#fb923c,#f97316)}
 .kcard.red::before{background:linear-gradient(90deg,#f87171,#ef4444)}
 .kcard.teal::before{background:linear-gradient(90deg,#2dd4bf,#14b8a6)}
-.kcard.orange::before{background:linear-gradient(90deg,#fb923c,#f97316)}
 .k-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
 .k-ico{width:38px;height:38px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .k-ico svg{width:18px;height:18px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .kcard.blue .k-ico{background:rgba(37,99,235,.1)}.kcard.blue .k-ico svg{stroke:#2563eb}
 .kcard.green .k-ico{background:rgba(34,197,94,.1)}.kcard.green .k-ico svg{stroke:#16a34a}
 .kcard.amber .k-ico{background:rgba(245,158,11,.1)}.kcard.amber .k-ico svg{stroke:#d97706}
+.kcard.orange .k-ico{background:rgba(249,115,22,.1)}.kcard.orange .k-ico svg{stroke:#ea580c}
 .kcard.red .k-ico{background:rgba(239,68,68,.1)}.kcard.red .k-ico svg{stroke:#ef4444}
 .kcard.teal .k-ico{background:rgba(20,184,166,.1)}.kcard.teal .k-ico svg{stroke:#0f766e}
-.kcard.orange .k-ico{background:rgba(249,115,22,.1)}.kcard.orange .k-ico svg{stroke:#ea580c}
 .k-n{font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:700;color:#64748b;background:rgba(15,23,42,.05);border:1px solid rgba(15,23,42,.06);border-radius:999px;padding:5px 9px}
 .k-label{font-size:11.5px;font-weight:600;color:#475569;margin-bottom:6px;line-height:1.35}
 .k-val{font-size:34px;font-weight:800;letter-spacing:-1.7px;line-height:1}
-.kcard.blue .k-val{color:#2563eb}.kcard.green .k-val{color:#16a34a}.kcard.amber .k-val{color:#d97706}.kcard.red .k-val{color:#dc2626}.kcard.teal .k-val{color:#0f766e}.kcard.orange .k-val{color:#ea580c}
+.kcard.blue .k-val{color:#2563eb}.kcard.green .k-val{color:#16a34a}.kcard.amber .k-val{color:#d97706}
+.kcard.orange .k-val{color:#ea580c}.kcard.red .k-val{color:#dc2626}.kcard.teal .k-val{color:#0f766e}
 .k-unit{font-size:13px;font-weight:600;opacity:.7;margin-left:3px}
 .k-foot{margin-top:11px;padding-top:10px;border-top:1px solid rgba(15,23,42,.08)}
 .k-sub{font-size:11px;color:#64748b}.k-sub b{color:#334155}
 
-/* Panels (summary + detail + breach) */
 .panel{display:none;background:linear-gradient(180deg,rgba(15,23,42,.58),rgba(15,23,42,.44));border:1px solid rgba(255,255,255,.08);border-radius:24px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px;backdrop-filter:blur(14px)}
 .panel.on{display:block}
 
-/* BREACH PANEL — special styling */
 .breach-wrap{display:none;background:linear-gradient(180deg,rgba(30,8,8,.65),rgba(20,5,5,.5));border:1px solid rgba(239,68,68,.28);border-radius:24px;box-shadow:var(--shadow),0 0 0 1px rgba(239,68,68,.08);overflow:hidden;margin-bottom:18px;backdrop-filter:blur(14px)}
 .breach-wrap.on{display:block}
 .breach-hdr{padding:16px 20px;border-bottom:1px solid rgba(239,68,68,.18);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:rgba(239,68,68,.06)}
@@ -177,7 +174,6 @@ main{max-width:1360px;margin:0 auto;padding:26px 20px 70px}
 .breach-sub{font-size:11.5px;color:#94a3b8;margin-top:2px}
 .breach-count-pill{background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.3);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;color:#f87171;font-family:'JetBrains Mono',monospace;white-space:nowrap}
 
-/* Breach threshold controls */
 .breach-controls{padding:12px 20px;background:rgba(239,68,68,.04);border-bottom:1px solid rgba(239,68,68,.1);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .bc-label{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px}
 .bc-input{width:80px;padding:7px 10px;border:1px solid rgba(239,68,68,.3);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#fca5a5;background:rgba(239,68,68,.08);outline:none;text-align:center}
@@ -186,15 +182,12 @@ main{max-width:1360px;margin:0 auto;padding:26px 20px 70px}
 .bc-btn:hover{background:rgba(239,68,68,.3);transform:translateY(-1px)}
 .bc-info{font-size:11.5px;color:#64748b}
 
-/* Panel headers */
 .panel-hdr,.breach-det-hdr{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .panel-hdr h2,.breach-det-hdr h2{font-size:14px;font-weight:700;color:#fff}
 .panel-hdr p,.breach-det-hdr p{font-size:11.5px;color:#94a3b8;margin-top:2px}
 
-/* Tables */
 table{width:100%;border-collapse:collapse}
 thead th{background:rgba(255,255,255,.04);padding:11px 18px;text-align:left;font-size:10.5px;font-weight:800;color:#7dd3fc;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid rgba(255,255,255,.07);white-space:nowrap}
-/* Breach table different header colour */
 .breach-wrap thead th{color:#fca5a5;background:rgba(239,68,68,.07);border-bottom-color:rgba(239,68,68,.15)}
 tbody td{padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:middle;font-size:13px;color:#e2e8f0}
 .breach-wrap tbody td{border-bottom-color:rgba(239,68,68,.07)}
@@ -203,15 +196,14 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
 .breach-wrap tbody tr:hover{background:rgba(239,68,68,.04)}
 .mn{font-weight:700;color:#fff}.msub{font-size:11px;color:#94a3b8;margin-top:2px}
 
-/* Breach row highlighting by severity */
 .breach-low td{background:rgba(249,115,22,.03)}
 .breach-med td{background:rgba(239,68,68,.05)}
 .breach-high td{background:rgba(239,68,68,.1)}
 
-/* Pills */
 .pill{display:inline-block;padding:5px 10px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px}
-.pill.blue{color:#dbeafe;background:rgba(37,99,235,.22)}.pill.green{color:#dcfce7;background:rgba(22,163,74,.22)}.pill.amber{color:#fef3c7;background:rgba(217,119,6,.22)}.pill.red{color:#fee2e2;background:rgba(220,38,38,.22)}.pill.teal{color:#ccfbf1;background:rgba(13,148,136,.22)}.pill.orange{color:#ffedd5;background:rgba(249,115,22,.22)}
-/* Breach-specific time pills */
+.pill.blue{color:#dbeafe;background:rgba(37,99,235,.22)}.pill.green{color:#dcfce7;background:rgba(22,163,74,.22)}
+.pill.amber{color:#fef3c7;background:rgba(217,119,6,.22)}.pill.orange{color:#ffedd5;background:rgba(249,115,22,.28)}
+.pill.red{color:#fee2e2;background:rgba(220,38,38,.22)}.pill.teal{color:#ccfbf1;background:rgba(13,148,136,.22)}
 .pill.breach-ok{color:#dcfce7;background:rgba(22,163,74,.2)}
 .pill.breach-warn{color:#ffedd5;background:rgba(249,115,22,.25)}
 .pill.breach-crit{color:#fee2e2;background:rgba(220,38,38,.28);box-shadow:0 0 8px rgba(239,68,68,.2)}
@@ -224,7 +216,6 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
 .sw{position:relative}.sw svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none}
 .srch{padding-left:32px;width:220px}
 
-/* Pagination */
 .pg{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:#cbd5e1;gap:10px;flex-wrap:wrap}
 .breach-wrap .pg{border-top-color:rgba(239,68,68,.15)}
 .pgb-wrap{display:flex;gap:5px}
@@ -240,7 +231,6 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
 .c5{border-radius:999px;padding:4px 9px;font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;background:rgba(100,116,139,.22);color:#e2e8f0}
 .empty-row{text-align:center;padding:36px;color:#94a3b8;font-size:13px}
 
-/* Login */
 .login-overlay{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(2,6,23,.72);backdrop-filter:blur(12px)}
 .login-box{width:min(480px,100%);padding:28px;border-radius:28px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(15,23,42,.9),rgba(15,23,42,.8)),radial-gradient(circle at top,rgba(56,189,248,.12),transparent 52%);box-shadow:0 24px 80px rgba(2,6,23,.55),var(--glow);position:relative;overflow:hidden}
 .login-box::before{content:'';position:absolute;inset:0;background:linear-gradient(120deg,rgba(56,189,248,.06),transparent 38%,rgba(139,92,246,.08));pointer-events:none}
@@ -256,12 +246,12 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
 .lock-btn{display:inline-flex;align-items:center;gap:7px}
 .lock-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
 
-/* Copy breach btn */
 .copy-breach-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid rgba(239,68,68,.3);border-radius:12px;background:rgba(239,68,68,.1);color:#fca5a5;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;font-family:'Inter',sans-serif}
 .copy-breach-btn:hover{background:rgba(239,68,68,.2);transform:translateY(-1px)}
 .copy-breach-btn svg{stroke:#f87171;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-@media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
+/* ── Responsive ── */
+@media(max-width:1400px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){header{width:calc(100% - 18px);height:auto;padding:16px;top:36px;border-radius:18px}.login-row{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr}.srch{width:100%}}
 @media(max-width:520px){main{padding:16px 12px 48px}header{margin-top:10px}.hdr-r{display:none}}
@@ -361,13 +351,11 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
       <div class="rec-pill" id="rec-pill">—</div>
     </div>
 
-    <!-- KPI CARDS (5 cards: existing 4 + new breach count) -->
     <div class="kpi-wrap" id="kpi-wrap">
       <div class="sec-lbl">Key Performance Indicators</div>
       <div class="kpi-grid" id="kpi-grid"></div>
     </div>
 
-    <!-- KPI SUMMARY TABLE -->
     <div class="panel" id="sum-wrap">
       <div class="panel-hdr">
         <div><h2>KPI Summary Table</h2><p id="sum-sub">—</p></div>
@@ -380,12 +368,7 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════
-         BREACH PANEL — Doctor Seen > 40 min after Triage
-         ═══════════════════════════════════════════════════════ -->
     <div class="breach-wrap" id="breach-wrap">
-
-      <!-- Header -->
       <div class="breach-hdr">
         <div class="breach-hdr-left">
           <div class="breach-icon">
@@ -408,8 +391,6 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
           <div class="breach-count-pill" id="breach-count-pill">0 breached</div>
         </div>
       </div>
-
-      <!-- Threshold controls -->
       <div class="breach-controls">
         <span class="bc-label">Threshold:</span>
         <input class="bc-input" type="number" id="bc-thresh" value="40" min="1" max="999">
@@ -420,8 +401,6 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
           🟠 40–60 min &nbsp;|&nbsp; 🔴 &gt;60 min &nbsp;|&nbsp; 🔴🔴 &gt;90 min
         </span>
       </div>
-
-      <!-- Breach search + table -->
       <div class="breach-det-hdr">
         <div><h2>Breach Patient Details</h2><p id="breach-sub">—</p></div>
         <div class="sw">
@@ -429,25 +408,13 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
           <input class="srch" id="breach-srch" type="text" placeholder="Token, patient, doctor…" oninput="doBreachSearch()">
         </div>
       </div>
-
       <div style="overflow-x:auto">
         <table>
           <thead><tr>
-            <th>Rank</th>
-            <th>Token</th>
-            <th>Patient Name</th>
-            <th>Age / Gender</th>
-            <th>CTAS Level</th>
-            <th>Triage Doctor</th>
-            <th>Encounter Doctor</th>
-            <th>Speciality</th>
-            <th>Triage End Time (C)</th>
-            <th>Encounter Time (D)</th>
-            <th>Doctor Seen Time (E)</th>
-            <th>Doctor TAT (E−D) min</th>
-            <th>Triage TAT (B−A) min</th>
-            <th>ER Status</th>
-            <th>Arrival Mode</th>
+            <th>Rank</th><th>Token</th><th>Patient Name</th><th>Age / Gender</th>
+            <th>CTAS Level</th><th>Triage Doctor</th><th>Encounter Doctor</th><th>Speciality</th>
+            <th>Triage End Time (C)</th><th>Encounter Time (D)</th><th>Doctor Seen Time (E)</th>
+            <th>Doctor TAT (E−D) min</th><th>Triage TAT (B−A) min</th><th>ER Status</th><th>Arrival Mode</th>
           </tr></thead>
           <tbody id="breach-body"></tbody>
         </table>
@@ -458,7 +425,6 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
       </div>
     </div>
 
-    <!-- PATIENT DETAIL TABLE -->
     <div class="panel" id="det-wrap">
       <div class="panel-hdr">
         <div><h2>All Patient Detail</h2><p id="det-sub">—</p></div>
@@ -553,27 +519,14 @@ function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function parseNum(v){if(v===null||v===undefined||v==='')return null;const n=parseFloat(String(v).replace(/,/g,'').trim());return isNaN(n)?null:n;}
 function fillSel(id,vals){const s=document.getElementById(id);const f=s.options[0];s.innerHTML='';s.appendChild(f);vals.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;s.appendChild(o);});}
 
-// ── COLUMN KEYS (stripped lowercase, matching CSV exactly) ──
 const COLS={
-  token:'tokenno',
-  patient:'patientname',
-  ageGender:'age|genger',
-  tat1:'triage1tat(b-a)min',
-  triageEnd:'triageendttime(c)',
-  encTime:'encountertime(d)',
-  docSeen:'doctorseentime(e)',
-  doctorTat:'doctortat(e-d)min',
-  speciality:'triagespeciality',
-  triageDoc:'triagedoctor',
-  encDoctor:'encounterdoctor',
-  erStatus:'erstatus',
-  ctas:'ctaslevel',
-  arrival:'arrivalmode',
-  regNo:'registrationno',
-  nationality:'nationality',
+  token:'tokenno',patient:'patientname',ageGender:'age|genger',
+  tat1:'triage1tat(b-a)min',triageEnd:'triageendttime(c)',encTime:'encountertime(d)',
+  docSeen:'doctorseentime(e)',doctorTat:'doctortat(e-d)min',speciality:'triagespeciality',
+  triageDoc:'triagedoctor',encDoctor:'encounterdoctor',erStatus:'erstatus',
+  ctas:'ctaslevel',arrival:'arrivalmode',
 };
 
-// ── LOAD FILE ─────────────────────────────────────────────
 function loadFile(file){
   FNAME=file.name;
   const reader=new FileReader();
@@ -589,88 +542,61 @@ function loadFile(file){
   reader.readAsArrayBuffer(file);
 }
 
-// ── PARSE ROWS ────────────────────────────────────────────
 function parseRows(raw){
   if(!raw||!raw.length){alert('No data found.');return;}
   const lup=buildLookup(raw[0]);
-
   ALL=raw.map(row=>{
     const token=getV(row,lup,COLS.token);
     if(!token)return null;
     return{
-      token,
-      patient:  getV(row,lup,COLS.patient),
-      ageGender:getV(row,lup,COLS.ageGender),
-      tat1:     parseNum(getV(row,lup,COLS.tat1)),
-      triageEnd:getV(row,lup,COLS.triageEnd),
-      encTime:  getV(row,lup,COLS.encTime),
-      docSeen:  getV(row,lup,COLS.docSeen),
-      triageToDoc: parseNum(getV(row,lup,COLS.doctorTat)),
-      speciality:  getV(row,lup,COLS.speciality),
-      triageDoc:   getV(row,lup,COLS.triageDoc),
-      encDoctor:   getV(row,lup,COLS.encDoctor),
-      erStatus:    getV(row,lup,COLS.erStatus),
-      ctas:        getV(row,lup,COLS.ctas),
-      arrival:     getV(row,lup,COLS.arrival),
+      token,patient:getV(row,lup,COLS.patient),ageGender:getV(row,lup,COLS.ageGender),
+      tat1:parseNum(getV(row,lup,COLS.tat1)),triageEnd:getV(row,lup,COLS.triageEnd),
+      encTime:getV(row,lup,COLS.encTime),docSeen:getV(row,lup,COLS.docSeen),
+      triageToDoc:parseNum(getV(row,lup,COLS.doctorTat)),speciality:getV(row,lup,COLS.speciality),
+      triageDoc:getV(row,lup,COLS.triageDoc),encDoctor:getV(row,lup,COLS.encDoctor),
+      erStatus:getV(row,lup,COLS.erStatus),ctas:getV(row,lup,COLS.ctas),
+      arrival:getV(row,lup,COLS.arrival),
     };
   }).filter(Boolean);
-
   FILT=ALL.filter(r=>r.tat1!==null);
   populateFilters();
-
   ['filebar','filters','actbar','kpi-wrap','sum-wrap','breach-wrap','det-wrap'].forEach(id=>
     document.getElementById(id).classList.add('on'));
-
   document.getElementById('fb-name').textContent=FNAME||'Uploaded File';
   document.getElementById('fb-count').textContent=
     `· ${FILT.length} triage-completed records (${ALL.length} total rows)`;
-
   renderAll();
 }
 
 function populateFilters(){
   const base=ALL.filter(r=>r.tat1!==null);
   const uniq=k=>[...new Set(base.map(r=>r[k]).filter(v=>v!==''))].sort();
-  fillSel('f-spec',uniq('speciality'));
-  fillSel('f-doc',uniq('triageDoc'));
-  fillSel('f-status',uniq('erStatus'));
-  fillSel('f-ctas',uniq('ctas'));
-  fillSel('f-arr',uniq('arrival'));
+  fillSel('f-spec',uniq('speciality'));fillSel('f-doc',uniq('triageDoc'));
+  fillSel('f-status',uniq('erStatus'));fillSel('f-ctas',uniq('ctas'));fillSel('f-arr',uniq('arrival'));
 }
 
-// ── FILTERS ───────────────────────────────────────────────
 function applyF(){
-  const spec=document.getElementById('f-spec').value;
-  const doc=document.getElementById('f-doc').value;
-  const status=document.getElementById('f-status').value;
-  const ctas=document.getElementById('f-ctas').value;
-  const arr=document.getElementById('f-arr').value;
-  FILT=ALL.filter(r=>
-    r.tat1!==null&&
-    (!spec||r.speciality===spec)&&
-    (!doc||r.triageDoc===doc)&&
-    (!status||r.erStatus===status)&&
-    (!ctas||r.ctas===ctas)&&
-    (!arr||r.arrival===arr)
-  );
+  const spec=document.getElementById('f-spec').value,doc=document.getElementById('f-doc').value,
+    status=document.getElementById('f-status').value,ctas=document.getElementById('f-ctas').value,
+    arr=document.getElementById('f-arr').value;
+  FILT=ALL.filter(r=>r.tat1!==null&&(!spec||r.speciality===spec)&&(!doc||r.triageDoc===doc)&&
+    (!status||r.erStatus===status)&&(!ctas||r.ctas===ctas)&&(!arr||r.arrival===arr));
   PAGE=1;BREACH_PAGE=1;renderAll();
 }
 function resetF(){
   ['f-spec','f-doc','f-status','f-ctas','f-arr'].forEach(id=>document.getElementById(id).value='');
-  FILT=ALL.filter(r=>r.tat1!==null);
-  PAGE=1;BREACH_PAGE=1;renderAll();
+  FILT=ALL.filter(r=>r.tat1!==null);PAGE=1;BREACH_PAGE=1;renderAll();
 }
 
-// ── RED CTAS CHECKER ─────────────────────────────────────
-// Red category = CTAS Level 1 (immediate) or Level 2 (emergent)
-// From CSV: "level 2 (red)-emergent" or "level 1 (red)-resuscitation"
 function isRedCtas(ctas){
   const v=String(ctas||'').toLowerCase();
   return v.includes('level 1')||v.includes('level 2')||
          v.includes('(red)')||v.includes('emergent')||v.includes('resuscitation');
 }
 
-// ── KPI CALC ──────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// calcKPI — added w1015n / w1015p for the 10–15 min bucket
+// ══════════════════════════════════════════════════════════
 function calcKPI(rows,threshMin){
   const n=rows.length;
   const tatVals=rows.map(r=>r.tat1).filter(v=>v!==null);
@@ -679,24 +605,26 @@ function calcKPI(rows,threshMin){
   const w5p=n?(w5n/n*100):null;
   const w10n=rows.filter(r=>r.tat1!==null&&r.tat1>5&&r.tat1<=10).length;
   const w10p=n?(w10n/n*100):null;
+  // ── NEW: 10–15 min bucket ──────────────────────────────
+  const w1015n=rows.filter(r=>r.tat1!==null&&r.tat1>10&&r.tat1<=15).length;
+  const w1015p=n?(w1015n/n*100):null;
+  // ──────────────────────────────────────────────────────
   const tcRows=rows.filter(r=>r.triageToDoc!==null);
   const tcN=tcRows.length;
   const avgTC=tcN?tcRows.reduce((a,r)=>a+r.triageToDoc,0)/tcN:null;
-  // RED category base = CTAS Level 2 (red) patients only
   const redRows=rows.filter(r=>isRedCtas(r.ctas));
   const redN=redRows.length;
   const redWithDocTat=redRows.filter(r=>r.triageToDoc!==null);
-  // Breach: RED patients where Doctor TAT > threshold
   const breachRows=redRows.filter(r=>r.triageToDoc!==null&&r.triageToDoc>threshMin);
   const breachN=breachRows.length;
   const breachPct=redWithDocTat.length?(breachN/redWithDocTat.length*100):null;
   const f1=v=>v!==null?v.toFixed(1):'—';
-  return{n,avgTT:f1(avgTT),w5n,w5p:f1(w5p),w10n,w10p:f1(w10p),tcN,avgTC:f1(avgTC),
-    breachN,breachPct:f1(breachPct),breachRows,
-    redN,redWithDocTatN:redWithDocTat.length};
+  return{n,avgTT:f1(avgTT),w5n,w5p:f1(w5p),w10n,w10p:f1(w10p),
+    w1015n,w1015p:f1(w1015p),                        // ← new
+    tcN,avgTC:f1(avgTC),breachN,breachPct:f1(breachPct),
+    breachRows,redN,redWithDocTatN:redWithDocTat.length};
 }
 
-// ── RENDER ALL ────────────────────────────────────────────
 function renderAll(){
   const thresh=parseInt(document.getElementById('bc-thresh').value)||40;
   const kpi=calcKPI(FILT,thresh);
@@ -710,38 +638,96 @@ function renderAll(){
 }
 function applyBreach(){renderAll();}
 
-// ── KPI CARDS ─────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// renderKPI — 6 cards: avg / ≤5 / 5-10 / 10-15 / triage→doc / breach
+// ══════════════════════════════════════════════════════════
 function renderKPI(k,thresh){
   const cards=[
-    {cls:'blue',label:'Token → Triage Average',val:k.avgTT,unit:k.avgTT!=='—'?'min':'',n:k.n,nsub:'triage-completed patients',foot:'Source: Triage1 TAT (B-A) column',
-      ico:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`},
-    {cls:'green',label:'Token → Triage ≤ 5 min',val:k.w5p!=='—'?k.w5p:'—',unit:k.w5p!=='—'?'%':'',n:k.w5n,nsub:`of ${k.n} patients`,foot:'TAT 0–5 minutes (within target)',
-      ico:`<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`},
-    {cls:'amber',label:'Token → Triage 5–10 min',val:k.w10p!=='—'?k.w10p:'—',unit:k.w10p!=='—'?'%':'',n:k.w10n,nsub:`of ${k.n} patients`,foot:'TAT above 5 up to 10 minutes',
-      ico:`<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`},
-    {cls:'teal',label:'Triage → Doctor Average',val:k.avgTC,unit:k.avgTC!=='—'?'min':'',n:k.tcN,nsub:'records with Doctor TAT',foot:'Doctor TAT (E-D) column',
-      ico:`<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>`},
-    {cls:'red',label:`🔴 Red Category — Doctor > ${thresh} min`,val:k.breachN,unit:'',n:k.breachN,nsub:`of ${k.redN} red patients (${k.redWithDocTatN} with TAT data) · ${k.breachPct}%`,foot:`CTAS Level 1 & 2 (Red/Emergent) only · Doctor TAT > ${thresh} min`,
-      ico:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`},
+    {cls:'blue',
+     label:'Token → Triage Average',
+     val:k.avgTT,unit:k.avgTT!=='—'?'min':'',
+     n:k.n,nsub:'triage-completed patients',
+     foot:'Source: Triage1 TAT (B-A) column',
+     ico:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`},
+
+    {cls:'green',
+     label:'Token → Triage ≤ 5 min',
+     val:k.w5p!=='—'?k.w5p:'—',unit:k.w5p!=='—'?'%':'',
+     n:k.w5n,nsub:`of ${k.n} patients`,
+     foot:'TAT 0–5 minutes (within target)',
+     ico:`<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`},
+
+    {cls:'amber',
+     label:'Token → Triage 5–10 min',
+     val:k.w10p!=='—'?k.w10p:'—',unit:k.w10p!=='—'?'%':'',
+     n:k.w10n,nsub:`of ${k.n} patients`,
+     foot:'TAT above 5 up to 10 minutes',
+     ico:`<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`},
+
+    // ── NEW CARD ───────────────────────────────────────────
+    {cls:'orange',
+     label:'Token → Triage 10–15 min',
+     val:k.w1015p!=='—'?k.w1015p:'—',unit:k.w1015p!=='—'?'%':'',
+     n:k.w1015n,nsub:`of ${k.n} patients`,
+     foot:'TAT above 10 up to 15 minutes',
+     ico:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`},
+    // ──────────────────────────────────────────────────────
+
+    {cls:'teal',
+     label:'Triage → Doctor Average',
+     val:k.avgTC,unit:k.avgTC!=='—'?'min':'',
+     n:k.tcN,nsub:'records with Doctor TAT',
+     foot:'Doctor TAT (E-D) column',
+     ico:`<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>`},
+
+    {cls:'red',
+     label:`🔴 Red Category — Doctor > ${thresh} min`,
+     val:k.breachN,unit:'',
+     n:k.breachN,nsub:`of ${k.redN} red patients (${k.redWithDocTatN} with TAT data) · ${k.breachPct}%`,
+     foot:`CTAS Level 1 & 2 (Red/Emergent) only · Doctor TAT > ${thresh} min`,
+     ico:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`},
   ];
+
   document.getElementById('kpi-grid').innerHTML=cards.map(c=>`
     <div class="kcard ${c.cls}">
       <div class="k-top"><div class="k-ico">${c.ico}</div><span class="k-n">n = ${c.n}</span></div>
       <div class="k-label">${c.label}</div>
       <div class="k-val">${c.val}<span class="k-unit">${c.unit}</span></div>
-      <div class="k-foot"><div class="k-sub"><b>${c.n}</b> ${c.nsub}</div><div class="k-sub" style="margin-top:2px">${c.foot}</div></div>
+      <div class="k-foot">
+        <div class="k-sub"><b>${c.n}</b> ${c.nsub}</div>
+        <div class="k-sub" style="margin-top:2px">${c.foot}</div>
+      </div>
     </div>`).join('');
 }
 
-// ── SUMMARY TABLE ─────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// renderSummary — 6 rows including the new 10–15 min row
+// ══════════════════════════════════════════════════════════
 function renderSummary(k,thresh){
   document.getElementById('sum-sub').textContent=`${FILT.length} triage-completed patients · ${FNAME}`;
   const rows=[
-    {i:1,cls:'blue',name:'Token → Triage — Average TAT',sub:'Triage1 TAT (B-A)min column · minutes',val:k.avgTT!=='—'?`${k.avgTT} min`:'—',pct:null,count:k.n,base:k.n},
-    {i:2,cls:'green',name:'Token → Triage ≤ 5 min',sub:'Patients with TAT 0–5 min (within target)',val:`${k.w5n} patients`,pct:k.w5p,pctColor:'#22c55e',count:k.w5n,base:k.n},
-    {i:3,cls:'amber',name:'Token → Triage 5–10 min',sub:'Patients with TAT above 5 and up to 10 min',val:`${k.w10n} patients`,pct:k.w10p,pctColor:'#f59e0b',count:k.w10n,base:k.n},
-    {i:4,cls:'teal',name:'Triage → Consultation — Average',sub:'Doctor TAT (E-D) column · minutes',val:k.avgTC!=='—'?`${k.avgTC} min`:'—',pct:null,count:k.tcN,base:k.n},
-    {i:5,cls:'red',name:`🔴 Red Category — Doctor Seen > ${thresh} min`,sub:`CTAS Level 1 & 2 (Red) patients where Doctor TAT exceeded ${thresh} minutes`,val:`${k.breachN} patients`,pct:k.breachPct,pctColor:'#ef4444',count:k.breachN,base:k.redWithDocTatN},
+    {i:1,cls:'blue',
+     name:'Token → Triage — Average TAT',sub:'Triage1 TAT (B-A)min column · minutes',
+     val:k.avgTT!=='—'?`${k.avgTT} min`:'—',pct:null,count:k.n,base:k.n},
+    {i:2,cls:'green',
+     name:'Token → Triage ≤ 5 min',sub:'Patients with TAT 0–5 min (within target)',
+     val:`${k.w5n} patients`,pct:k.w5p,pctColor:'#22c55e',count:k.w5n,base:k.n},
+    {i:3,cls:'amber',
+     name:'Token → Triage 5–10 min',sub:'Patients with TAT above 5 and up to 10 min',
+     val:`${k.w10n} patients`,pct:k.w10p,pctColor:'#f59e0b',count:k.w10n,base:k.n},
+    // ── NEW ROW ──────────────────────────────────────────
+    {i:4,cls:'orange',
+     name:'Token → Triage 10–15 min',sub:'Patients with TAT above 10 and up to 15 min',
+     val:`${k.w1015n} patients`,pct:k.w1015p,pctColor:'#f97316',count:k.w1015n,base:k.n},
+    // ─────────────────────────────────────────────────────
+    {i:5,cls:'teal',
+     name:'Triage → Consultation — Average',sub:'Doctor TAT (E-D) column · minutes',
+     val:k.avgTC!=='—'?`${k.avgTC} min`:'—',pct:null,count:k.tcN,base:k.n},
+    {i:6,cls:'red',
+     name:`🔴 Red Category — Doctor Seen > ${thresh} min`,
+     sub:`CTAS Level 1 & 2 (Red) patients where Doctor TAT exceeded ${thresh} minutes`,
+     val:`${k.breachN} patients`,pct:k.breachPct,pctColor:'#ef4444',
+     count:k.breachN,base:k.redWithDocTatN},
   ];
   document.getElementById('sum-body').innerHTML=rows.map(r=>`
     <tr>
@@ -758,19 +744,12 @@ function renderSummary(k,thresh){
 
 // ── BREACH PANEL ──────────────────────────────────────────
 function renderBreach(breachRows,thresh){
-  // breachRows already = RED category + Doctor TAT > thresh (from calcKPI)
   const sorted=[...breachRows].sort((a,b)=>(b.triageToDoc||0)-(a.triageToDoc||0));
-  BREACH_ALL=sorted;
-  BREACH_VIEW=[...sorted];
-  document.getElementById('breach-srch').value='';
-  BREACH_PAGE=1;
-
-  // Update header pills
-  // red base = count of all red-category patients in current FILT
+  BREACH_ALL=sorted;BREACH_VIEW=[...sorted];
+  document.getElementById('breach-srch').value='';BREACH_PAGE=1;
   const redBase=FILT.filter(r=>isRedCtas(r.ctas)).length;
   document.getElementById('red-base-pill').textContent=`Red patients: ${redBase}`;
-  document.getElementById('breach-count-pill').textContent=
-    `${sorted.length} breached (of ${redBase} red)`;
+  document.getElementById('breach-count-pill').textContent=`${sorted.length} breached (of ${redBase} red)`;
   document.getElementById('breach-sub').textContent=
     `${sorted.length} of ${redBase} Red Category (CTAS Level 1 & 2) patients had Doctor TAT > ${thresh} min · sorted longest wait first · ${FNAME}`;
   renderBreachTable();
@@ -778,18 +757,12 @@ function renderBreach(breachRows,thresh){
 
 function doBreachSearch(){
   const q=document.getElementById('breach-srch').value.trim().toLowerCase();
-  BREACH_VIEW=q
-    ?BREACH_ALL.filter(r=>
-        (r.token||'').toLowerCase().includes(q)||
-        (r.patient||'').toLowerCase().includes(q)||
-        (r.triageDoc||'').toLowerCase().includes(q)||
-        (r.encDoctor||'').toLowerCase().includes(q)||
-        (r.speciality||'').toLowerCase().includes(q)||
-        (r.erStatus||'').toLowerCase().includes(q)||
-        (r.ctas||'').toLowerCase().includes(q))
-    :[...BREACH_ALL];
-  BREACH_PAGE=1;
-  renderBreachTable();
+  BREACH_VIEW=q?BREACH_ALL.filter(r=>
+    (r.token||'').toLowerCase().includes(q)||(r.patient||'').toLowerCase().includes(q)||
+    (r.triageDoc||'').toLowerCase().includes(q)||(r.encDoctor||'').toLowerCase().includes(q)||
+    (r.speciality||'').toLowerCase().includes(q)||(r.erStatus||'').toLowerCase().includes(q)||
+    (r.ctas||'').toLowerCase().includes(q)):[...BREACH_ALL];
+  BREACH_PAGE=1;renderBreachTable();
 }
 
 function breachPillCls(tat,thresh){
@@ -804,22 +777,17 @@ function breachRowCls(tat){
 }
 
 function renderBreachTable(){
-  const total=BREACH_VIEW.length;
-  const pages=Math.max(1,Math.ceil(total/BREACH_PER));
+  const total=BREACH_VIEW.length,pages=Math.max(1,Math.ceil(total/BREACH_PER));
   if(BREACH_PAGE>pages)BREACH_PAGE=pages;
-  const s=(BREACH_PAGE-1)*BREACH_PER,e=s+BREACH_PER;
-  const rows=BREACH_VIEW.slice(s,e);
+  const s=(BREACH_PAGE-1)*BREACH_PER,e=s+BREACH_PER,rows=BREACH_VIEW.slice(s,e);
   const thresh=parseInt(document.getElementById('bc-thresh').value)||40;
   const tbody=document.getElementById('breach-body');
   if(!rows.length){
     tbody.innerHTML=`<tr><td colspan="15" class="empty-row">No breach records found.</td></tr>`;
-  } else {
+  }else{
     tbody.innerHTML=rows.map((r,i)=>{
-      const globalRank=s+i+1;
-      const tat=r.triageToDoc;
-      const pilCls=breachPillCls(tat,thresh);
-      const rowCls=breachRowCls(tat);
-      return`<tr class="${rowCls}">
+      const globalRank=s+i+1,tat=r.triageToDoc;
+      return`<tr class="${breachRowCls(tat)}">
         <td style="color:#94a3b8;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">${globalRank}</td>
         <td><span class="chip">${esc(r.token)}</span></td>
         <td><div class="mn">${esc(r.patient||'—')}</div></td>
@@ -831,7 +799,7 @@ function renderBreachTable(){
         <td style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#94a3b8">${esc(r.triageEnd||'—')}</td>
         <td style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#94a3b8">${esc(r.encTime||'—')}</td>
         <td style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#94a3b8">${esc(r.docSeen||'—')}</td>
-        <td><span class="${pilCls}">${tat!==null?tat.toFixed(1):'—'}</span></td>
+        <td><span class="${breachPillCls(tat,thresh)}">${tat!==null?tat.toFixed(1):'—'}</span></td>
         <td><span class="pill blue">${r.tat1!==null?r.tat1.toFixed(1):'—'}</span></td>
         <td style="color:#94a3b8;font-size:12px">${esc(r.erStatus||'—')}</td>
         <td style="color:#94a3b8;font-size:12px">${esc(r.arrival||'—')}</td>
@@ -854,26 +822,21 @@ function renderBreachPager(pages){
 }
 function goBreachPage(p){BREACH_PAGE=p;renderBreachTable();}
 
-// ── COPY BREACH LIST ──────────────────────────────────────
 function copyBreach(){
   const thresh=parseInt(document.getElementById('bc-thresh').value)||40;
   const header=['Rank','Token','Patient Name','Age/Gender','CTAS','Triage Doctor','Encounter Doctor','Speciality','Triage End (C)','Encounter Time (D)','Doctor Seen (E)','Doctor TAT (E-D) min','Triage TAT (B-A) min','ER Status','Arrival Mode'].join('\t');
   const lines=[header];
   BREACH_VIEW.forEach((r,i)=>{
-    lines.push([
-      i+1,r.token,r.patient,r.ageGender,r.ctas,r.triageDoc,r.encDoctor,r.speciality,
+    lines.push([i+1,r.token,r.patient,r.ageGender,r.ctas,r.triageDoc,r.encDoctor,r.speciality,
       r.triageEnd,r.encTime,r.docSeen,
       r.triageToDoc!==null?r.triageToDoc.toFixed(1):'',
-      r.tat1!==null?r.tat1.toFixed(1):'',
-      r.erStatus,r.arrival
-    ].join('\t'));
+      r.tat1!==null?r.tat1.toFixed(1):'',r.erStatus,r.arrival].join('\t'));
   });
   navigator.clipboard.writeText(lines.join('\n'))
     .then(()=>alert(`✓ Copied ${BREACH_VIEW.length} breach patient records to clipboard.`))
     .catch(()=>alert('Copy failed — please use Ctrl+A on the table.'));
 }
 
-// ── CTAS CLASS ────────────────────────────────────────────
 function getCtasClass(ctas){
   const v=String(ctas||'').trim().toUpperCase();
   if(v==='1'||v.includes('CTAS 1'))return'c2';
@@ -883,18 +846,15 @@ function getCtasClass(ctas){
   return'c5';
 }
 
-// ── DETAIL TABLE ──────────────────────────────────────────
 function renderDetail(){
   document.getElementById('det-sub').textContent=`${DET_VIEW.length} records · ${FNAME}`;
-  const total=DET_VIEW.length;
-  const pages=Math.max(1,Math.ceil(total/PER));
+  const total=DET_VIEW.length,pages=Math.max(1,Math.ceil(total/PER));
   if(PAGE>pages)PAGE=pages;
-  const s=(PAGE-1)*PER,e=s+PER;
-  const rows=DET_VIEW.slice(s,e);
+  const s=(PAGE-1)*PER,e=s+PER,rows=DET_VIEW.slice(s,e);
   const tbody=document.getElementById('det-body');
   if(!rows.length){
     tbody.innerHTML=`<tr><td colspan="10" class="empty-row">No records found.</td></tr>`;
-  } else {
+  }else{
     tbody.innerHTML=rows.map(r=>`<tr>
       <td><span class="chip">${esc(r.token)}</span></td>
       <td><div class="mn">${esc(r.patient||'—')}</div></td>
@@ -916,12 +876,9 @@ function renderDetail(){
 function doSearch(){
   const q=document.getElementById('srch').value.trim().toLowerCase();
   DET_VIEW=q?DET.filter(r=>
-    (r.token||'').toLowerCase().includes(q)||
-    (r.patient||'').toLowerCase().includes(q)||
-    (r.triageDoc||'').toLowerCase().includes(q)||
-    (r.speciality||'').toLowerCase().includes(q)||
-    (r.erStatus||'').toLowerCase().includes(q)||
-    (r.ctas||'').toLowerCase().includes(q))
+    (r.token||'').toLowerCase().includes(q)||(r.patient||'').toLowerCase().includes(q)||
+    (r.triageDoc||'').toLowerCase().includes(q)||(r.speciality||'').toLowerCase().includes(q)||
+    (r.erStatus||'').toLowerCase().includes(q)||(r.ctas||'').toLowerCase().includes(q))
   :[...DET];
   PAGE=1;renderDetail();
 }
@@ -937,24 +894,25 @@ function renderPager(pages){
 }
 function goPage(p){PAGE=p;renderDetail();}
 
-// ── DOWNLOAD EXCEL ────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// dlExcel — includes the new 10–15 min row in export
+// ══════════════════════════════════════════════════════════
 function dlExcel(){
   if(!FILT.length){alert('No data to export.');return;}
   const thresh=parseInt(document.getElementById('bc-thresh').value)||40;
   const k=calcKPI(FILT,thresh);
   const wb=XLSX.utils.book_new();
-
-  // KPI Summary sheet
   const kpiRows=[
     {Metric:'Token → Triage — Average TAT',Value:k.avgTT!=='—'?`${k.avgTT} min`:'—',Percentage:'',Count:k.n,Base:k.n,File:FNAME},
     {Metric:'Token → Triage ≤ 5 min',Value:`${k.w5n} patients`,Percentage:k.w5p!=='—'?`${k.w5p}%`:'',Count:k.w5n,Base:k.n,File:FNAME},
     {Metric:'Token → Triage 5–10 min',Value:`${k.w10n} patients`,Percentage:k.w10p!=='—'?`${k.w10p}%`:'',Count:k.w10n,Base:k.n,File:FNAME},
+    // ── NEW export row ────────────────────────────────────
+    {Metric:'Token → Triage 10–15 min',Value:`${k.w1015n} patients`,Percentage:k.w1015p!=='—'?`${k.w1015p}%`:'',Count:k.w1015n,Base:k.n,File:FNAME},
+    // ─────────────────────────────────────────────────────
     {Metric:'Triage → Consultation — Average',Value:k.avgTC!=='—'?`${k.avgTC} min`:'—',Percentage:'',Count:k.tcN,Base:k.n,File:FNAME},
     {Metric:`Doctor Seen Breach > ${thresh} min`,Value:`${k.breachN} patients`,Percentage:k.breachPct!=='—'?`${k.breachPct}%`:'',Count:k.breachN,Base:k.tcN,File:FNAME},
   ];
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(kpiRows),'KPI Summary');
-
-  // Breach sheet
   const breachExport=BREACH_ALL.map((r,i)=>({
     Rank:i+1,Token:r.token,'Patient Name':r.patient,'Age/Gender':r.ageGender,
     'CTAS Level':r.ctas,'Triage Doctor':r.triageDoc,'Encounter Doctor':r.encDoctor,
@@ -965,7 +923,6 @@ function dlExcel(){
   }));
   if(breachExport.length)
     XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(breachExport),`Breach > ${thresh} min`);
-
   const safeName=(FNAME||'triage').replace(/\.[^/.]+$/,'');
   XLSX.writeFile(wb,`${safeName}_summary_breach.xlsx`);
 }
