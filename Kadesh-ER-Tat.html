@@ -6,6 +6,7 @@
 <title>Triage TAT Dashboard — Aster Hospital</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundled.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
@@ -257,6 +258,149 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
 @media(max-width:760px){header{width:calc(100% - 18px);height:auto;padding:16px;top:36px;border-radius:18px}.login-row{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr}.srch{width:100%}}
 @media(max-width:520px){main{padding:16px 12px 48px}header{margin-top:10px}.hdr-r{display:none}}
 
+
+
+
+/* ─── ENHANCED DATE FILTER ──────────────────────────────────────────────────── */
+.drange-bar{
+  display:none;background:linear-gradient(180deg,rgba(15,23,42,.65),rgba(15,23,42,.48));
+  border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:14px 16px;
+  margin-bottom:14px;box-shadow:var(--shadow);backdrop-filter:blur(14px);
+}
+.drange-bar.on{display:block}
+.drange-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.drange-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#64748b;margin-right:4px}
+.qr-btn{
+  padding:7px 13px;border:1px solid rgba(255,255,255,.09);border-radius:10px;
+  background:rgba(255,255,255,.05);color:#64748b;font-size:11.5px;font-weight:600;
+  cursor:pointer;font-family:'Inter',sans-serif;transition:.15s;white-space:nowrap;
+}
+.qr-btn:hover{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.35);color:#7dd3fc}
+.qr-btn.active{background:rgba(56,189,248,.18);border-color:rgba(56,189,248,.55);color:#38bdf8}
+.drange-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.drange-sel{
+  padding:8px 11px;border:1px solid rgba(255,255,255,.09);border-radius:11px;
+  background:rgba(255,255,255,.06);color:#e2e8f0;font-size:12px;
+  font-family:'JetBrains Mono',monospace;cursor:pointer;min-width:140px;
+}
+.drange-sel:focus{outline:none;border-color:rgba(56,189,248,.5);box-shadow:0 0 0 3px rgba(56,189,248,.1)}
+.drange-to-lbl{font-size:11px;color:#64748b;font-weight:600}
+.drange-apply{
+  padding:8px 16px;border:none;border-radius:11px;background:linear-gradient(135deg,#0ea5e9,#2563eb);
+  color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:.15s;
+}
+.drange-apply:hover{transform:translateY(-1px)}
+.drange-rst{
+  padding:8px 13px;border:1px solid rgba(255,255,255,.09);border-radius:11px;
+  background:rgba(255,255,255,.05);color:#94a3b8;font-size:12px;font-weight:600;
+  cursor:pointer;font-family:'Inter',sans-serif;transition:.15s;
+}
+.drange-rst:hover{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.25);color:#f87171}
+.drange-result{
+  display:none;margin-top:10px;padding:9px 13px;border-radius:11px;
+  background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.18);
+  font-size:11.5px;color:#7dd3fc;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.drange-result b{color:#38bdf8}
+
+/* ─── FINAL ANALYSIS PANEL ──────────────────────────────────────────────────── */
+.analysis-panel{
+  display:none;background:linear-gradient(180deg,rgba(15,23,42,.65),rgba(15,23,42,.48));
+  border:1px solid rgba(255,255,255,.09);border-radius:24px;
+  box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px;backdrop-filter:blur(14px);
+}
+.analysis-panel.on{display:block}
+.ana-hdr{
+  padding:16px 22px;border-bottom:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(90deg,rgba(37,99,235,.12),transparent);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+.ana-hdr h2{font-size:14px;font-weight:700;color:#fff}
+.ana-hdr p{font-size:11.5px;color:#64748b;margin-top:2px}
+.verdict-badge{
+  display:inline-flex;align-items:center;gap:7px;padding:7px 16px;
+  border-radius:999px;font-size:12px;font-weight:800;font-family:'JetBrains Mono',monospace;
+  border:1px solid;
+}
+.verdict-green{color:#dcfce7;background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.3)}
+.verdict-amber{color:#fef3c7;background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.3)}
+.verdict-red{color:#fee2e2;background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.3)}
+.verdict-blue{color:#dbeafe;background:rgba(37,99,235,.14);border-color:rgba(37,99,235,.3)}
+
+.ana-body{padding:20px 22px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:900px){.ana-body{grid-template-columns:1fr}}
+.ana-exec{grid-column:1/-1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 18px}
+.ana-exec h3{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#38bdf8;margin-bottom:10px}
+.exec-text{font-size:13px;color:#cbd5e1;line-height:1.75}
+.exec-text strong{color:#f0f6ff}
+
+.ana-kpi-grid{grid-column:1/-1}
+.ana-kpi-grid h3{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#7dd3fc;margin-bottom:12px}
+.kpi-status-table{width:100%;border-collapse:collapse}
+.kpi-status-table thead th{
+  background:rgba(255,255,255,.04);padding:10px 14px;text-align:left;
+  font-size:10px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.7px;
+  border-bottom:1px solid rgba(255,255,255,.07);white-space:nowrap;
+}
+.kpi-status-table thead th:not(:first-child){text-align:center}
+.kpi-status-table tbody td{
+  padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:12.5px;color:#e2e8f0;
+}
+.kpi-status-table tbody td:not(:first-child){text-align:center}
+.kpi-status-table tbody tr:last-child td{border-bottom:none}
+.kpi-status-table tbody tr:hover{background:rgba(255,255,255,.025)}
+.st-badge{
+  display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;
+  font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;
+}
+.st-good{color:#dcfce7;background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.25)}
+.st-warn{color:#fef3c7;background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.25)}
+.st-crit{color:#fee2e2;background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.25)}
+.st-na  {color:#e2e8f0;background:rgba(100,116,139,.18);border:1px solid rgba(100,116,139,.2)}
+.chg-pos-good{color:#22c55e;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700}
+.chg-pos-bad {color:#f87171;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700}
+.chg-neg-good{color:#22c55e;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700}
+.chg-neg-bad {color:#f87171;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700}
+.chg-na      {color:#64748b;font-family:'JetBrains Mono',monospace;font-size:11.5px}
+
+.ana-strengths,.ana-attention{
+  background:rgba(255,255,255,.03);border-radius:16px;padding:16px 18px;
+}
+.ana-strengths{border:1px solid rgba(34,197,94,.2)}
+.ana-attention{border:1px solid rgba(239,68,68,.2)}
+.ana-strengths h3{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#22c55e;margin-bottom:11px}
+.ana-attention h3{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#f87171;margin-bottom:11px}
+.ana-bullet{display:flex;gap:9px;align-items:flex-start;margin-bottom:9px;font-size:12.5px;color:#cbd5e1;line-height:1.55}
+.ana-bullet:last-child{margin-bottom:0}
+.ana-bullet-ico{flex-shrink:0;margin-top:1px;font-size:14px}
+
+/* ─── DOWNLOAD BAR ─────────────────────────────────────────────────────────── */
+.cmp-dl-bar{
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;
+}
+.dl-btn{
+  display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border:none;
+  border-radius:14px;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:700;
+  cursor:pointer;transition:.18s;
+}
+.dl-btn:hover{transform:translateY(-1px)}
+.dl-btn-ppt{
+  background:linear-gradient(135deg,#c2410c,#ea580c 60%,#f97316);color:#fff;
+  box-shadow:0 8px 20px rgba(234,88,12,.28);
+}
+.dl-btn-report{
+  background:linear-gradient(135deg,#1e3a8a,#2563eb 60%,#38bdf8);color:#fff;
+  box-shadow:0 8px 20px rgba(37,99,235,.28);
+}
+.dl-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dl-spinner{display:none;align-items:center;gap:8px;font-size:12px;color:#94a3b8}
+.dl-spinner.on{display:flex}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin-ico{animation:spin .8s linear infinite;display:inline-block;font-size:15px}
+/* 3-col chart row */
+.charts-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px}
+@media(max-width:1100px){.charts-grid-3{grid-template-columns:1fr}}
 
 /* ─── DATE NAV BAR ─────────────────────────────────────────────────────────── */
 .date-nav-bar{
@@ -563,21 +707,43 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
     </div>
 
     
-    <!-- DATE NAVIGATION BAR -->
-    <div class="date-nav-bar" id="date-nav-bar">
+    <!-- ENHANCED DATE FILTER -->
+    <div class="drange-bar" id="drange-bar">
+      <!-- Quick range row -->
+      <div class="drange-top">
+        <span class="drange-lbl">Quick</span>
+        <button class="qr-btn active" id="qr-all"       onclick="setQuickRange('all')">All Data</button>
+        <button class="qr-btn"        id="qr-today"     onclick="setQuickRange('today')">Latest Day</button>
+        <button class="qr-btn"        id="qr-yesterday" onclick="setQuickRange('yesterday')">Previous Day</button>
+        <button class="qr-btn"        id="qr-7d"        onclick="setQuickRange('7d')">Last 7 Days</button>
+        <button class="qr-btn"        id="qr-30d"       onclick="setQuickRange('30d')">Last 30 Days</button>
+      </div>
+      <!-- Custom range row -->
+      <div class="drange-row">
+        <span class="drange-lbl">Range</span>
+        <select class="drange-sel" id="dr-from"><option value="">From date…</option></select>
+        <span class="drange-to-lbl">→</span>
+        <select class="drange-sel" id="dr-to"><option value="">To date…</option></select>
+        <button class="drange-apply" onclick="applyCustomRange()">Apply</button>
+        <button class="drange-rst"   onclick="setQuickRange('all')">✕ Reset</button>
+      </div>
+      <!-- Result summary -->
+      <div class="drange-result" id="drange-result"></div>
+    </div>
+    <!-- Legacy date nav bar (single-date pills) -->
+    <div class="date-nav-bar" id="date-nav-bar" style="display:none">
       <button class="dnb-nav" onclick="navDate(-1)" title="Previous date">◀</button>
       <div class="dnb-scroll" id="dnb-scroll">
         <button class="dnb-all active" id="dnb-all-btn" onclick="selectDate('')">
           All Dates <span class="dnb-count" id="dnb-all-count"></span>
         </button>
-        <!-- date pills injected by JS -->
       </div>
       <button class="dnb-nav" onclick="navDate(1)" title="Next date">▶</button>
     </div>
     <div class="dnb-info-bar" id="dnb-info-bar">
       <span>📅 Viewing:</span>
       <span class="dnb-info-badge" id="dnb-info-badge">—</span>
-      <button class="dnb-clear-btn" onclick="selectDate('')">✕ Clear Filter</button>
+      <button class="dnb-clear-btn" onclick="setQuickRange('all')">✕ Clear Filter</button>
     </div>
 
     <div class="filters" id="filters">
@@ -770,44 +936,80 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
 
-      <!-- 4 Charts -->
-      <div class="charts-grid">
+      <!-- DOWNLOAD BAR -->
+      <div class="cmp-dl-bar">
+        <button class="dl-btn dl-btn-ppt" onclick="downloadCmpPPT()">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="3"/></svg>
+          Download PPT
+        </button>
+        <button class="dl-btn dl-btn-report" onclick="downloadCmpReport()">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Download Report
+        </button>
+        <div class="dl-spinner" id="dl-spinner"><span class="spin-ico">⏳</span> Generating…</div>
+      </div>
 
+      <!-- ROW 1: Volume + Token→Triage Avg TAT (wide concepts) -->
+      <div class="charts-grid" style="margin-bottom:14px">
         <div class="chart-card">
           <div class="cc-hdr">
             <div><div class="cc-title">Daily Patient Volume</div><div class="cc-sub">Total triage-completed patients per day</div></div>
           </div>
           <div class="chart-wrap"><canvas id="chartVolume"></canvas></div>
         </div>
-
         <div class="chart-card">
           <div class="cc-hdr">
-            <div><div class="cc-title">Token → Triage ≤ 5 min Compliance</div><div class="cc-sub">% of patients triaged within target (0–5 min)</div></div>
+            <div><div class="cc-title">Token → Triage Average TAT</div><div class="cc-sub">Daily mean Token-to-Triage time (min)</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartTat"></canvas></div>
+        </div>
+      </div>
+
+      <!-- ROW 2: TAT Bucket breakdown — 3 columns -->
+      <div class="charts-grid-3">
+        <div class="chart-card">
+          <div class="cc-hdr">
+            <div>
+              <div class="cc-title" style="color:#22c55e">Token → Triage ≤ 5 min</div>
+              <div class="cc-sub">% within 0–5 min target</div>
+            </div>
           </div>
           <div class="chart-wrap"><canvas id="chartCompliance"></canvas></div>
         </div>
-
         <div class="chart-card">
           <div class="cc-hdr">
-            <div><div class="cc-title">Average Doctor TAT (E−D) min</div><div class="cc-sub">Daily mean triage-to-doctor time</div></div>
+            <div>
+              <div class="cc-title" style="color:#f59e0b">Token → Triage 5–10 min</div>
+              <div class="cc-sub">% in 5–10 min range</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chart510"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="cc-hdr">
+            <div>
+              <div class="cc-title" style="color:#f97316">Token → Triage 10–15 min</div>
+              <div class="cc-sub">% in 10–15 min range</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chart1015"></canvas></div>
+        </div>
+      </div>
+
+      <!-- ROW 3: Doctor TAT + Breach -->
+      <div class="charts-grid" style="margin-bottom:14px">
+        <div class="chart-card">
+          <div class="cc-hdr">
+            <div><div class="cc-title">Triage → Doctor Average TAT</div><div class="cc-sub">Daily mean Doctor TAT (E−D) in minutes</div></div>
           </div>
           <div class="chart-wrap"><canvas id="chartDoctorTat"></canvas></div>
         </div>
-
         <div class="chart-card">
           <div class="cc-hdr">
-            <div><div class="cc-title">Red Category Breach Rate</div><div class="cc-sub">% of CTAS 1 &amp; 2 patients with Doctor TAT &gt; threshold</div></div>
+            <div><div class="cc-title">Red Category — Doctor &gt; Threshold</div><div class="cc-sub">% of CTAS 1 &amp; 2 patients breaching time threshold</div></div>
           </div>
           <div class="chart-wrap"><canvas id="chartBreach"></canvas></div>
         </div>
-
-        <div class="chart-card wide">
-          <div class="cc-hdr">
-            <div><div class="cc-title">Token→Triage Average TAT — Daily Trend</div><div class="cc-sub">Current period vs previous period (dashed)</div></div>
-          </div>
-          <div class="chart-wrap" style="height:200px"><canvas id="chartTat"></canvas></div>
-        </div>
-
       </div>
 
       <!-- Key Insights -->
@@ -2144,6 +2346,992 @@ function _doRenderComparison(currentData, previousData, P, thresh, currLabel, pr
     '<td>—</td><td>—</td>'+
     '<td>'+fmt1(avgBreach_all)+(avgBreach_all!=null?'%':'')+'</td></tr>';
 }
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PATCH _doRenderComparison — add chart510, chart1015, fix w1015p
+// ══════════════════════════════════════════════════════════════════════════════
+const __origDoRender = _doRenderComparison;
+_doRenderComparison = function(currentData, previousData, P, thresh, currLabel, prevLabel, posAlign) {
+
+  // Call original for trend cards, insights, table
+  __origDoRender(currentData, previousData, P, thresh, currLabel, prevLabel, posAlign);
+
+  // Helper already defined in original; re-use gradLine
+  function gLine(canvas, color) {
+    try {
+      const ctx = canvas.getContext('2d');
+      const g = ctx.createLinearGradient(0,0,0,200);
+      g.addColorStop(0, color+'44'); g.addColorStop(1, color+'06'); return g;
+    } catch(e) { return color+'22'; }
+  }
+
+  const hasPrev = previousData.length > 0;
+  const posAlignArr = (key) => {
+    const arr = new Array(currentData.length).fill(null);
+    previousData.forEach((p,i) => { if (i < arr.length) arr[i] = p[key]; });
+    return arr;
+  };
+
+  const prevBaseDS = (key, color) => hasPrev ? [{
+    label: prevLabel,
+    data: posAlignArr(key),
+    borderColor: CMP_FILE_ROWS.length > 0 ? color+'99' : 'rgba(148,163,184,.45)',
+    borderWidth: CMP_FILE_ROWS.length > 0 ? 2 : 1.5, tension: 0.4,
+    borderDash: CMP_FILE_ROWS.length > 0 ? [] : [5,4], fill: false,
+    pointRadius: CMP_FILE_ROWS.length > 0 ? 3 : 2,
+    pointBackgroundColor: CMP_FILE_ROWS.length > 0 ? color+'99' : '#64748b',
+  }] : [];
+
+  const labels = currentData.map(d => fmtDate(d.date));
+
+  // chart510 — 5-10 min %
+  mkChart('chart510','line', labels, [
+    { label: currLabel, data: currentData.map(d => d.w10p),
+      borderColor:'#f59e0b', borderWidth:2.5, tension:0.4, fill:true,
+      backgroundColor: ctx => gLine(ctx.chart.canvas,'#f59e0b'),
+      pointBackgroundColor:'#f59e0b', pointRadius:4, pointHoverRadius:6 },
+    ...prevBaseDS('w10p','#f59e0b')
+  ], '5–10 min %');
+
+  // chart1015 — 10-15 min % (THE FIX)
+  mkChart('chart1015','line', labels, [
+    { label: currLabel, data: currentData.map(d => d.w1015p),
+      borderColor:'#f97316', borderWidth:2.5, tension:0.4, fill:true,
+      backgroundColor: ctx => gLine(ctx.chart.canvas,'#f97316'),
+      pointBackgroundColor:'#f97316', pointRadius:4, pointHoverRadius:6 },
+    ...prevBaseDS('w1015p','#f97316')
+  ], '10–15 min %');
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HELPERS — get current comparison data for export
+// ══════════════════════════════════════════════════════════════════════════════
+function getCmpExportData() {
+  const thresh   = parseInt(document.getElementById('bc-thresh').value) || 40;
+  const P        = CMP_PERIOD;
+  const mainRows = FILT.filter(r => r.tat1 !== null);
+  const grouped  = groupByDate(mainRows);
+  const allDates = Object.keys(grouped).sort();
+  const curDates = allDates.slice(-P);
+  const prevDates= CMP_FILE_ROWS.length > 0
+    ? Object.keys(groupByDate(CMP_FILE_ROWS)).sort().slice(-P)
+    : allDates.slice(-P*2, -P);
+  const cmpGrouped = CMP_FILE_ROWS.length > 0 ? groupByDate(CMP_FILE_ROWS) : grouped;
+
+  const current  = curDates.map(d => ({ date:d, ...calcDailyMetrics(grouped[d],  thresh) }));
+  const previous = prevDates.map(d => ({ date:d, ...calcDailyMetrics(cmpGrouped[d], thresh) }));
+
+  const avgOf_ = (arr,k) => {
+    const v = arr.map(d=>d[k]).filter(x=>x!=null);
+    return v.length ? v.reduce((a,b)=>a+b,0)/v.length : null;
+  };
+
+  const periodLabel = CMP_FILE_ROWS.length > 0
+    ? 'Main vs ' + CMP_FILE_NAME.replace(/\.[^/.]+$/,'')
+    : 'Last '+P+' days vs Previous '+P+' days';
+
+  return { current, previous, thresh, P, periodLabel, avgOf: avgOf_ };
+}
+
+function fmtN(v, unit='') { return v==null ? '—' : v.toFixed(1)+(unit?unit:''); }
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PPT DOWNLOAD
+// ══════════════════════════════════════════════════════════════════════════════
+async function downloadCmpPPT() {
+  if (typeof PptxGenJS === 'undefined') {
+    alert('PPT library is still loading — please wait a moment and try again.');
+    return;
+  }
+  const sp = document.getElementById('dl-spinner'); sp.classList.add('on');
+  try {
+    const { current, previous, thresh, P, periodLabel, avgOf: ao } = getCmpExportData();
+    const pptx = new PptxGenJS();
+    pptx.layout  = 'LAYOUT_16x9';
+    pptx.title   = 'Triage TAT Performance Report';
+    pptx.subject = periodLabel;
+    pptx.author  = 'Aster Hospital Mankhool – Triage TAT Dashboard';
+
+    const DARK='07111F', NAVY='0C1A2E', LIGHT='F0F6FF', MUTED='64748B',
+          BLUE='38BDF8', GREEN='22C55E', AMBER='F59E0B', ORANGE='F97316',
+          VIOLET='A78BFA', RED='F87171', TEAL='2DD4BF', ACCENT='2563EB';
+
+    const fromDate = current[0]?.date  ? fmtDate(current[0].date) : '—';
+    const toDate   = current[current.length-1]?.date ? fmtDate(current[current.length-1].date) : '—';
+    const totalPts = current.reduce((a,b)=>a+b.n,0);
+
+    // KPI summary object
+    const KPIs = [
+      { label:'Token → Triage Avg TAT', curr: ao(current,'avgTT'), prev: ao(previous,'avgTT'), unit:' min', lower:true, color:BLUE },
+      { label:'≤ 5 min Compliance',     curr: ao(current,'w5p'),   prev: ao(previous,'w5p'),   unit:'%',    lower:false,color:GREEN },
+      { label:'5–10 min %',             curr: ao(current,'w10p'),  prev: ao(previous,'w10p'),  unit:'%',    lower:true, color:AMBER },
+      { label:'10–15 min %',            curr: ao(current,'w1015p'),prev: ao(previous,'w1015p'),unit:'%',    lower:true, color:ORANGE },
+      { label:'Doctor TAT Avg',         curr: ao(current,'avgTC'), prev: ao(previous,'avgTC'), unit:' min', lower:true, color:VIOLET },
+      { label:`Red Breach > ${thresh} min`, curr: ao(current,'bpct'), prev: ao(previous,'bpct'), unit:'%', lower:true, color:RED },
+    ];
+
+    function addSlideFrame(slide, title) {
+      slide.background = { color: DARK };
+      // left accent bar
+      slide.addShape(pptx.ShapeType.rect,
+        { x:0, y:0, w:0.08, h:'100%', fill:{ color:ACCENT }, line:{color:ACCENT} });
+      // header band
+      slide.addShape(pptx.ShapeType.rect,
+        { x:0.08, y:0, w:'100%', h:0.65, fill:{ color:NAVY }, line:{color:NAVY} });
+      // title text
+      slide.addText(title, {
+        x:0.25, y:0.08, w:8.5, h:0.5, fontSize:16, bold:true, color:LIGHT,
+        fontFace:'Calibri', valign:'middle'
+      });
+      // hospital watermark
+      slide.addText('Aster Hospital Mankhool  ·  Triage TAT Dashboard', {
+        x:0.25, y:6.85, w:9, h:0.3, fontSize:9, color:MUTED, fontFace:'Calibri', align:'center'
+      });
+    }
+
+    // ── Slide 1: Title ─────────────────────────────────────────────────────
+    const s1 = pptx.addSlide();
+    s1.background = { color: DARK };
+    s1.addShape(pptx.ShapeType.rect,
+      { x:0, y:0, w:'100%', h:0.1, fill:{ color:ACCENT }, line:{color:ACCENT} });
+    s1.addShape(pptx.ShapeType.rect,
+      { x:0, y:6.9, w:'100%', h:0.1, fill:{ color:ACCENT }, line:{color:ACCENT} });
+    s1.addText('TRIAGE TAT', {
+      x:0.5, y:1.2, w:9, h:0.8, fontSize:42, bold:true, color:BLUE,
+      fontFace:'Calibri', align:'center', charSpacing:8
+    });
+    s1.addText('Performance Trend Report', {
+      x:0.5, y:2.0, w:9, h:0.6, fontSize:24, bold:false, color:LIGHT,
+      fontFace:'Calibri', align:'center'
+    });
+    s1.addShape(pptx.ShapeType.line,
+      { x:3, y:2.75, w:4, h:0, line:{color:ACCENT, width:1.5} });
+    s1.addText('Aster Hospital Mankhool  ·  Emergency Department', {
+      x:0.5, y:2.9, w:9, h:0.4, fontSize:13, color:MUTED, fontFace:'Calibri', align:'center'
+    });
+    s1.addText(fromDate + ' → ' + toDate + '  ·  ' + current.length + ' days  ·  ' + totalPts + ' patients', {
+      x:0.5, y:3.4, w:9, h:0.4, fontSize:12, bold:true, color:BLUE,
+      fontFace:'Calibri', align:'center'
+    });
+    s1.addText('Comparison: ' + periodLabel, {
+      x:0.5, y:3.9, w:9, h:0.35, fontSize:11, color:'475569',
+      fontFace:'Calibri', align:'center'
+    });
+    s1.addText('Generated: ' + new Date().toLocaleString('en-AE'), {
+      x:0.5, y:6.5, w:9, h:0.3, fontSize:9, color:MUTED, fontFace:'Calibri', align:'center'
+    });
+
+    // ── Slide 2: KPI Summary ──────────────────────────────────────────────
+    const s2 = pptx.addSlide();
+    addSlideFrame(s2, 'KPI Summary  ·  ' + periodLabel);
+
+    const cols = [
+      { text:'KPI Metric',          options:{ bold:true, color:LIGHT, fill:{color:'162B4A'}, align:'left' } },
+      { text:'Current Period Avg',  options:{ bold:true, color:LIGHT, fill:{color:'162B4A'}, align:'center' } },
+      { text:'Previous Period Avg', options:{ bold:true, color:LIGHT, fill:{color:'162B4A'}, align:'center' } },
+      { text:'Change',              options:{ bold:true, color:LIGHT, fill:{color:'162B4A'}, align:'center' } },
+      { text:'Status',              options:{ bold:true, color:LIGHT, fill:{color:'162B4A'}, align:'center' } },
+    ];
+    const tableRows = [cols.map(c=>({ text:c.text, options:c.options }))];
+
+    KPIs.forEach((k,i) => {
+      const c = k.curr, p = k.prev;
+      const diff = (c!=null && p!=null) ? c-p : null;
+      const isGood = k.lower ? (diff!=null && diff<=0) : (diff!=null && diff>=0);
+      const statusTxt = diff==null ? '—' : (isGood ? '✓ Improved' : '⚠ Worsened');
+      const statusClr = diff==null ? MUTED : (isGood ? '22C55E' : 'F87171');
+      const diffTxt   = diff==null ? '—' : (diff>0?'+':'')+diff.toFixed(1)+k.unit;
+      const rowBg = i%2===0 ? '0C1A2E' : '0D1F35';
+      tableRows.push([
+        { text: k.label,           options:{ color:LIGHT,    fill:{color:rowBg}, align:'left', bold:true } },
+        { text: c!=null?c.toFixed(1)+k.unit:'—', options:{ color:k.color, fill:{color:rowBg}, align:'center', bold:true } },
+        { text: p!=null?p.toFixed(1)+k.unit:'—', options:{ color:MUTED,   fill:{color:rowBg}, align:'center' } },
+        { text: diffTxt,           options:{ color:statusClr,fill:{color:rowBg}, align:'center', bold:true } },
+        { text: statusTxt,         options:{ color:statusClr,fill:{color:rowBg}, align:'center', bold:true } },
+      ]);
+    });
+
+    s2.addTable(tableRows, {
+      x:0.25, y:0.8, w:9.5, h:5.5,
+      colW:[3.2, 1.6, 1.6, 1.3, 1.8],
+      fontSize:11, fontFace:'Calibri',
+      border:{ type:'solid', color:'1E3A5F', pt:0.5 },
+    });
+
+    // ── Slide 3: Token→Triage TAT Breakdown ───────────────────────────────
+    const s3 = pptx.addSlide();
+    addSlideFrame(s3, 'Token → Triage TAT Breakdown');
+
+    // Mini KPI boxes
+    const tatKPIs = [
+      { lbl:'Avg TAT', val: KPIs[0].curr, unit:' min', color:BLUE },
+      { lbl:'≤ 5 min', val: KPIs[1].curr, unit:'%',    color:GREEN },
+      { lbl:'5–10 min',val: KPIs[2].curr, unit:'%',    color:AMBER },
+      { lbl:'10–15 min',val:KPIs[3].curr, unit:'%',    color:ORANGE },
+    ];
+    tatKPIs.forEach((k,i) => {
+      const bx = 0.25 + i*2.4;
+      s3.addShape(pptx.ShapeType.rect,
+        { x:bx, y:0.75, w:2.2, h:0.85, fill:{color:NAVY}, line:{color:k.color, width:1} });
+      s3.addText(k.lbl, {
+        x:bx, y:0.78, w:2.2, h:0.25, fontSize:8.5, color:MUTED,
+        fontFace:'Calibri', align:'center', bold:true
+      });
+      s3.addText(k.val!=null ? k.val.toFixed(1)+k.unit : '—', {
+        x:bx, y:1.0, w:2.2, h:0.5, fontSize:20, bold:true, color:k.color,
+        fontFace:'Calibri', align:'center'
+      });
+    });
+
+    // Bar chart: daily ≤5 min compliance
+    const barData = [{
+      name: '≤ 5 min %',
+      labels: current.map(d => fmtDate(d.date)),
+      values: current.map(d => d.w5p != null ? d.w5p : 0)
+    }];
+    if (previous.length > 0) barData.push({
+      name: 'Prev ≤ 5 min %',
+      labels: current.map((_,i) => i+1+'.'),
+      values: current.map((_,i) => previous[i]?.w5p != null ? previous[i].w5p : 0)
+    });
+    s3.addChart(pptx.ChartType.bar, barData, {
+      x:0.25, y:1.75, w:9.5, h:4.7,
+      barDir:'col', chartColors:['22C55E','374151'],
+      dataLabelFontSize:8, showValue:true, dataLabelColor:LIGHT,
+      catAxisLabelColor:MUTED, valAxisLabelColor:MUTED,
+      plotAreaFillColor:NAVY, chartAreaFillColor:DARK,
+      legendFontColor:MUTED, legendFontSize:9,
+      showLegend: previous.length > 0,
+      valAxisMaxVal: 100,
+    });
+
+    // ── Slide 4: 5-10 & 10-15 min charts ──────────────────────────────────
+    const s4 = pptx.addSlide();
+    addSlideFrame(s4, 'TAT Extended Range — 5–10 min & 10–15 min');
+
+    const midData1 = [{
+      name: '5–10 min %',
+      labels: current.map(d => fmtDate(d.date)),
+      values: current.map(d => d.w10p != null ? d.w10p : 0)
+    }];
+    if (previous.length > 0) midData1.push({
+      name: 'Prev 5–10 min %',
+      labels: current.map((_,i) => i+1+'.'),
+      values: current.map((_,i) => previous[i]?.w10p != null ? previous[i].w10p : 0)
+    });
+    s4.addChart(pptx.ChartType.bar, midData1, {
+      x:0.25, y:0.75, w:4.7, h:5.8,
+      barDir:'col', chartColors:['F59E0B','374151'],
+      dataLabelFontSize:8, showValue:true, dataLabelColor:LIGHT,
+      catAxisLabelColor:MUTED, valAxisLabelColor:MUTED,
+      plotAreaFillColor:NAVY, chartAreaFillColor:DARK,
+      legendFontColor:MUTED, legendFontSize:9,
+      showLegend: previous.length > 0, valAxisMaxVal:100,
+    });
+
+    const midData2 = [{
+      name: '10–15 min %',
+      labels: current.map(d => fmtDate(d.date)),
+      values: current.map(d => d.w1015p != null ? d.w1015p : 0)
+    }];
+    if (previous.length > 0) midData2.push({
+      name: 'Prev 10–15 min %',
+      labels: current.map((_,i) => i+1+'.'),
+      values: current.map((_,i) => previous[i]?.w1015p != null ? previous[i].w1015p : 0)
+    });
+    s4.addChart(pptx.ChartType.bar, midData2, {
+      x:5.05, y:0.75, w:4.7, h:5.8,
+      barDir:'col', chartColors:['F97316','374151'],
+      dataLabelFontSize:8, showValue:true, dataLabelColor:LIGHT,
+      catAxisLabelColor:MUTED, valAxisLabelColor:MUTED,
+      plotAreaFillColor:NAVY, chartAreaFillColor:DARK,
+      legendFontColor:MUTED, legendFontSize:9,
+      showLegend: previous.length > 0, valAxisMaxVal:100,
+    });
+
+    // ── Slide 5: Doctor TAT & Breach ──────────────────────────────────────
+    const s5 = pptx.addSlide();
+    addSlideFrame(s5, 'Doctor TAT & Red Category Breach');
+
+    const docData = [{
+      name: 'Avg Doctor TAT (min)',
+      labels: current.map(d => fmtDate(d.date)),
+      values: current.map(d => d.avgTC != null ? d.avgTC : 0)
+    }];
+    if (previous.length > 0) docData.push({
+      name: 'Prev Avg Doctor TAT',
+      labels: current.map((_,i) => i+1+'.'),
+      values: current.map((_,i) => previous[i]?.avgTC != null ? previous[i].avgTC : 0)
+    });
+    s5.addChart(pptx.ChartType.bar, docData, {
+      x:0.25, y:0.75, w:4.7, h:5.8,
+      barDir:'col', chartColors:['A78BFA','374151'],
+      dataLabelFontSize:8, showValue:true, dataLabelColor:LIGHT,
+      catAxisLabelColor:MUTED, valAxisLabelColor:MUTED,
+      plotAreaFillColor:NAVY, chartAreaFillColor:DARK,
+      legendFontColor:MUTED, legendFontSize:9,
+      showLegend: previous.length > 0,
+    });
+
+    const breachData = [{
+      name: `Breach % (>${thresh} min)`,
+      labels: current.map(d => fmtDate(d.date)),
+      values: current.map(d => d.bpct != null ? d.bpct : 0)
+    }];
+    if (previous.length > 0) breachData.push({
+      name: 'Prev Breach %',
+      labels: current.map((_,i) => i+1+'.'),
+      values: current.map((_,i) => previous[i]?.bpct != null ? previous[i].bpct : 0)
+    });
+    s5.addChart(pptx.ChartType.bar, breachData, {
+      x:5.05, y:0.75, w:4.7, h:5.8,
+      barDir:'col', chartColors:['F87171','374151'],
+      dataLabelFontSize:8, showValue:true, dataLabelColor:LIGHT,
+      catAxisLabelColor:MUTED, valAxisLabelColor:MUTED,
+      plotAreaFillColor:NAVY, chartAreaFillColor:DARK,
+      legendFontColor:MUTED, legendFontSize:9,
+      showLegend: previous.length > 0, valAxisMaxVal:100,
+    });
+
+    // ── Slide 6: Key Insights ─────────────────────────────────────────────
+    const s6 = pptx.addSlide();
+    addSlideFrame(s6, 'Key Insights & Performance Alerts');
+
+    const insEls = document.querySelectorAll('#ins-grid .ins-card');
+    let insY = 0.85;
+    insEls.forEach(el => {
+      const ico   = el.querySelector('.ins-ico')?.textContent || '';
+      const title = el.querySelector('.ins-title')?.textContent || '';
+      const body  = el.querySelector('.ins-body')?.textContent || '';
+      if (!title) return;
+      s6.addShape(pptx.ShapeType.rect,
+        { x:0.25, y:insY, w:9.5, h:0.72, fill:{color:NAVY}, line:{color:ACCENT, width:0.5} });
+      s6.addText(ico + '  ' + title, {
+        x:0.35, y:insY+0.05, w:9.3, h:0.25, fontSize:11, bold:true, color:LIGHT,
+        fontFace:'Calibri', valign:'middle'
+      });
+      s6.addText(body, {
+        x:0.35, y:insY+0.32, w:9.3, h:0.33, fontSize:9.5, color:MUTED,
+        fontFace:'Calibri', valign:'top'
+      });
+      insY += 0.85;
+      if (insY > 6.5) return;
+    });
+
+    // ── Slide 7: Day-by-Day Table ─────────────────────────────────────────
+    const s7 = pptx.addSlide();
+    addSlideFrame(s7, 'Day-by-Day Performance Data');
+
+    const hdrs = ['Date','Pts','Avg TAT','≤5 min%','5-10%','10-15%','Doc TAT','Red','Breach','Breach%'].map(h=>({
+      text:h, options:{ bold:true, color:LIGHT, fill:{color:'162B4A'}, align:'center', fontSize:9 }
+    }));
+    const dataRows = [hdrs];
+    [...current].reverse().forEach((d,i) => {
+      const bg = i%2===0 ? '0C1A2E':'0D1F35';
+      dataRows.push([
+        { text:fmtDate(d.date),              options:{color:BLUE,    fill:{color:bg},align:'left',  fontSize:9,bold:true} },
+        { text:String(d.n),                  options:{color:LIGHT,   fill:{color:bg},align:'center',fontSize:9} },
+        { text:fmtN(d.avgTT,' min'),         options:{color:AMBER,   fill:{color:bg},align:'center',fontSize:9} },
+        { text:fmtN(d.w5p,'%'),              options:{color:GREEN,   fill:{color:bg},align:'center',fontSize:9,bold:true} },
+        { text:fmtN(d.w10p,'%'),             options:{color:AMBER,   fill:{color:bg},align:'center',fontSize:9} },
+        { text:fmtN(d.w1015p,'%'),           options:{color:ORANGE,  fill:{color:bg},align:'center',fontSize:9} },
+        { text:fmtN(d.avgTC,' min'),         options:{color:VIOLET,  fill:{color:bg},align:'center',fontSize:9} },
+        { text:String(d.redN),               options:{color:MUTED,   fill:{color:bg},align:'center',fontSize:9} },
+        { text:String(d.breachN),            options:{color:RED,     fill:{color:bg},align:'center',fontSize:9,bold:true} },
+        { text:fmtN(d.bpct,'%'),             options:{color:RED,     fill:{color:bg},align:'center',fontSize:9,bold:true} },
+      ]);
+    });
+    s7.addTable(dataRows, {
+      x:0.1, y:0.8, w:9.8, h:5.8,
+      colW:[1.6,0.65,0.8,0.8,0.75,0.8,0.8,0.6,0.75,0.75],
+      fontSize:9, fontFace:'Calibri',
+      border:{ type:'solid', color:'1E3A5F', pt:0.4 },
+    });
+
+    const fname = (FNAME||'Triage').replace(/\.[^/.]+$/,'');
+    await pptx.writeFile({ fileName: fname+'_Trend_Report_'+P+'d.pptx' });
+  } catch(e) { alert('PPT error: ' + e.message); }
+  finally { sp.classList.remove('on'); }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// REPORT (HTML → printable)
+// ══════════════════════════════════════════════════════════════════════════════
+function downloadCmpReport() {
+  const sp = document.getElementById('dl-spinner'); sp.classList.add('on');
+  try {
+    const { current, previous, thresh, P, periodLabel, avgOf: ao } = getCmpExportData();
+    const fromDate = current[0]?.date ? fmtDate(current[0].date) : '—';
+    const toDate   = current[current.length-1]?.date ? fmtDate(current[current.length-1].date) : '—';
+    const totalPts = current.reduce((a,b)=>a+b.n,0);
+    const generated = new Date().toLocaleString('en-AE');
+
+    const KPIs = [
+      { label:'Token → Triage Average TAT', curr:ao(current,'avgTT'), prev:ao(previous,'avgTT'), unit:' min', lower:true,  color:'#2563eb', bg:'#eff6ff' },
+      { label:'Token → Triage ≤ 5 min',     curr:ao(current,'w5p'),   prev:ao(previous,'w5p'),   unit:'%',    lower:false, color:'#16a34a', bg:'#dcfce7' },
+      { label:'Token → Triage 5–10 min',    curr:ao(current,'w10p'),  prev:ao(previous,'w10p'),  unit:'%',    lower:true,  color:'#d97706', bg:'#fef3c7' },
+      { label:'Token → Triage 10–15 min',   curr:ao(current,'w1015p'),prev:ao(previous,'w1015p'),unit:'%',    lower:true,  color:'#ea580c', bg:'#fff7ed' },
+      { label:'Triage → Doctor Average TAT', curr:ao(current,'avgTC'), prev:ao(previous,'avgTC'), unit:' min', lower:true,  color:'#7c3aed', bg:'#f5f3ff' },
+      { label:`Red Category Breach > ${thresh} min`, curr:ao(current,'bpct'), prev:ao(previous,'bpct'), unit:'%', lower:true, color:'#dc2626', bg:'#fef2f2' },
+    ];
+
+    const kpiCards = KPIs.map(k => {
+      const diff  = (k.curr!=null&&k.prev!=null) ? k.curr-k.prev : null;
+      const good  = diff==null ? null : (k.lower ? diff<=0 : diff>=0);
+      const arrow = diff==null ? '' : (diff>0 ? '▲ ':diff<0?'▼ ':'● ');
+      const dclr  = good==null ? '#94a3b8' : (good?'#16a34a':'#dc2626');
+      return `<div style="background:${k.bg};border:1px solid ${k.color}33;border-radius:12px;padding:16px 18px;min-width:180px;flex:1">
+        <div style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">${k.label}</div>
+        <div style="font-size:28px;font-weight:800;color:${k.color};letter-spacing:-1px;line-height:1">${k.curr!=null?k.curr.toFixed(1):'—'}<span style="font-size:13px;font-weight:600;opacity:.7">${k.unit}</span></div>
+        ${k.prev!=null?`<div style="font-size:11px;color:${dclr};margin-top:5px;font-weight:600">${arrow}${diff!=null?Math.abs(diff).toFixed(1)+k.unit+' vs prev period':''}</div>`:''}
+        <div style="font-size:10px;color:#64748b;margin-top:2px">Prev: ${k.prev!=null?k.prev.toFixed(1)+k.unit:'no data'}</div>
+      </div>`;
+    }).join('');
+
+    const insCards = Array.from(document.querySelectorAll('#ins-grid .ins-card')).map(el => {
+      const ico   = el.querySelector('.ins-ico')?.textContent || '';
+      const title = el.querySelector('.ins-title')?.textContent || '';
+      const body  = el.querySelector('.ins-body')?.textContent || '';
+      return `<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start">
+        <div style="font-size:18px;flex-shrink:0">${ico}</div>
+        <div><div style="font-size:12px;font-weight:700;color:#1e293b;margin-bottom:3px">${title}</div>
+        <div style="font-size:11.5px;color:#64748b;line-height:1.5">${body}</div></div></div>`;
+    }).join('');
+
+    const tableRows = [...current].reverse().map((d,i) => {
+      const bg = i%2===0?'#f8fafc':'#ffffff';
+      const bpctGood = d.bpct!=null && d.bpct < 15;
+      const compGood = d.w5p!=null  && d.w5p  > 60;
+      return `<tr style="background:${bg}">
+        <td style="color:#1d4ed8;font-weight:700">${fmtDate(d.date)}</td>
+        <td>${d.n}</td>
+        <td>${fmtN(d.avgTT,' min')}</td>
+        <td style="color:${compGood?'#16a34a':'#d97706'};font-weight:700">${fmtN(d.w5p,'%')}</td>
+        <td>${fmtN(d.w10p,'%')}</td>
+        <td>${fmtN(d.w1015p,'%')}</td>
+        <td>${fmtN(d.avgTC,' min')}</td>
+        <td>${d.redN}</td>
+        <td>${d.breachN}</td>
+        <td style="color:${bpctGood?'#16a34a':'#dc2626'};font-weight:700">${fmtN(d.bpct,'%')}</td>
+      </tr>`;
+    }).join('');
+
+    const html = `<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8"><title>Triage TAT Report</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#1e293b;padding:24px}
+  @media print{body{padding:0;background:#fff}.no-print{display:none!important}
+    .page-break{page-break-after:always}}
+  .container{max-width:1100px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.1)}
+  .header{background:linear-gradient(135deg,#07111f,#0c1a2e);color:#fff;padding:28px 32px;position:relative}
+  .header h1{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+  .header p{font-size:12px;color:#94a3b8}
+  .meta-bar{background:#0d1829;color:#7dd3fc;padding:10px 32px;font-size:11px;display:flex;gap:24px;flex-wrap:wrap}
+  .meta-bar span b{color:#38bdf8}
+  .section{padding:24px 32px;border-bottom:1px solid #e2e8f0}
+  .section h2{font-size:13px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+  .kpi-row{display:flex;gap:12px;flex-wrap:wrap}
+  .ins-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  thead th{background:#1e3a8a;color:#fff;padding:10px 12px;text-align:center;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+  thead th:first-child{text-align:left}
+  tbody td{padding:9px 12px;border-bottom:1px solid #e2e8f0;text-align:center}
+  tbody td:first-child{text-align:left}
+  .footer{background:#f8fafc;padding:16px 32px;font-size:10.5px;color:#94a3b8;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .print-btn{display:block;margin:16px auto;padding:12px 28px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer}
+</style></head>
+<body>
+<div style="text-align:center;margin-bottom:16px" class="no-print">
+  <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+<div class="container">
+  <div class="header">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <h1>🏥 Triage TAT Performance Trend Report</h1>
+        <p>Aster Hospital Mankhool · Emergency Department · ER Operations</p>
+      </div>
+      <div style="text-align:right;font-size:11px;color:#64748b">
+        <div style="color:#38bdf8;font-weight:700;font-size:13px">${fromDate} → ${toDate}</div>
+        <div>${current.length} days · ${totalPts} patients</div>
+        <div>Generated: ${generated}</div>
+      </div>
+    </div>
+  </div>
+  <div class="meta-bar">
+    <span>📊 Comparison: <b>${periodLabel}</b></span>
+    <span>⏱ Breach Threshold: <b>${thresh} min</b></span>
+    <span>📁 File: <b>${FNAME}</b></span>
+    ${CMP_FILE_ROWS.length>0?'<span>🔀 Compare File: <b>'+CMP_FILE_NAME+'</b></span>':''}
+  </div>
+
+  <div class="section">
+    <h2>Key Performance Indicators — Period Average</h2>
+    <div class="kpi-row">${kpiCards}</div>
+  </div>
+
+  <div class="section">
+    <h2>💡 Key Insights & Alerts</h2>
+    <div class="ins-grid">${insCards}</div>
+  </div>
+
+  <div class="section">
+    <h2>📅 Day-by-Day Performance Table</h2>
+    <table>
+      <thead><tr>
+        <th style="text-align:left">Date</th><th>Patients</th><th>Avg TAT</th>
+        <th>≤ 5 min %</th><th>5–10 min %</th><th>10–15 min %</th>
+        <th>Doctor TAT</th><th>Red Pts</th><th>Breach n</th><th>Breach %</th>
+      </tr></thead>
+      <tbody>${tableRows}</tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <span>Aster Hospital Mankhool · Triage TAT Dashboard · Confidential</span>
+    <span>Generated: ${generated}</span>
+  </div>
+</div>
+</body></html>`;
+
+    const blob = new Blob([html], { type:'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = (FNAME||'Triage').replace(/\.[^/.]+$/,'') + '_Report_'+P+'d.html';
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) { alert('Report error: ' + e.message); }
+  finally { sp.classList.remove('on'); }
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PPT FIX — dynamic multi-CDN loader
+// ══════════════════════════════════════════════════════════════════════════════
+let _pptxReady = typeof PptxGenJS !== 'undefined';
+let _pptxLoadP = null;
+
+function ensurePptx() {
+  if (_pptxReady && typeof PptxGenJS !== 'undefined') return Promise.resolve(true);
+  if (_pptxLoadP) return _pptxLoadP;
+  const cdns = [
+    'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js',
+    'https://unpkg.com/pptxgenjs@3.12.0/dist/pptxgen.bundle.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundled.js',
+  ];
+  _pptxLoadP = (async () => {
+    for (const cdn of cdns) {
+      const ok = await new Promise(res => {
+        if (typeof PptxGenJS !== 'undefined') { res(true); return; }
+        const s = document.createElement('script');
+        s.src = cdn;
+        const t = setTimeout(() => res(false), 8000);
+        s.onload  = () => { clearTimeout(t); res(true); };
+        s.onerror = () => { clearTimeout(t); res(false); };
+        document.head.appendChild(s);
+      });
+      if (ok && typeof PptxGenJS !== 'undefined') { _pptxReady = true; return true; }
+    }
+    return false;
+  })();
+  return _pptxLoadP;
+}
+
+// Patch downloadCmpPPT to use ensurePptx
+const _origDownloadPPT = downloadCmpPPT;
+downloadCmpPPT = async function() {
+  const sp = document.getElementById('dl-spinner');
+  sp.classList.add('on');
+  try {
+    const ok = await ensurePptx();
+    if (!ok) {
+      alert('Could not load the PPT library. Please check your internet connection and try again.');
+      return;
+    }
+    sp.classList.remove('on');
+    await _origDownloadPPT();
+  } catch(e) {
+    alert('PPT error: ' + e.message);
+  } finally {
+    sp.classList.remove('on');
+  }
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ENHANCED DATE FILTER
+// ══════════════════════════════════════════════════════════════════════════════
+let DR_FROM = '';  // YYYY-MM-DD
+let DR_TO   = '';  // YYYY-MM-DD
+let DR_QUICK = 'all';
+
+// Override getActiveFilt to support date range
+const _origGetActiveFilt = getActiveFilt;
+getActiveFilt = function() {
+  // If no range set, fall back to original (single-date or all)
+  if (!DR_FROM && !DR_TO && (DR_QUICK === 'all' || DR_QUICK === '')) {
+    return _origGetActiveFilt();
+  }
+  // Apply range filter on top of FILT
+  return FILT.filter(r => {
+    const d = getRowDate(r);
+    if (!d) return !DR_FROM && !DR_TO; // include undated if no range set
+    if (DR_FROM && d < DR_FROM) return false;
+    if (DR_TO   && d > DR_TO)   return false;
+    return true;
+  });
+};
+
+// Extend buildDatePicker to also populate the dropdowns and show range bar
+const _origBuildDatePicker = buildDatePicker;
+buildDatePicker = function() {
+  _origBuildDatePicker();
+  const base = ALL.filter(r => r.tat1 !== null);
+  const g    = groupByDate(base);
+  DATE_AVAIL = Object.keys(g).sort();
+
+  if (DATE_AVAIL.length === 0) return;
+
+  // Show range bar
+  document.getElementById('drange-bar').classList.add('on');
+
+  // Populate FROM/TO dropdowns
+  const fromSel = document.getElementById('dr-from');
+  const toSel   = document.getElementById('dr-to');
+  [fromSel, toSel].forEach(sel => {
+    const first = sel.options[0];
+    sel.innerHTML = '';
+    sel.appendChild(first);
+    DATE_AVAIL.forEach(d => {
+      const o = document.createElement('option');
+      o.value = d; o.textContent = fmtDateShort(d) + ' (' + g[d].length + ')';
+      sel.appendChild(o);
+    });
+  });
+};
+
+function setQuickRange(type) {
+  DR_QUICK = type;
+  // Clear single-date selection
+  SELECTED_DATE = ''; FILT_DATE = [];
+  document.querySelectorAll('.dnb-pill,.dnb-all').forEach(b => b.classList.remove('active'));
+  document.getElementById('dnb-all-btn')?.classList.add('active');
+  document.getElementById('dnb-info-bar')?.classList.remove('on');
+
+  // Update quick range button states
+  ['all','today','yesterday','7d','30d'].forEach(id => {
+    document.getElementById('qr-'+id)?.classList.toggle('active', id === type);
+  });
+
+  if (!DATE_AVAIL.length) { _applyRange(); return; }
+
+  const last = DATE_AVAIL[DATE_AVAIL.length - 1];
+  const prevDay = DATE_AVAIL.length > 1 ? DATE_AVAIL[DATE_AVAIL.length - 2] : null;
+
+  switch(type) {
+    case 'all':       DR_FROM = ''; DR_TO = ''; break;
+    case 'today':     DR_FROM = last;    DR_TO = last; break;
+    case 'yesterday': DR_FROM = prevDay||last; DR_TO = prevDay||last; break;
+    case '7d':        DR_FROM = DATE_AVAIL[Math.max(0,DATE_AVAIL.length-7)]; DR_TO = last; break;
+    case '30d':       DR_FROM = DATE_AVAIL[Math.max(0,DATE_AVAIL.length-30)]; DR_TO = last; break;
+  }
+
+  // Sync dropdowns
+  const fromSel = document.getElementById('dr-from');
+  const toSel   = document.getElementById('dr-to');
+  if (fromSel) fromSel.value = DR_FROM || '';
+  if (toSel)   toSel.value   = DR_TO   || '';
+
+  _applyRange();
+}
+
+function applyCustomRange() {
+  DR_FROM  = document.getElementById('dr-from')?.value || '';
+  DR_TO    = document.getElementById('dr-to')?.value   || '';
+  DR_QUICK = 'custom';
+  ['all','today','yesterday','7d','30d'].forEach(id =>
+    document.getElementById('qr-'+id)?.classList.remove('active'));
+  SELECTED_DATE = ''; FILT_DATE = [];
+  _applyRange();
+}
+
+function _applyRange() {
+  PAGE = 1; BREACH_PAGE = 1;
+
+  // Update result summary
+  const active = getActiveFilt();
+  const resDiv = document.getElementById('drange-result');
+  if (resDiv) {
+    resDiv.style.display = 'flex';
+    const dateInfo = DR_FROM || DR_TO
+      ? `<b>${DR_FROM ? fmtDateShort(DR_FROM) : '—'}</b> → <b>${DR_TO ? fmtDateShort(DR_TO) : '—'}</b>`
+      : '<b>All dates</b>';
+    resDiv.innerHTML = `📋 ${dateInfo} &nbsp;·&nbsp; <b>${active.length}</b> patients &nbsp;·&nbsp; <b>${[...new Set(active.map(r=>getRowDate(r)).filter(Boolean))].length}</b> days`;
+  }
+
+  renderAll();
+}
+
+// Also update the original selectDate to clear range
+const _origSelectDate = selectDate;
+selectDate = function(d) {
+  DR_FROM = ''; DR_TO = ''; DR_QUICK = 'all';
+  ['all','today','yesterday','7d','30d'].forEach(id =>
+    document.getElementById('qr-'+id)?.classList.toggle('active', id==='all'));
+  document.getElementById('dr-from') && (document.getElementById('dr-from').value = '');
+  document.getElementById('dr-to')   && (document.getElementById('dr-to').value = '');
+  _origSelectDate(d);
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FINAL ANALYSIS GENERATOR
+// ══════════════════════════════════════════════════════════════════════════════
+// Benchmarks
+const BENCH = {
+  avgTT:  { target: 5,   label: '≤ 5 min',  lower: true  },
+  w5p:    { target: 70,  label: '≥ 70%',    lower: false },
+  w10p:   { target: 20,  label: '≤ 20%',    lower: true  },
+  w1015p: { target: 10,  label: '≤ 10%',    lower: true  },
+  avgTC:  { target: 30,  label: '≤ 30 min', lower: true  },
+  bpct:   { target: 10,  label: '< 10%',    lower: true  },
+};
+
+function getPrevPeriodForAnalysis(activeFilt) {
+  const grouped = groupByDate(activeFilt);
+  const dates   = Object.keys(grouped).sort();
+  if (dates.length < 2) {
+    // Try to get previous day from the full FILT
+    const allGrouped = groupByDate(FILT);
+    const allDates   = Object.keys(allGrouped).sort();
+    if (!dates.length || allDates.length < 2) return [];
+    const firstDate = dates[0];
+    const idx = allDates.indexOf(firstDate);
+    return idx > 0 ? allGrouped[allDates[idx-1]] || [] : [];
+  }
+  // Split: first half vs second half
+  const mid = Math.floor(dates.length / 2);
+  const firstHalf = dates.slice(0, mid).flatMap(d => grouped[d]);
+  return firstHalf;
+}
+
+function getStatusBadge(val, key) {
+  if (val == null) return '<span class="st-badge st-na">No Data</span>';
+  const b = BENCH[key];
+  const ratio = b.lower ? b.target / Math.max(val,0.01) : val / b.target;
+  if (ratio >= 0.95) return '<span class="st-badge st-good">✅ On Target</span>';
+  if (ratio >= 0.75) return '<span class="st-badge st-warn">⚠️ Near Target</span>';
+  return '<span class="st-badge st-crit">🔴 Off Target</span>';
+}
+
+function getChangeHTML(curr, prev, lowerIsBetter) {
+  if (curr == null || prev == null || prev === 0) return '<span class="chg-na">—</span>';
+  const diff   = curr - prev;
+  const pct    = Math.abs(diff / prev * 100);
+  const isGood = lowerIsBetter ? diff < 0 : diff > 0;
+  const arrow  = diff > 0 ? '▲' : diff < 0 ? '▼' : '●';
+  const cls    = diff === 0 ? 'chg-na' : isGood ? 'chg-neg-good' : 'chg-pos-bad';
+  if (diff > 0) return `<span class="${isGood?'chg-pos-good':'chg-pos-bad'}">${arrow} +${pct.toFixed(1)}%</span>`;
+  if (diff < 0) return `<span class="${isGood?'chg-neg-good':'chg-neg-bad'}">${arrow} ${pct.toFixed(1)}%</span>`;
+  return '<span class="chg-na">● No change</span>';
+}
+
+function renderFinalAnalysis() {
+  const thresh  = parseInt(document.getElementById('bc-thresh').value) || 40;
+  const active  = getActiveFilt();
+  const panel   = document.getElementById('analysis-wrap');
+  if (!active.length) { panel.classList.remove('on'); return; }
+  panel.classList.add('on');
+
+  const kpi  = calcKPI(active, thresh);
+  const prev = getPrevPeriodForAnalysis(active);
+  const pkpi = prev.length ? calcKPI(prev, thresh) : null;
+
+  const f1 = v => v === '—' ? null : parseFloat(v);
+  const C = {
+    avgTT:  f1(kpi.avgTT),  w5p:    f1(kpi.w5p),
+    w10p:   f1(kpi.w10p),   w1015p: f1(kpi.w1015p),
+    avgTC:  f1(kpi.avgTC),  bpct:   f1(kpi.breachPct),
+    total:  active.length,   breachN: kpi.breachN, redN: kpi.redN,
+  };
+  const P = pkpi ? {
+    avgTT:  f1(pkpi.avgTT),  w5p:    f1(pkpi.w5p),
+    w10p:   f1(pkpi.w10p),   w1015p: f1(pkpi.w1015p),
+    avgTC:  f1(pkpi.avgTC),  bpct:   f1(pkpi.breachPct),
+  } : {};
+
+  // Count good / warn / critical
+  const keys = ['avgTT','w5p','w10p','w1015p','avgTC','bpct'];
+  let good=0, warn=0, crit=0;
+  keys.forEach(k => {
+    if (C[k]==null) return;
+    const b=BENCH[k]; const r = b.lower ? b.target/Math.max(C[k],0.01) : C[k]/b.target;
+    if(r>=0.95)good++; else if(r>=0.75)warn++; else crit++;
+  });
+
+  // Overall verdict
+  let verdictTxt, verdictCls;
+  const total_kpis = good + warn + crit;
+  if (total_kpis === 0) { verdictTxt='⏳ Insufficient Data'; verdictCls='verdict-blue'; }
+  else if (crit === 0 && warn <= 1) { verdictTxt='🟢 STRONG'; verdictCls='verdict-green'; }
+  else if (crit <= 1 && good >= warn) { verdictTxt='🟡 MODERATE'; verdictCls='verdict-amber'; }
+  else { verdictTxt='🔴 NEEDS IMPROVEMENT'; verdictCls='verdict-red'; }
+
+  document.getElementById('ana-verdict-badge').className = 'verdict-badge ' + verdictCls;
+  document.getElementById('ana-verdict-badge').textContent = verdictTxt;
+
+  // Period label
+  const datesInActive = [...new Set(active.map(r=>getRowDate(r)).filter(Boolean))].sort();
+  const fromD = datesInActive[0], toD = datesInActive[datesInActive.length-1];
+  const periodDesc = datesInActive.length === 1
+    ? fmtDateShort(fromD)
+    : `${fmtDateShort(fromD)} → ${fmtDateShort(toD)} (${datesInActive.length} days)`;
+  document.getElementById('ana-period-lbl').textContent =
+    `Viewing: ${periodDesc}  ·  ${active.length} patients`;
+
+  // ── Executive Summary ───────────────────────────────────────────────────────
+  const lines = [];
+
+  // Opening line
+  const volTxt = `The Emergency Department processed <strong>${C.total} patients</strong>` +
+    (datesInActive.length > 1 ? ` over ${datesInActive.length} days` : ` on ${fmtDateShort(fromD)}`);
+  lines.push(volTxt + '.');
+
+  // TAT performance
+  if (C.avgTT != null) {
+    const tatStatus = C.avgTT <= 5 ? 'within' : 'above';
+    const tatColor  = C.avgTT <= 5 ? 'good' : 'concern';
+    lines.push(`Average Token-to-Triage time was <strong>${C.avgTT.toFixed(1)} minutes</strong>, which is ${tatStatus} the 5-minute target.`);
+  }
+
+  // Compliance summary
+  if (C.w5p != null) {
+    const compWord = C.w5p >= 70 ? 'meeting the ≥70% target' : C.w5p >= 50 ? 'below but approaching target' : 'significantly below the 70% target';
+    lines.push(`Triage compliance (≤5 min) stands at <strong>${C.w5p.toFixed(1)}%</strong> — ${compWord}.`);
+  }
+
+  // Doctor TAT + Breach
+  if (C.avgTC != null) {
+    const docWord = C.avgTC <= 30 ? 'within acceptable range' : C.avgTC <= 45 ? 'moderately elevated' : 'significantly above target';
+    lines.push(`Average Doctor TAT is <strong>${C.avgTC.toFixed(1)} minutes</strong> (${docWord}, target ≤30 min).`);
+  }
+  if (C.bpct != null && C.redN > 0) {
+    const brWord = C.bpct < 10 ? 'under control' : C.bpct < 25 ? 'a concern requiring monitoring' : 'critical and requires immediate action';
+    lines.push(`Red category breach rate is <strong>${C.bpct.toFixed(1)}%</strong> (${C.breachN} of ${C.redN} red patients) — ${brWord}.`);
+  }
+
+  // Trend vs previous
+  if (pkpi && P.w5p != null && C.w5p != null) {
+    const diff = C.w5p - P.w5p;
+    if (Math.abs(diff) > 0.5) {
+      const dir = diff > 0 ? 'improved' : 'declined';
+      lines.push(`Compared to the previous period, overall compliance has <strong>${dir} by ${Math.abs(diff).toFixed(1)} percentage points</strong>.`);
+    } else {
+      lines.push('Performance is <strong>stable</strong> compared to the previous period.');
+    }
+  }
+
+  // Closing verdict
+  const closings = {
+    'verdict-green': 'Overall, the department is performing <strong>strongly</strong> across key indicators.',
+    'verdict-amber': 'Overall performance is <strong>moderate</strong>. Targeted improvements in the areas below will elevate scores.',
+    'verdict-red':   'Overall performance <strong>requires prompt attention</strong>. Priority areas are highlighted below.',
+    'verdict-blue':  'Insufficient historical data for a full comparison — continue collecting daily records.',
+  };
+  lines.push(closings[verdictCls] || '');
+
+  document.getElementById('exec-text').innerHTML = lines.filter(Boolean).join(' ');
+
+  // ── KPI Status Table ────────────────────────────────────────────────────────
+  const KPI_ROWS = [
+    { key:'avgTT',  label:'Token → Triage Avg TAT', val:C.avgTT,  prev:P.avgTT,  unit:' min', lower:true  },
+    { key:'w5p',    label:'≤ 5 min Compliance',      val:C.w5p,    prev:P.w5p,    unit:'%',    lower:false },
+    { key:'w10p',   label:'5–10 min %',               val:C.w10p,   prev:P.w10p,   unit:'%',    lower:true  },
+    { key:'w1015p', label:'10–15 min %',              val:C.w1015p, prev:P.w1015p, unit:'%',    lower:true  },
+    { key:'avgTC',  label:'Triage → Doctor Avg TAT',  val:C.avgTC,  prev:P.avgTC,  unit:' min', lower:true  },
+    { key:'bpct',   label:`Red Breach > ${thresh} min`, val:C.bpct, prev:P.bpct,   unit:'%',    lower:true  },
+  ];
+
+  document.getElementById('ana-kpi-tbody').innerHTML = KPI_ROWS.map(r => {
+    const valTxt  = r.val  != null ? r.val.toFixed(1) + r.unit : '—';
+    const prevTxt = r.prev != null ? r.prev.toFixed(1) + r.unit : '—';
+    const prevDiff = (r.val!=null && r.prev!=null) ? r.val - r.prev : null;
+    const pctDiff  = prevDiff!=null && r.prev!==0 ? (prevDiff/Math.abs(r.prev)*100) : null;
+    const pctTxt   = pctDiff!=null
+      ? (prevDiff>0?'+':'')+pctDiff.toFixed(1)+'%'
+      : '—';
+    const pctCls   = pctDiff==null ? 'chg-na'
+      : (r.lower ? (prevDiff<0?'chg-neg-good':'chg-pos-bad') : (prevDiff>0?'chg-pos-good':'chg-neg-bad'));
+
+    return `<tr>
+      <td style="font-weight:700;color:#e2e8f0">${r.label}</td>
+      <td style="font-weight:800;color:#f0f6ff;font-family:'JetBrains Mono',monospace">${valTxt}</td>
+      <td style="color:#64748b;font-size:11.5px">${BENCH[r.key].label}</td>
+      <td>${getStatusBadge(r.val, r.key)}</td>
+      <td style="color:#94a3b8;font-family:'JetBrains Mono',monospace;font-size:11.5px">${prevTxt}</td>
+      <td><span class="${pctCls}">${pctTxt}</span></td>
+    </tr>`;
+  }).join('');
+
+  // ── Strengths ───────────────────────────────────────────────────────────────
+  const strengths = [];
+  if (C.avgTT != null && C.avgTT <= 5)
+    strengths.push({ ico:'⚡', txt:`Average triage time of ${C.avgTT.toFixed(1)} min meets the ≤5 min target — excellent throughput.` });
+  if (C.w5p != null && C.w5p >= 70)
+    strengths.push({ ico:'✅', txt:`${C.w5p.toFixed(1)}% of patients triaged within 5 minutes — on or above the 70% target.` });
+  if (C.w5p != null && C.w5p >= 50 && C.w5p < 70)
+    strengths.push({ ico:'📈', txt:`${C.w5p.toFixed(1)}% ≤5 min compliance shows solid baseline performance.` });
+  if (C.bpct != null && C.bpct < 10)
+    strengths.push({ ico:'🟢', txt:`Red category breach rate is ${C.bpct.toFixed(1)}% — below the 10% threshold.` });
+  if (C.avgTC != null && C.avgTC <= 30)
+    strengths.push({ ico:'🩺', txt:`Doctor TAT of ${C.avgTC.toFixed(1)} min is within the 30-minute target — good consultation flow.` });
+  if (pkpi && P.w5p != null && C.w5p != null && C.w5p > P.w5p)
+    strengths.push({ ico:'📊', txt:`Compliance improved by ${(C.w5p-P.w5p).toFixed(1)} percentage points compared to the previous period.` });
+  if (!strengths.length)
+    strengths.push({ ico:'ℹ️', txt:'Upload more days of data to identify and display key performance strengths.' });
+
+  // ── Attention Areas ──────────────────────────────────────────────────────────
+  const attention = [];
+  if (C.avgTT != null && C.avgTT > 5)
+    attention.push({ ico:'⏱', txt:`Average triage TAT of ${C.avgTT.toFixed(1)} min exceeds the 5-minute target. Review triage workflow and staffing.` });
+  if (C.w5p != null && C.w5p < 70)
+    attention.push({ ico:'📉', txt:`≤5 min compliance is ${C.w5p.toFixed(1)}% — ${(70-C.w5p).toFixed(1)} points below target. Focus on faster initial assessment.` });
+  if (C.w1015p != null && C.w1015p > 10)
+    attention.push({ ico:'🟠', txt:`${C.w1015p.toFixed(1)}% of patients wait 10–15 min — above the 10% threshold. This suggests triage bottlenecks.` });
+  if (C.bpct != null && C.bpct >= 10)
+    attention.push({ ico:'🔴', txt:`Red category breach rate of ${C.bpct.toFixed(1)}% exceeds the 10% threshold — ${C.breachN} high-priority patients waited too long for a doctor.` });
+  if (C.avgTC != null && C.avgTC > 30)
+    attention.push({ ico:'🩺', txt:`Doctor TAT of ${C.avgTC.toFixed(1)} min is ${(C.avgTC-30).toFixed(1)} min above the 30-min target. Investigate doctor availability and handover delays.` });
+  if (C.w10p != null && C.w10p > 20)
+    attention.push({ ico:'⚠️', txt:`${C.w10p.toFixed(1)}% of patients are in the 5–10 min bracket, contributing to overall delays.` });
+  if (pkpi && P.bpct != null && C.bpct != null && C.bpct > P.bpct + 5)
+    attention.push({ ico:'📈', txt:`Red breach rate increased by ${(C.bpct-P.bpct).toFixed(1)} points vs previous period — a deteriorating trend to address.` });
+  if (!attention.length)
+    attention.push({ ico:'✨', txt:'No critical issues identified in the current period. Continue monitoring to maintain performance levels.' });
+
+  const renderBullets = arr => arr.map(i =>
+    `<div class="ana-bullet"><span class="ana-bullet-ico">${i.ico}</span><span>${i.txt}</span></div>`
+  ).join('');
+
+  document.getElementById('ana-strengths').innerHTML = renderBullets(strengths);
+  document.getElementById('ana-attention').innerHTML = renderBullets(attention);
+}
+
+// ── Hook renderFinalAnalysis into renderAll ───────────────────────────────────
+const _origRenderAll = renderAll;
+renderAll = function() {
+  _origRenderAll();
+  try { renderFinalAnalysis(); } catch(e) { console.warn('Analysis error:', e); }
+};
+
+// Show analysis panel in show list
+const _origParseRows = parseRows;
+parseRows = function(raw) {
+  _origParseRows(raw);
+  // Ensure analysis panel is included
+  document.getElementById('analysis-wrap')?.classList.add('on');
+};
 
 </script>
 </body>
