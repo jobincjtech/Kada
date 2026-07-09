@@ -1,0 +1,2150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triage TAT Dashboard — Aster Hospital</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  --bg:#07111f;--bg2:#0c1a2d;--glass:rgba(10,18,32,.62);
+  --border:rgba(148,163,184,.20);--border2:rgba(148,163,184,.12);
+  --txt:#e5eefb;--txt-dark:#0f172a;--txt2:#94a3b8;--txt3:#64748b;
+  --blue:#38bdf8;--blue2:#2563eb;--green:#22c55e;--amber:#f59e0b;
+  --red:#ef4444;--teal:#14b8a6;--purple:#8b5cf6;--orange:#f97316;
+  --shadow:0 10px 35px rgba(2,8,23,.28);--shadow2:0 18px 48px rgba(2,8,23,.42);
+  --glow:0 0 0 1px rgba(255,255,255,.04),0 0 28px rgba(56,189,248,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;min-height:100vh;color:var(--txt);
+  background:radial-gradient(circle at 15% 20%,rgba(56,189,248,.18),transparent 28%),
+    radial-gradient(circle at 85% 12%,rgba(139,92,246,.15),transparent 24%),
+    radial-gradient(circle at 78% 82%,rgba(34,197,94,.10),transparent 26%),
+    linear-gradient(145deg,#07111f 0%,#0a1527 44%,#0f1f35 100%);
+  overflow-x:hidden;
+}
+body.locked{overflow:hidden}
+body::before,body::after{
+  content:'';position:fixed;inset:auto;width:420px;height:420px;border-radius:50%;
+  filter:blur(70px);opacity:.22;pointer-events:none;z-index:0;
+  animation:floatOrb 12s ease-in-out infinite;
+}
+body::before{top:-120px;left:-120px;background:#0ea5e9}
+body::after{right:-130px;bottom:-120px;background:#8b5cf6;animation-delay:-5s}
+@keyframes floatOrb{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-18px) scale(1.06)}}
+
+.ticker{position:sticky;top:0;z-index:300;height:28px;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(2,6,23,.72);backdrop-filter:blur(14px)}
+.ticker-track{display:inline-flex;align-items:center;white-space:nowrap;min-width:100%;height:100%;padding-left:100%;animation:ticker 22s linear infinite;font-size:11px;letter-spacing:3px;text-transform:lowercase;color:#a5f3fc}
+.ticker-track span{margin-right:46px;opacity:.92}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+
+.app-shell{position:relative;z-index:1;transition:filter .35s ease,transform .35s ease}
+body.locked .app-shell{filter:blur(12px) saturate(.7);transform:scale(.985);pointer-events:none;user-select:none}
+
+header{
+  margin:16px auto 0;width:min(1360px,calc(100% - 28px));height:76px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 24px;
+  border:1px solid rgba(255,255,255,.08);border-radius:20px;
+  background:linear-gradient(180deg,rgba(15,23,42,.68),rgba(15,23,42,.5));
+  box-shadow:var(--shadow);backdrop-filter:blur(18px);
+  position:sticky;top:40px;z-index:200;
+}
+.hdr-l{display:flex;align-items:center;gap:14px}
+.hdr-logo{
+  width:42px;height:42px;border-radius:14px;
+  background:linear-gradient(135deg,#0ea5e9,#2563eb 55%,#8b5cf6);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 22px rgba(37,99,235,.35);
+}
+.hdr-logo svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hdr-title{font-size:16px;font-weight:700;letter-spacing:-.3px;color:#fff}
+.hdr-sub{font-size:11px;color:#93c5fd;margin-top:2px;letter-spacing:.6px;text-transform:uppercase}
+.hdr-r{display:flex;align-items:center;gap:10px}
+.hdr-date{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:8px 14px;font-size:12px;color:#e2e8f0;font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 7px rgba(34,197,94,.11)}
+
+main{max-width:1360px;margin:0 auto;padding:26px 20px 70px}
+
+.upload{
+  background:linear-gradient(180deg,rgba(15,23,42,.58),rgba(15,23,42,.42));
+  border:1.5px dashed rgba(125,211,252,.34);border-radius:22px;
+  padding:42px 24px;text-align:center;cursor:pointer;
+  transition:.28s ease;margin-bottom:18px;position:relative;overflow:hidden;
+  box-shadow:var(--shadow);backdrop-filter:blur(14px);
+}
+.upload::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at top,rgba(56,189,248,.08),transparent 58%);pointer-events:none}
+.upload:hover,.upload.drag{border-color:rgba(56,189,248,.8);transform:translateY(-2px);box-shadow:var(--shadow2),0 0 0 1px rgba(56,189,248,.16)}
+.upload input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.up-ico{width:60px;height:60px;margin:0 auto 16px;border-radius:18px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(56,189,248,.18),rgba(139,92,246,.18));box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.up-ico svg{width:26px;height:26px;stroke:#7dd3fc;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.upload h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
+.upload p{color:#94a3b8;font-size:13px}
+.exts{display:inline-flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+.ext{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:5px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;color:#cbd5e1}
+
+.filebar{display:none;align-items:center;gap:9px;background:rgba(16,185,129,.14);border:1px solid rgba(16,185,129,.32);border-radius:16px;padding:12px 16px;margin-bottom:18px;font-size:13px;color:#d1fae5;box-shadow:var(--shadow);backdrop-filter:blur(14px)}
+.filebar.on{display:flex}
+.filebar svg{stroke:#22c55e;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.filebar b{color:#bbf7d0}
+
+.filters{display:none;background:linear-gradient(180deg,rgba(15,23,42,.58),rgba(15,23,42,.44));border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:18px 18px 16px;margin-bottom:18px;box-shadow:var(--shadow);backdrop-filter:blur(14px)}
+.filters.on{display:block}
+.filt-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;gap:10px}
+.filt-hdr h3{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#7dd3fc}
+.filt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px}
+.fg label{display:block;font-size:10.5px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.fg select,.srch,.login-box input{
+  width:100%;padding:11px 12px;border:1px solid rgba(255,255,255,.08);border-radius:14px;
+  font-family:'Inter',sans-serif;font-size:12.5px;color:#fff;
+  background:rgba(255,255,255,.06);transition:.18s ease;
+}
+.fg select:focus,.srch:focus,.login-box input:focus{outline:none;border-color:rgba(56,189,248,.6);box-shadow:0 0 0 4px rgba(56,189,248,.12)}
+.fg select option{color:#0f172a}
+.filt-actions{display:flex;gap:9px;margin-top:13px;flex-wrap:wrap}
+
+.btn-apply,.btn-rst,.btn-dl,.login-btn,.lock-btn{border:none;border-radius:14px;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;transition:.18s ease}
+.btn-apply,.btn-dl,.login-btn{padding:11px 16px;background:linear-gradient(135deg,#0ea5e9,#2563eb 60%,#8b5cf6);color:#fff;box-shadow:0 14px 24px rgba(37,99,235,.24)}
+.btn-apply:hover,.btn-dl:hover,.login-btn:hover,.lock-btn:hover{transform:translateY(-1px)}
+.btn-rst,.lock-btn{padding:11px 14px;background:rgba(255,255,255,.06);color:#dbeafe;border:1px solid rgba(255,255,255,.08)}
+
+.actbar{display:none;align-items:center;gap:10px;margin-bottom:18px}
+.actbar.on{display:flex;flex-wrap:wrap}
+.btn-dl{display:inline-flex;align-items:center;gap:7px}
+.btn-dl svg{stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rec-pill{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:10px 14px;font-size:12px;color:#dbeafe;backdrop-filter:blur(14px)}
+
+.sec-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#7dd3fc;margin-bottom:12px}
+.kpi-wrap{display:none;margin-bottom:20px}
+.kpi-wrap.on{display:block}
+
+/* ── KPI grid: 6 columns on desktop ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+
+.kcard{
+  background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.86));
+  border:1px solid rgba(255,255,255,.55);color:var(--txt-dark);
+  border-radius:24px;padding:18px 20px 16px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;
+  animation:riseUp .55s ease both;
+}
+.kcard:nth-child(2){animation-delay:.06s}.kcard:nth-child(3){animation-delay:.12s}
+.kcard:nth-child(4){animation-delay:.18s}.kcard:nth-child(5){animation-delay:.24s}
+.kcard:nth-child(6){animation-delay:.30s}
+@keyframes riseUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.kcard:hover{box-shadow:var(--shadow2);transform:translateY(-2px)}
+.kcard::before{content:'';position:absolute;inset:0 0 auto;height:4px}
+.kcard.blue::before{background:linear-gradient(90deg,#38bdf8,#2563eb)}
+.kcard.green::before{background:linear-gradient(90deg,#34d399,#16a34a)}
+.kcard.amber::before{background:linear-gradient(90deg,#fbbf24,#f59e0b)}
+.kcard.orange::before{background:linear-gradient(90deg,#fb923c,#f97316)}
+.kcard.red::before{background:linear-gradient(90deg,#f87171,#ef4444)}
+.kcard.teal::before{background:linear-gradient(90deg,#2dd4bf,#14b8a6)}
+.k-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.k-ico{width:38px;height:38px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.k-ico svg{width:18px;height:18px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.kcard.blue .k-ico{background:rgba(37,99,235,.1)}.kcard.blue .k-ico svg{stroke:#2563eb}
+.kcard.green .k-ico{background:rgba(34,197,94,.1)}.kcard.green .k-ico svg{stroke:#16a34a}
+.kcard.amber .k-ico{background:rgba(245,158,11,.1)}.kcard.amber .k-ico svg{stroke:#d97706}
+.kcard.orange .k-ico{background:rgba(249,115,22,.1)}.kcard.orange .k-ico svg{stroke:#ea580c}
+.kcard.red .k-ico{background:rgba(239,68,68,.1)}.kcard.red .k-ico svg{stroke:#ef4444}
+.kcard.teal .k-ico{background:rgba(20,184,166,.1)}.kcard.teal .k-ico svg{stroke:#0f766e}
+.k-n{font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:700;color:#64748b;background:rgba(15,23,42,.05);border:1px solid rgba(15,23,42,.06);border-radius:999px;padding:5px 9px}
+.k-label{font-size:11.5px;font-weight:600;color:#475569;margin-bottom:6px;line-height:1.35}
+.k-val{font-size:34px;font-weight:800;letter-spacing:-1.7px;line-height:1}
+.kcard.blue .k-val{color:#2563eb}.kcard.green .k-val{color:#16a34a}.kcard.amber .k-val{color:#d97706}
+.kcard.orange .k-val{color:#ea580c}.kcard.red .k-val{color:#dc2626}.kcard.teal .k-val{color:#0f766e}
+.k-unit{font-size:13px;font-weight:600;opacity:.7;margin-left:3px}
+.k-foot{margin-top:11px;padding-top:10px;border-top:1px solid rgba(15,23,42,.08)}
+.k-sub{font-size:11px;color:#64748b}.k-sub b{color:#334155}
+
+.panel{display:none;background:linear-gradient(180deg,rgba(15,23,42,.58),rgba(15,23,42,.44));border:1px solid rgba(255,255,255,.08);border-radius:24px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px;backdrop-filter:blur(14px)}
+.panel.on{display:block}
+
+.breach-wrap{display:none;background:linear-gradient(180deg,rgba(30,8,8,.65),rgba(20,5,5,.5));border:1px solid rgba(239,68,68,.28);border-radius:24px;box-shadow:var(--shadow),0 0 0 1px rgba(239,68,68,.08);overflow:hidden;margin-bottom:18px;backdrop-filter:blur(14px)}
+.breach-wrap.on{display:block}
+.breach-hdr{padding:16px 20px;border-bottom:1px solid rgba(239,68,68,.18);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:rgba(239,68,68,.06)}
+.breach-hdr-left{display:flex;align-items:center;gap:10px}
+.breach-icon{width:36px;height:36px;border-radius:10px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.breach-icon svg{width:18px;height:18px;stroke:#f87171;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.breach-title{font-size:15px;font-weight:700;color:#fca5a5}
+.breach-sub{font-size:11.5px;color:#94a3b8;margin-top:2px}
+.breach-count-pill{background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.3);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;color:#f87171;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+
+.breach-controls{padding:12px 20px;background:rgba(239,68,68,.04);border-bottom:1px solid rgba(239,68,68,.1);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.bc-label{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px}
+.bc-input{width:80px;padding:7px 10px;border:1px solid rgba(239,68,68,.3);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#fca5a5;background:rgba(239,68,68,.08);outline:none;text-align:center}
+.bc-input:focus{border-color:rgba(239,68,68,.7);box-shadow:0 0 0 3px rgba(239,68,68,.12)}
+.bc-btn{padding:7px 14px;border:none;border-radius:10px;background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.35);color:#fca5a5;font-size:12px;font-weight:700;cursor:pointer;transition:.15s}
+.bc-btn:hover{background:rgba(239,68,68,.3);transform:translateY(-1px)}
+.bc-info{font-size:11.5px;color:#64748b}
+
+.panel-hdr,.breach-det-hdr{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.panel-hdr h2,.breach-det-hdr h2{font-size:14px;font-weight:700;color:#fff}
+.panel-hdr p,.breach-det-hdr p{font-size:11.5px;color:#94a3b8;margin-top:2px}
+
+table{width:100%;border-collapse:collapse}
+thead th{background:rgba(255,255,255,.04);padding:11px 18px;text-align:left;font-size:10.5px;font-weight:800;color:#7dd3fc;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid rgba(255,255,255,.07);white-space:nowrap}
+.breach-wrap thead th{color:#fca5a5;background:rgba(239,68,68,.07);border-bottom-color:rgba(239,68,68,.15)}
+tbody td{padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:middle;font-size:13px;color:#e2e8f0}
+.breach-wrap tbody td{border-bottom-color:rgba(239,68,68,.07)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,.03)}
+.breach-wrap tbody tr:hover{background:rgba(239,68,68,.04)}
+.mn{font-weight:700;color:#fff}.msub{font-size:11px;color:#94a3b8;margin-top:2px}
+
+.breach-low td{background:rgba(249,115,22,.03)}
+.breach-med td{background:rgba(239,68,68,.05)}
+.breach-high td{background:rgba(239,68,68,.1)}
+
+.pill{display:inline-block;padding:5px 10px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px}
+.pill.blue{color:#dbeafe;background:rgba(37,99,235,.22)}.pill.green{color:#dcfce7;background:rgba(22,163,74,.22)}
+.pill.amber{color:#fef3c7;background:rgba(217,119,6,.22)}.pill.orange{color:#ffedd5;background:rgba(249,115,22,.28)}
+.pill.red{color:#fee2e2;background:rgba(220,38,38,.22)}.pill.teal{color:#ccfbf1;background:rgba(13,148,136,.22)}
+.pill.breach-ok{color:#dcfce7;background:rgba(22,163,74,.2)}
+.pill.breach-warn{color:#ffedd5;background:rgba(249,115,22,.25)}
+.pill.breach-crit{color:#fee2e2;background:rgba(220,38,38,.28);box-shadow:0 0 8px rgba(239,68,68,.2)}
+
+.brow{display:flex;align-items:center;gap:8px}
+.bbg{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;min-width:80px}
+.bfill{height:100%;border-radius:999px}
+.btxt{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;min-width:48px;color:#e2e8f0}
+.chip{display:inline-block;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:4px 9px;font-size:12px;font-family:'JetBrains Mono',monospace;color:#dbeafe;font-weight:700}
+.sw{position:relative}.sw svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none}
+.srch{padding-left:32px;width:220px}
+
+.pg{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:#cbd5e1;gap:10px;flex-wrap:wrap}
+.breach-wrap .pg{border-top-color:rgba(239,68,68,.15)}
+.pgb-wrap{display:flex;gap:5px}
+.pgb{padding:6px 10px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.05);cursor:pointer;font-size:12px;color:#e2e8f0;font-family:'Inter',sans-serif;transition:.15s}
+.pgb:hover:not(:disabled),.pgb.active{background:linear-gradient(135deg,#0ea5e9,#2563eb 60%,#8b5cf6);color:#fff;border-color:transparent}
+.pgb:disabled{opacity:.3;cursor:not-allowed}
+.breach-wrap .pgb{border-color:rgba(239,68,68,.2);background:rgba(239,68,68,.06);color:#fca5a5}
+.breach-wrap .pgb:hover:not(:disabled),.breach-wrap .pgb.active{background:rgba(239,68,68,.3);border-color:rgba(239,68,68,.5);color:#fff}
+
+.c2{border-radius:999px;padding:4px 9px;font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;background:rgba(220,38,38,.28);color:#fee2e2;border:1px solid rgba(239,68,68,.35);box-shadow:0 0 6px rgba(239,68,68,.15)}
+.c3{border-radius:999px;padding:4px 9px;font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;background:rgba(217,119,6,.22);color:#fef3c7}
+.c4{border-radius:999px;padding:4px 9px;font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;background:rgba(22,163,74,.22);color:#dcfce7}
+.c5{border-radius:999px;padding:4px 9px;font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;background:rgba(100,116,139,.22);color:#e2e8f0}
+.empty-row{text-align:center;padding:36px;color:#94a3b8;font-size:13px}
+
+.login-overlay{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(2,6,23,.72);backdrop-filter:blur(12px)}
+.login-box{width:min(480px,100%);padding:28px;border-radius:28px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(15,23,42,.9),rgba(15,23,42,.8)),radial-gradient(circle at top,rgba(56,189,248,.12),transparent 52%);box-shadow:0 24px 80px rgba(2,6,23,.55),var(--glow);position:relative;overflow:hidden}
+.login-box::before{content:'';position:absolute;inset:0;background:linear-gradient(120deg,rgba(56,189,248,.06),transparent 38%,rgba(139,92,246,.08));pointer-events:none}
+.login-logo{width:64px;height:64px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0ea5e9,#2563eb 55%,#8b5cf6);box-shadow:0 12px 28px rgba(37,99,235,.34)}
+.login-logo svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2}
+.login-box h2{margin-top:18px;font-size:30px;letter-spacing:-1px;color:#fff}
+.login-box p{margin-top:8px;color:#94a3b8;line-height:1.7;font-size:13px}
+.login-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:12px}
+.login-help{margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.login-status{min-height:20px;font-size:12px;color:#fca5a5;font-weight:600}
+.hidden{display:none!important}
+.top-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lock-btn{display:inline-flex;align-items:center;gap:7px}
+.lock-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+
+.copy-breach-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid rgba(239,68,68,.3);border-radius:12px;background:rgba(239,68,68,.1);color:#fca5a5;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;font-family:'Inter',sans-serif}
+.copy-breach-btn:hover{background:rgba(239,68,68,.2);transform:translateY(-1px)}
+.copy-breach-btn svg{stroke:#f87171;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── Responsive ── */
+@media(max-width:1400px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){header{width:calc(100% - 18px);height:auto;padding:16px;top:36px;border-radius:18px}.login-row{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr}.srch{width:100%}}
+@media(max-width:520px){main{padding:16px 12px 48px}header{margin-top:10px}.hdr-r{display:none}}
+
+
+/* ─── DATE NAV BAR ─────────────────────────────────────────────────────────── */
+.date-nav-bar{
+  display:none;align-items:center;gap:10px;background:linear-gradient(180deg,rgba(15,23,42,.6),rgba(15,23,42,.45));
+  border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:12px 14px;
+  margin-bottom:14px;box-shadow:var(--shadow);backdrop-filter:blur(14px);
+}
+.date-nav-bar.on{display:flex}
+.dnb-nav{
+  width:34px;height:34px;border:none;border-radius:10px;cursor:pointer;flex-shrink:0;
+  background:rgba(255,255,255,.07);color:#94a3b8;font-size:14px;
+  display:flex;align-items:center;justify-content:center;transition:.15s;
+}
+.dnb-nav:hover{background:rgba(56,189,248,.2);color:#38bdf8}
+.dnb-scroll{
+  display:flex;gap:7px;overflow-x:auto;flex:1;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.12) transparent;
+  padding-bottom:2px;
+}
+.dnb-scroll::-webkit-scrollbar{height:4px}
+.dnb-scroll::-webkit-scrollbar-track{background:transparent}
+.dnb-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:99px}
+.dnb-all,.dnb-pill{
+  flex-shrink:0;padding:7px 13px;border:1px solid rgba(255,255,255,.09);border-radius:12px;
+  font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;
+  background:rgba(255,255,255,.05);color:#64748b;white-space:nowrap;transition:.15s;
+}
+.dnb-all:hover,.dnb-pill:hover{background:rgba(255,255,255,.09);color:#94a3b8}
+.dnb-all.active{background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.45);color:#38bdf8}
+.dnb-pill.active{
+  background:linear-gradient(135deg,rgba(14,165,233,.22),rgba(37,99,235,.22));
+  border-color:rgba(56,189,248,.55);color:#f0f6ff;
+}
+.dnb-count{font-size:10px;font-family:'JetBrains Mono',monospace;opacity:.75;margin-left:4px}
+.dnb-info-bar{
+  display:none;align-items:center;gap:10px;margin-bottom:14px;
+  padding:10px 14px;border-radius:14px;font-size:12px;
+  background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.18);
+  color:#7dd3fc;flex-wrap:wrap;
+}
+.dnb-info-bar.on{display:flex}
+.dnb-info-badge{
+  display:inline-flex;align-items:center;gap:5px;background:rgba(56,189,248,.14);
+  border:1px solid rgba(56,189,248,.25);border-radius:999px;padding:4px 11px;
+  font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#bae6fd;
+}
+.dnb-clear-btn{
+  margin-left:auto;padding:5px 11px;border:1px solid rgba(255,255,255,.1);border-radius:9px;
+  background:rgba(255,255,255,.05);color:#94a3b8;font-size:11px;font-weight:600;
+  cursor:pointer;transition:.15s;white-space:nowrap;
+}
+.dnb-clear-btn:hover{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3);color:#f87171}
+
+/* ─── COMPARISON FILE UPLOAD ────────────────────────────────────────────────── */
+.cmp-up-row{
+  display:flex;align-items:stretch;gap:12px;margin-bottom:18px;flex-wrap:wrap;
+}
+.cmp-up-zone{
+  position:relative;flex:1;min-width:260px;padding:16px 20px;
+  background:rgba(15,23,42,.55);border:1.5px dashed rgba(125,211,252,.28);
+  border-radius:16px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:12px;
+  box-shadow:var(--shadow);backdrop-filter:blur(12px);
+}
+.cmp-up-zone:hover,.cmp-up-zone.drag{border-color:rgba(56,189,248,.7);background:rgba(56,189,248,.06)}
+.cmp-up-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.cmp-up-ico{
+  width:36px;height:36px;flex-shrink:0;border-radius:11px;
+  background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(139,92,246,.15));
+  display:flex;align-items:center;justify-content:center;
+}
+.cmp-up-ico svg{width:16px;height:16px;stroke:#7dd3fc;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cmp-up-txt h4{font-size:12.5px;font-weight:700;color:#e2e8f0;margin-bottom:2px}
+.cmp-up-txt p{font-size:11px;color:#64748b}
+.cmp-loaded{
+  flex:1;min-width:260px;display:none;padding:14px 18px;align-items:center;gap:12px;
+  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.28);
+  border-radius:16px;box-shadow:var(--shadow);backdrop-filter:blur(12px);
+}
+.cmp-loaded.on{display:flex}
+.cmp-loaded svg{stroke:#22c55e;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.cmp-loaded-info{flex:1;min-width:0}
+.cmp-loaded-name{font-size:12px;font-weight:700;color:#bbf7d0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmp-loaded-sub{font-size:11px;color:#6ee7b7;margin-top:2px}
+.cmp-clear{
+  padding:6px 12px;border:1px solid rgba(239,68,68,.3);border-radius:9px;
+  background:rgba(239,68,68,.1);color:#fca5a5;font-size:11px;font-weight:700;
+  cursor:pointer;transition:.15s;white-space:nowrap;font-family:'Inter',sans-serif;
+}
+.cmp-clear:hover{background:rgba(239,68,68,.22)}
+.cmp-mode-badge{
+  display:inline-flex;gap:5px;align-items:center;padding:5px 11px;border-radius:999px;
+  font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;
+  background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.3);color:#c4b5fd;
+  margin-left:auto;white-space:nowrap;
+}
+
+/* ═══════════════ COMPARISON SECTION ═══════════════ */
+.tab-bar{display:flex;gap:6px;margin:0 auto 20px;max-width:1360px;padding:0 20px;flex-wrap:wrap}
+.tab-btn{
+  padding:11px 20px;border:none;border-radius:14px;font-family:'Inter',sans-serif;
+  font-size:13px;font-weight:600;cursor:pointer;transition:.2s;
+  background:rgba(255,255,255,.06);color:#94a3b8;border:1px solid rgba(255,255,255,.08);
+}
+.tab-btn.active{
+  background:linear-gradient(135deg,#0ea5e9,#2563eb 55%,#8b5cf6);color:#fff;
+  border-color:transparent;box-shadow:0 8px 20px rgba(37,99,235,.28);
+}
+.tab-btn svg{width:15px;height:15px;margin-right:6px;vertical-align:-2px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.cmp-section{display:none}
+.cmp-section.active{display:block}
+
+.period-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.period-btn{
+  padding:9px 18px;border:1px solid rgba(255,255,255,.1);border-radius:12px;
+  font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;
+  background:rgba(255,255,255,.05);color:#94a3b8;transition:.18s;
+}
+.period-btn.active{
+  background:rgba(56,189,248,.15);border-color:rgba(56,189,248,.5);color:#38bdf8;
+}
+.period-lbl{font-size:12px;color:#64748b;margin-left:6px}
+
+/* Trend KPI cards */
+.trend-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.tcard{
+  background:linear-gradient(180deg,rgba(15,23,42,.7),rgba(15,23,42,.5));
+  border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:18px 20px;
+  box-shadow:var(--shadow);backdrop-filter:blur(14px);position:relative;overflow:hidden;
+}
+.tcard::before{content:'';position:absolute;inset:0 0 auto;height:3px}
+.tcard.tc-blue::before{background:linear-gradient(90deg,#38bdf8,#2563eb)}
+.tcard.tc-green::before{background:linear-gradient(90deg,#34d399,#16a34a)}
+.tcard.tc-amber::before{background:linear-gradient(90deg,#fbbf24,#f59e0b)}
+.tcard.tc-red::before{background:linear-gradient(90deg,#f87171,#ef4444)}
+.tcard.tc-violet::before{background:linear-gradient(90deg,#c084fc,#8b5cf6)}
+.tc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.tc-label{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
+.tc-badge{font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;font-family:'JetBrains Mono',monospace}
+.tc-badge.up-good{color:#dcfce7;background:rgba(34,197,94,.18)}
+.tc-badge.up-bad{color:#fee2e2;background:rgba(239,68,68,.18)}
+.tc-badge.dn-good{color:#dcfce7;background:rgba(34,197,94,.18)}
+.tc-badge.dn-bad{color:#fee2e2;background:rgba(239,68,68,.18)}
+.tc-badge.neutral{color:#dbeafe;background:rgba(56,189,248,.15)}
+.tc-val{font-size:30px;font-weight:800;letter-spacing:-1.2px;color:#f0f6ff;line-height:1.1}
+.tc-unit{font-size:13px;font-weight:600;opacity:.65;margin-left:2px}
+.tc-sub{font-size:11px;color:#64748b;margin-top:6px}
+.tc-prev{font-size:11px;color:#475569;margin-top:3px}
+
+/* Charts grid */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.chart-card{
+  background:linear-gradient(180deg,rgba(15,23,42,.7),rgba(15,23,42,.5));
+  border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:20px;
+  box-shadow:var(--shadow);backdrop-filter:blur(14px);
+}
+.chart-card.wide{grid-column:1 / -1}
+.cc-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cc-title{font-size:13px;font-weight:700;color:#fff}
+.cc-sub{font-size:11px;color:#64748b;margin-top:2px}
+.chart-wrap{position:relative;height:220px}
+.chart-wrap canvas{width:100%!important;height:100%!important}
+
+/* Insights panel */
+.insights-panel{
+  background:linear-gradient(180deg,rgba(15,23,42,.7),rgba(15,23,42,.5));
+  border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:20px;
+  margin-bottom:20px;box-shadow:var(--shadow);backdrop-filter:blur(14px);
+}
+.ins-hdr{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#7dd3fc;margin-bottom:14px}
+.ins-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.ins-card{
+  padding:13px 15px;border-radius:14px;display:flex;align-items:flex-start;gap:11px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+}
+.ins-ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.ins-title{font-size:12px;font-weight:700;color:#e2e8f0;margin-bottom:3px}
+.ins-body{font-size:11.5px;color:#94a3b8;line-height:1.5}
+
+/* Day-by-day table */
+.cmp-table-wrap{
+  background:linear-gradient(180deg,rgba(15,23,42,.7),rgba(15,23,42,.5));
+  border:1px solid rgba(255,255,255,.08);border-radius:20px;
+  overflow:hidden;box-shadow:var(--shadow);backdrop-filter:blur(14px);margin-bottom:20px;
+}
+.cmp-table-hdr{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between}
+.cmp-table-hdr h2{font-size:14px;font-weight:700;color:#fff}
+.cmp-table-hdr p{font-size:11.5px;color:#94a3b8;margin-top:2px}
+.cmp-tbl{width:100%;border-collapse:collapse}
+.cmp-tbl thead th{
+  background:rgba(255,255,255,.04);padding:11px 16px;text-align:center;
+  font-size:10px;font-weight:800;color:#7dd3fc;text-transform:uppercase;
+  letter-spacing:.7px;border-bottom:1px solid rgba(255,255,255,.07);white-space:nowrap;
+}
+.cmp-tbl thead th:first-child{text-align:left}
+.cmp-tbl tbody td{
+  padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:12.5px;color:#e2e8f0;text-align:center;vertical-align:middle;
+}
+.cmp-tbl tbody td:first-child{text-align:left;font-weight:700;font-family:'JetBrains Mono',monospace;color:#93c5fd}
+.cmp-tbl tbody tr:last-child td{border-bottom:none}
+.cmp-tbl tbody tr:hover{background:rgba(255,255,255,.025)}
+.cmp-tbl tbody tr.best-row td{background:rgba(34,197,94,.05)}
+.cmp-tbl tbody tr.worst-row td{background:rgba(239,68,68,.05)}
+.cmp-tbl .avg-row td{background:rgba(56,189,248,.06);border-top:1px solid rgba(56,189,248,.15);font-weight:700}
+.spark{display:inline-flex;align-items:center;gap:4px}
+.spark-arrow{font-size:11px}
+.up-good-txt{color:#22c55e}.up-bad-txt{color:#ef4444}.dn-good-txt{color:#22c55e}.dn-bad-txt{color:#ef4444}.neutral-txt{color:#94a3b8}
+
+.no-date-msg{
+  background:linear-gradient(180deg,rgba(15,23,42,.7),rgba(15,23,42,.5));
+  border:1px solid rgba(255,255,255,.08);border-radius:20px;
+  padding:48px 24px;text-align:center;backdrop-filter:blur(14px);
+}
+.no-date-msg h3{color:#fff;font-size:16px;margin-bottom:8px}
+.no-date-msg p{color:#64748b;font-size:13px;max-width:480px;margin:0 auto;line-height:1.7}
+
+@media(max-width:1100px){.charts-grid{grid-template-columns:1fr}.trend-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.trend-grid{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body class="locked">
+
+<div class="ticker">
+  <div class="ticker-track">
+    <span>JobinTech</span><span>·</span><span>triage tat dashboard</span><span>·</span>
+    <span>JobinTech</span><span>·</span><span>triage tat dashboard</span><span>·</span>
+    <span>JobinTech</span><span>·</span><span>triage tat dashboard</span><span>·</span>
+  </div>
+</div>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg viewBox="0 0 24 24"><path d="M12 1l8 4v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+    </div>
+    <h2>Triage TAT</h2>
+    <p>Emergency Department · Daily KPI Report.</p>
+    <div class="login-row">
+      <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="current-password">
+      <button class="login-btn" id="loginBtn">Unlock →</button>
+    </div>
+    <div class="login-help">
+      <div class="login-status" id="loginStatus"></div>
+      <div style="font-size:11px;color:#64748b">Press Enter to login</div>
+    </div>
+  </div>
+</div>
+
+<div class="app-shell" id="appShell">
+  <header>
+    <div class="hdr-l">
+      <div class="hdr-logo">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div>
+        <div class="hdr-title">Triage TAT Operations Dashboard</div>
+        <div class="hdr-sub">Emergency Department · Daily KPI Report</div>
+      </div>
+    </div>
+    <div class="hdr-r">
+      <div class="dot"></div>
+      <div class="hdr-date" id="hdr-date">—</div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ═══ TAB NAVIGATION ═══ -->
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab-kpi" onclick="switchTab('kpi')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        KPI Dashboard
+      </button>
+      <button class="tab-btn" id="tab-compare" onclick="switchTab('compare')">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Trend Comparison
+      </button>
+    </div>
+
+    <!-- ═══ SECTION WRAPPERS ═══ -->
+    <div id="sec-kpi" class="cmp-section active">
+
+    <div class="top-actions" style="margin-bottom:18px">
+      <button class="lock-btn" onclick="lockDashboard()">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>
+        Lock Dashboard
+      </button>
+    </div>
+
+    <div class="upload" id="upload">
+      <input type="file" id="fileinp" accept=".xlsx,.xls,.csv">
+      <div class="up-ico">
+        <svg viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
+      </div>
+      <h2>Upload Daily Triage TAT File</h2>
+      <p>Drop your Excel or CSV file here, or click to browse</p>
+      <div class="exts"><span class="ext">.xlsx</span><span class="ext">.xls</span><span class="ext">.csv</span></div>
+    </div>
+
+    <div class="filebar" id="filebar">
+      <svg width="15" height="15" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      <div><b id="fb-name">—</b>&nbsp;<span id="fb-count"></span></div>
+    </div>
+
+    
+    <!-- DATE NAVIGATION BAR -->
+    <div class="date-nav-bar" id="date-nav-bar">
+      <button class="dnb-nav" onclick="navDate(-1)" title="Previous date">◀</button>
+      <div class="dnb-scroll" id="dnb-scroll">
+        <button class="dnb-all active" id="dnb-all-btn" onclick="selectDate('')">
+          All Dates <span class="dnb-count" id="dnb-all-count"></span>
+        </button>
+        <!-- date pills injected by JS -->
+      </div>
+      <button class="dnb-nav" onclick="navDate(1)" title="Next date">▶</button>
+    </div>
+    <div class="dnb-info-bar" id="dnb-info-bar">
+      <span>📅 Viewing:</span>
+      <span class="dnb-info-badge" id="dnb-info-badge">—</span>
+      <button class="dnb-clear-btn" onclick="selectDate('')">✕ Clear Filter</button>
+    </div>
+
+    <div class="filters" id="filters">
+      <div class="filt-hdr">
+        <h3>Filters</h3>
+        <span style="font-size:11.5px;color:#94a3b8">All KPIs recalculate on apply</span>
+      </div>
+      <div class="filt-grid">
+        <div class="fg"><label>Speciality</label><select id="f-spec"><option value="">All Specialities</option></select></div>
+        <div class="fg"><label>Triage Doctor</label><select id="f-doc"><option value="">All Doctors</option></select></div>
+        <div class="fg"><label>ER Status</label><select id="f-status"><option value="">All Statuses</option></select></div>
+        <div class="fg"><label>CTAS Level</label><select id="f-ctas"><option value="">All Levels</option></select></div>
+        <div class="fg"><label>Arrival Mode</label><select id="f-arr"><option value="">All Modes</option></select></div>
+      </div>
+      <div class="filt-actions">
+        <button class="btn-apply" onclick="applyF()">Apply Filters</button>
+        <button class="btn-rst" onclick="resetF()">Reset</button>
+      </div>
+    </div>
+
+    <div class="actbar" id="actbar">
+      <button class="btn-dl" onclick="dlExcel()">
+        <svg width="14" height="14" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Summary Excel
+      </button>
+      <div class="rec-pill" id="rec-pill">—</div>
+    </div>
+
+    <div class="kpi-wrap" id="kpi-wrap">
+      <div class="sec-lbl">Key Performance Indicators</div>
+      <div class="kpi-grid" id="kpi-grid"></div>
+    </div>
+
+    <div class="panel" id="sum-wrap">
+      <div class="panel-hdr">
+        <div><h2>KPI Summary Table</h2><p id="sum-sub">—</p></div>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>#</th><th>Metric</th><th>Value</th><th>Percentage</th><th>Count</th><th>Base (n)</th></tr></thead>
+          <tbody id="sum-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="breach-wrap" id="breach-wrap">
+      <div class="breach-hdr">
+        <div class="breach-hdr-left">
+          <div class="breach-icon">
+            <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div>
+            <div class="breach-title">
+              🔴 Red Category — Doctor Seen &gt; 40 min Breach
+              <span style="display:inline-block;margin-left:10px;padding:3px 10px;border-radius:99px;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:rgba(239,68,68,.25);border:1px solid rgba(239,68,68,.5);color:#f87171">RED CATEGORY ONLY</span>
+            </div>
+            <div class="breach-sub">CTAS Level 1 &amp; 2 (Red · Emergent · Resuscitation) patients only · Doctor TAT (E−D) exceeded threshold · sorted longest wait first</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div id="red-base-pill" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);border-radius:999px;padding:6px 12px;font-size:11px;font-weight:600;color:#fca5a5;font-family:'JetBrains Mono',monospace;white-space:nowrap">Red patients: 0</div>
+          <button class="copy-breach-btn" onclick="copyBreach()">
+            <svg width="13" height="13" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copy List
+          </button>
+          <div class="breach-count-pill" id="breach-count-pill">0 breached</div>
+        </div>
+      </div>
+      <div class="breach-controls">
+        <span class="bc-label">Threshold:</span>
+        <input class="bc-input" type="number" id="bc-thresh" value="40" min="1" max="999">
+        <span class="bc-label" style="margin-left:-6px">minutes</span>
+        <button class="bc-btn" onclick="applyBreach()">Apply</button>
+        <span class="bc-info">
+          🔴 <strong>Red category (CTAS 1 &amp; 2) patients only</strong> &nbsp;·&nbsp;
+          🟠 40–60 min &nbsp;|&nbsp; 🔴 &gt;60 min &nbsp;|&nbsp; 🔴🔴 &gt;90 min
+        </span>
+      </div>
+      <div class="breach-det-hdr">
+        <div><h2>Breach Patient Details</h2><p id="breach-sub">—</p></div>
+        <div class="sw">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input class="srch" id="breach-srch" type="text" placeholder="Token, patient, doctor…" oninput="doBreachSearch()">
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>Rank</th><th>Token</th><th>Patient Name</th><th>Age / Gender</th>
+            <th>CTAS Level</th><th>Triage Doctor</th><th>Encounter Doctor</th><th>Speciality</th>
+            <th>Triage End Time (C)</th><th>Encounter Time (D)</th><th>Doctor Seen Time (E)</th>
+            <th>Doctor TAT (E−D) min</th><th>Triage TAT (B−A) min</th><th>ER Status</th><th>Arrival Mode</th>
+          </tr></thead>
+          <tbody id="breach-body"></tbody>
+        </table>
+      </div>
+      <div class="pg">
+        <span id="breach-pg-info">—</span>
+        <div class="pgb-wrap" id="breach-pgb-wrap"></div>
+      </div>
+    </div>
+
+    <div class="panel" id="det-wrap">
+      <div class="panel-hdr">
+        <div><h2>All Patient Detail</h2><p id="det-sub">—</p></div>
+        <div class="sw">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input class="srch" id="srch" type="text" placeholder="Token, patient, doctor…" oninput="doSearch()">
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>Token</th><th>Patient Name</th>
+            <th>Token→Triage (min)</th><th>Triage End (C)</th>
+            <th>Doctor Seen (E)</th><th>Doctor TAT (E−D) min</th>
+            <th>CTAS Level</th><th>Speciality</th><th>Triage Doctor</th><th>ER Status</th>
+          </tr></thead>
+          <tbody id="det-body"></tbody>
+        </table>
+      </div>
+      <div class="pg">
+        <span id="pg-info">—</span>
+        <div class="pgb-wrap" id="pgb-wrap"></div>
+      </div>
+    </div>
+  
+    </div><!-- /sec-kpi -->
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         COMPARISON SECTION
+         ═══════════════════════════════════════════════════════════════ -->
+    <div id="sec-compare" class="cmp-section">
+
+      
+      <!-- COMPARISON FILE UPLOAD -->
+      <div class="cmp-up-row">
+        <div class="cmp-up-zone" id="cmp-up-zone">
+          <input type="file" id="cmp-file-inp" accept=".xlsx,.xls,.csv">
+          <div class="cmp-up-ico">
+            <svg viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
+          </div>
+          <div class="cmp-up-txt">
+            <h4>Upload Comparison File <span style="font-weight:400;color:#64748b;font-size:10.5px">(optional)</span></h4>
+            <p>Drop a second .xlsx / .xls / .csv file to compare datasets side-by-side</p>
+          </div>
+          <span class="cmp-mode-badge" id="cmp-mode-badge">📊 Period mode</span>
+        </div>
+        <div class="cmp-loaded" id="cmp-loaded">
+          <svg width="16" height="16" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <div class="cmp-loaded-info">
+            <div class="cmp-loaded-name" id="cmp-loaded-name">—</div>
+            <div class="cmp-loaded-sub" id="cmp-loaded-sub">—</div>
+          </div>
+          <button class="cmp-clear" onclick="clearCmpFile()">✕ Remove</button>
+        </div>
+      </div>
+
+      <div class="period-bar">
+        <button class="period-btn active" id="pb7"  onclick="setPeriod(7)">📅 Last 7 Days</button>
+        <button class="period-btn"        id="pb30" onclick="setPeriod(30)">📆 Last 30 Days</button>
+        <span class="period-lbl" id="cmp-range-lbl">—</span>
+      </div>
+
+      <!-- Trend KPI summary cards -->
+      <div class="trend-grid" id="trend-grid">
+        <div class="tcard tc-blue">
+          <div class="tc-top"><span class="tc-label">Avg Daily Volume</span><span class="tc-badge neutral" id="tv-vol-badge">—</span></div>
+          <div class="tc-val" id="tv-vol">—<span class="tc-unit">pts/day</span></div>
+          <div class="tc-sub" id="tv-vol-sub">—</div>
+          <div class="tc-prev" id="tv-vol-prev">—</div>
+        </div>
+        <div class="tcard tc-green">
+          <div class="tc-top"><span class="tc-label">Avg ≤ 5 min Compliance</span><span class="tc-badge neutral" id="tv-comp-badge">—</span></div>
+          <div class="tc-val" id="tv-comp">—<span class="tc-unit">%</span></div>
+          <div class="tc-sub" id="tv-comp-sub">—</div>
+          <div class="tc-prev" id="tv-comp-prev">—</div>
+        </div>
+        <div class="tcard tc-violet">
+          <div class="tc-top"><span class="tc-label">Avg Doctor TAT</span><span class="tc-badge neutral" id="tv-dtat-badge">—</span></div>
+          <div class="tc-val" id="tv-dtat">—<span class="tc-unit">min</span></div>
+          <div class="tc-sub" id="tv-dtat-sub">—</div>
+          <div class="tc-prev" id="tv-dtat-prev">—</div>
+        </div>
+        <div class="tcard tc-red">
+          <div class="tc-top"><span class="tc-label">Avg Red Breach Rate</span><span class="tc-badge neutral" id="tv-breach-badge">—</span></div>
+          <div class="tc-val" id="tv-breach">—<span class="tc-unit">%</span></div>
+          <div class="tc-sub" id="tv-breach-sub">—</div>
+          <div class="tc-prev" id="tv-breach-prev">—</div>
+        </div>
+      </div>
+
+      <!-- 4 Charts -->
+      <div class="charts-grid">
+
+        <div class="chart-card">
+          <div class="cc-hdr">
+            <div><div class="cc-title">Daily Patient Volume</div><div class="cc-sub">Total triage-completed patients per day</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartVolume"></canvas></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="cc-hdr">
+            <div><div class="cc-title">Token → Triage ≤ 5 min Compliance</div><div class="cc-sub">% of patients triaged within target (0–5 min)</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartCompliance"></canvas></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="cc-hdr">
+            <div><div class="cc-title">Average Doctor TAT (E−D) min</div><div class="cc-sub">Daily mean triage-to-doctor time</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartDoctorTat"></canvas></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="cc-hdr">
+            <div><div class="cc-title">Red Category Breach Rate</div><div class="cc-sub">% of CTAS 1 &amp; 2 patients with Doctor TAT &gt; threshold</div></div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartBreach"></canvas></div>
+        </div>
+
+        <div class="chart-card wide">
+          <div class="cc-hdr">
+            <div><div class="cc-title">Token→Triage Average TAT — Daily Trend</div><div class="cc-sub">Current period vs previous period (dashed)</div></div>
+          </div>
+          <div class="chart-wrap" style="height:200px"><canvas id="chartTat"></canvas></div>
+        </div>
+
+      </div>
+
+      <!-- Key Insights -->
+      <div class="insights-panel" id="insights-panel">
+        <div class="ins-hdr">💡 Key Insights &amp; Alerts</div>
+        <div class="ins-grid" id="ins-grid"><div class="ins-card"><div class="ins-ico">⏳</div><div><div class="ins-title">Waiting for data</div><div class="ins-body">Upload a file with date information to generate insights.</div></div></div></div>
+      </div>
+
+      <!-- Day-by-Day Table -->
+      <div class="cmp-table-wrap" id="cmp-table-wrap">
+        <div class="cmp-table-hdr">
+          <div><h2>Day-by-Day Performance Table</h2><p id="cmp-table-sub">—</p></div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="cmp-tbl">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Patients</th>
+                <th>Avg TAT (min)</th>
+                <th>≤ 5 min %</th>
+                <th>5–10 min %</th>
+                <th>10–15 min %</th>
+                <th>Avg Doctor TAT</th>
+                <th>Red Pts</th>
+                <th>Breach n</th>
+                <th>Breach %</th>
+              </tr>
+            </thead>
+            <tbody id="cmp-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- No date message (shown when data has no date info) -->
+      <div class="no-date-msg" id="no-date-msg" style="display:none">
+        <h3>📅 No date information found</h3>
+        <p>The uploaded file doesn't appear to contain recognisable date/time values in the Triage End Time, Encounter Time, or Doctor Seen Time columns. Please check that timestamps are included in your data.</p>
+      </div>
+
+    </div><!-- /sec-compare -->
+
+  </main>
+</div>
+
+<script>
+// ── AUTH ──────────────────────────────────────────────────
+const PASSWORD_HASH='4f5f4e766fc5f679561988e197d7521666a10004010de88e5e92290fa9e09d50';
+const SESSION_KEY='kadesh_dashboard_auth';
+
+async function sha256(t){
+  const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));
+  return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+async function attemptLogin(){
+  const inp=document.getElementById('passwordInput');
+  const st=document.getElementById('loginStatus');
+  const v=inp.value.trim();
+  if(!v){st.textContent='Please enter the password.';inp.focus();return;}
+  st.style.color='#93c5fd';st.textContent='Checking…';
+  try{
+    const h=await sha256(v);
+    if(h===PASSWORD_HASH){sessionStorage.setItem(SESSION_KEY,'1');unlockDashboard();}
+    else{st.style.color='#fca5a5';st.textContent='Incorrect password.';inp.value='';inp.focus();}
+  }catch(e){st.style.color='#fca5a5';st.textContent='Unable to verify.';}
+}
+function unlockDashboard(){
+  document.body.classList.remove('locked');
+  document.getElementById('loginOverlay').classList.add('hidden');
+  document.getElementById('passwordInput').value='';
+  document.getElementById('loginStatus').textContent='';
+}
+function lockDashboard(){
+  sessionStorage.removeItem(SESSION_KEY);
+  document.body.classList.add('locked');
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  const inp=document.getElementById('passwordInput');
+  inp.value='';document.getElementById('loginStatus').textContent='';
+  setTimeout(()=>inp.focus(),120);
+}
+document.getElementById('loginBtn').addEventListener('click',attemptLogin);
+document.getElementById('passwordInput').addEventListener('keydown',e=>{if(e.key==='Enter')attemptLogin();});
+(function initAuth(){
+  if(sessionStorage.getItem(SESSION_KEY)==='1')unlockDashboard();
+  else{document.body.classList.add('locked');setTimeout(()=>document.getElementById('passwordInput').focus(),120);}
+})();
+
+// ── STATE ─────────────────────────────────────────────────
+let ALL=[],FILT=[],DET=[],DET_VIEW=[],BREACH_ALL=[],BREACH_VIEW=[];
+let PAGE=1,BREACH_PAGE=1;
+const PER=25,BREACH_PER=25;
+let FNAME='';
+
+// ── INIT ──────────────────────────────────────────────────
+document.getElementById('hdr-date').textContent=
+  new Date().toLocaleDateString('en-AE',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+
+const uploadEl=document.getElementById('upload');
+const fileInp=document.getElementById('fileinp');
+uploadEl.addEventListener('dragover',e=>{e.preventDefault();uploadEl.classList.add('drag');});
+uploadEl.addEventListener('dragleave',()=>uploadEl.classList.remove('drag'));
+uploadEl.addEventListener('drop',e=>{e.preventDefault();uploadEl.classList.remove('drag');if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0]);});
+fileInp.addEventListener('change',()=>{if(fileInp.files[0])loadFile(fileInp.files[0]);});
+
+// ── UTILS ─────────────────────────────────────────────────
+function stripKey(s){return String(s||'').replace(/\s+/g,'').toLowerCase();}
+function buildLookup(obj){const m={};for(const k of Object.keys(obj||{}))m[stripKey(k)]=k;return m;}
+function getV(row,lup,col){const a=lup[col];return a?String(row[a]??'').trim():'';}
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function parseNum(v){if(v===null||v===undefined||v==='')return null;const n=parseFloat(String(v).replace(/,/g,'').trim());return isNaN(n)?null:n;}
+function fillSel(id,vals){const s=document.getElementById(id);const f=s.options[0];s.innerHTML='';s.appendChild(f);vals.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;s.appendChild(o);});}
+
+const COLS={
+  token:'tokenno',patient:'patientname',ageGender:'age|genger',
+  tat1:'triage1tat(b-a)min',triageEnd:'triageendttime(c)',encTime:'encountertime(d)',
+  docSeen:'doctorseentime(e)',doctorTat:'doctortat(e-d)min',speciality:'triagespeciality',
+  triageDoc:'triagedoctor',encDoctor:'encounterdoctor',erStatus:'erstatus',
+  ctas:'ctaslevel',arrival:'arrivalmode',
+};
+
+function loadFile(file){
+  FNAME=file.name;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const bytes=new Uint8Array(e.target.result);
+      const wb=XLSX.read(bytes,{type:'array',cellDates:false});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const raw=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});
+      parseRows(raw);
+    }catch(err){alert('Error reading file: '+err.message);}
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function parseRows(raw){
+  if(!raw||!raw.length){alert('No data found.');return;}
+  const lup=buildLookup(raw[0]);
+  ALL=raw.map(row=>{
+    const token=getV(row,lup,COLS.token);
+    if(!token)return null;
+    return{
+      token,patient:getV(row,lup,COLS.patient),ageGender:getV(row,lup,COLS.ageGender),
+      tat1:parseNum(getV(row,lup,COLS.tat1)),triageEnd:getV(row,lup,COLS.triageEnd),
+      encTime:getV(row,lup,COLS.encTime),docSeen:getV(row,lup,COLS.docSeen),
+      triageToDoc:parseNum(getV(row,lup,COLS.doctorTat)),speciality:getV(row,lup,COLS.speciality),
+      triageDoc:getV(row,lup,COLS.triageDoc),encDoctor:getV(row,lup,COLS.encDoctor),
+      erStatus:getV(row,lup,COLS.erStatus),ctas:getV(row,lup,COLS.ctas),
+      arrival:getV(row,lup,COLS.arrival),
+    };
+  }).filter(Boolean);
+  FILT=ALL.filter(r=>r.tat1!==null);
+  populateFilters();
+  ['filebar','filters','actbar','kpi-wrap','sum-wrap','breach-wrap','det-wrap'].forEach(id=>
+    document.getElementById(id).classList.add('on'));
+  document.getElementById('fb-name').textContent=FNAME||'Uploaded File';
+  document.getElementById('fb-count').textContent=
+    `· ${FILT.length} triage-completed records (${ALL.length} total rows)`;
+  renderAll();
+}
+
+function populateFilters(){
+  const base=ALL.filter(r=>r.tat1!==null);
+  const uniq=k=>[...new Set(base.map(r=>r[k]).filter(v=>v!==''))].sort();
+  fillSel('f-spec',uniq('speciality'));fillSel('f-doc',uniq('triageDoc'));
+  fillSel('f-status',uniq('erStatus'));fillSel('f-ctas',uniq('ctas'));fillSel('f-arr',uniq('arrival'));
+}
+
+function applyF(){
+  const spec=document.getElementById('f-spec').value,doc=document.getElementById('f-doc').value,
+    status=document.getElementById('f-status').value,ctas=document.getElementById('f-ctas').value,
+    arr=document.getElementById('f-arr').value;
+  FILT=ALL.filter(r=>r.tat1!==null&&(!spec||r.speciality===spec)&&(!doc||r.triageDoc===doc)&&
+    (!status||r.erStatus===status)&&(!ctas||r.ctas===ctas)&&(!arr||r.arrival===arr));
+  refreshDateFilter();
+  PAGE=1;BREACH_PAGE=1;renderAll();
+}
+function resetF(){
+  ['f-spec','f-doc','f-status','f-ctas','f-arr'].forEach(id=>document.getElementById(id).value='');
+  FILT=ALL.filter(r=>r.tat1!==null);refreshDateFilter();PAGE=1;BREACH_PAGE=1;renderAll();
+}
+
+function isRedCtas(ctas){
+  const v=String(ctas||'').toLowerCase();
+  return v.includes('level 1')||v.includes('level 2')||
+         v.includes('(red)')||v.includes('emergent')||v.includes('resuscitation');
+}
+
+// ══════════════════════════════════════════════════════════
+// calcKPI — added w1015n / w1015p for the 10–15 min bucket
+// ══════════════════════════════════════════════════════════
+function calcKPI(rows,threshMin){
+  const n=rows.length;
+  const tatVals=rows.map(r=>r.tat1).filter(v=>v!==null);
+  const avgTT=n?tatVals.reduce((a,b)=>a+b,0)/n:null;
+  const w5n=rows.filter(r=>r.tat1!==null&&r.tat1<=5).length;
+  const w5p=n?(w5n/n*100):null;
+  const w10n=rows.filter(r=>r.tat1!==null&&r.tat1>5&&r.tat1<=10).length;
+  const w10p=n?(w10n/n*100):null;
+  // ── NEW: 10–15 min bucket ──────────────────────────────
+  const w1015n=rows.filter(r=>r.tat1!==null&&r.tat1>10&&r.tat1<=15).length;
+  const w1015p=n?(w1015n/n*100):null;
+  // ──────────────────────────────────────────────────────
+  const tcRows=rows.filter(r=>r.triageToDoc!==null);
+  const tcN=tcRows.length;
+  const avgTC=tcN?tcRows.reduce((a,r)=>a+r.triageToDoc,0)/tcN:null;
+  const redRows=rows.filter(r=>isRedCtas(r.ctas));
+  const redN=redRows.length;
+  const redWithDocTat=redRows.filter(r=>r.triageToDoc!==null);
+  const breachRows=redRows.filter(r=>r.triageToDoc!==null&&r.triageToDoc>threshMin);
+  const breachN=breachRows.length;
+  const breachPct=redWithDocTat.length?(breachN/redWithDocTat.length*100):null;
+  const f1=v=>v!==null?v.toFixed(1):'—';
+  return{n,avgTT:f1(avgTT),w5n,w5p:f1(w5p),w10n,w10p:f1(w10p),
+    w1015n,w1015p:f1(w1015p),                        // ← new
+    tcN,avgTC:f1(avgTC),breachN,breachPct:f1(breachPct),
+    breachRows,redN,redWithDocTatN:redWithDocTat.length};
+}
+
+function renderAll(){
+  const thresh=parseInt(document.getElementById('bc-thresh').value)||40;
+  const kpi=calcKPI(getActiveFilt(),thresh);
+  document.getElementById('rec-pill').innerHTML=`<b>${getActiveFilt().length}</b> triage-completed records`;
+  renderKPI(kpi,thresh);
+  renderSummary(kpi,thresh);
+  renderBreach(kpi.breachRows,thresh);
+  DET=[...getActiveFilt()];DET_VIEW=[...DET];
+  document.getElementById('srch').value='';
+  PAGE=1;renderDetail();
+}
+function applyBreach(){renderAll();}
+
+// ══════════════════════════════════════════════════════════
+// renderKPI — 6 cards: avg / ≤5 / 5-10 / 10-15 / triage→doc / breach
+// ══════════════════════════════════════════════════════════
+function renderKPI(k,thresh){
+  const cards=[
+    {cls:'blue',
+     label:'Token → Triage Average',
+     val:k.avgTT,unit:k.avgTT!=='—'?'min':'',
+     n:k.n,nsub:'triage-completed patients',
+     foot:'Source: Triage1 TAT (B-A) column',
+     ico:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`},
+
+    {cls:'green',
+     label:'Token → Triage ≤ 5 min',
+     val:k.w5p!=='—'?k.w5p:'—',unit:k.w5p!=='—'?'%':'',
+     n:k.w5n,nsub:`of ${k.n} patients`,
+     foot:'TAT 0–5 minutes (within target)',
+     ico:`<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`},
+
+    {cls:'amber',
+     label:'Token → Triage 5–10 min',
+     val:k.w10p!=='—'?k.w10p:'—',unit:k.w10p!=='—'?'%':'',
+     n:k.w10n,nsub:`of ${k.n} patients`,
+     foot:'TAT above 5 up to 10 minutes',
+     ico:`<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`},
+
+    // ── NEW CARD ───────────────────────────────────────────
+    {cls:'orange',
+     label:'Token → Triage 10–15 min',
+     val:k.w1015p!=='—'?k.w1015p:'—',unit:k.w1015p!=='—'?'%':'',
+     n:k.w1015n,nsub:`of ${k.n} patients`,
+     foot:'TAT above 10 up to 15 minutes',
+     ico:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`},
+    // ──────────────────────────────────────────────────────
+
+    {cls:'teal',
+     label:'Triage → Doctor Average',
+     val:k.avgTC,unit:k.avgTC!=='—'?'min':'',
+     n:k.tcN,nsub:'records with Doctor TAT',
+     foot:'Doctor TAT (E-D) column',
+     ico:`<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>`},
+
+    {cls:'red',
+     label:`🔴 Red Category — Doctor > ${thresh} min`,
+     val:k.breachN,unit:'',
+     n:k.breachN,nsub:`of ${k.redN} red patients (${k.redWithDocTatN} with TAT data) · ${k.breachPct}%`,
+     foot:`CTAS Level 1 & 2 (Red/Emergent) only · Doctor TAT > ${thresh} min`,
+     ico:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`},
+  ];
+
+  document.getElementById('kpi-grid').innerHTML=cards.map(c=>`
+    <div class="kcard ${c.cls}">
+      <div class="k-top"><div class="k-ico">${c.ico}</div><span class="k-n">n = ${c.n}</span></div>
+      <div class="k-label">${c.label}</div>
+      <div class="k-val">${c.val}<span class="k-unit">${c.unit}</span></div>
+      <div class="k-foot">
+        <div class="k-sub"><b>${c.n}</b> ${c.nsub}</div>
+        <div class="k-sub" style="margin-top:2px">${c.foot}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════
+// renderSummary — 6 rows including the new 10–15 min row
+// ══════════════════════════════════════════════════════════
+function renderSummary(k,thresh){
+  document.getElementById('sum-sub').textContent=`${FILT.length} triage-completed patients · ${FNAME}`;
+  const rows=[
+    {i:1,cls:'blue',
+     name:'Token → Triage — Average TAT',sub:'Triage1 TAT (B-A)min column · minutes',
+     val:k.avgTT!=='—'?`${k.avgTT} min`:'—',pct:null,count:k.n,base:k.n},
+    {i:2,cls:'green',
+     name:'Token → Triage ≤ 5 min',sub:'Patients with TAT 0–5 min (within target)',
+     val:`${k.w5n} patients`,pct:k.w5p,pctColor:'#22c55e',count:k.w5n,base:k.n},
+    {i:3,cls:'amber',
+     name:'Token → Triage 5–10 min',sub:'Patients with TAT above 5 and up to 10 min',
+     val:`${k.w10n} patients`,pct:k.w10p,pctColor:'#f59e0b',count:k.w10n,base:k.n},
+    // ── NEW ROW ──────────────────────────────────────────
+    {i:4,cls:'orange',
+     name:'Token → Triage 10–15 min',sub:'Patients with TAT above 10 and up to 15 min',
+     val:`${k.w1015n} patients`,pct:k.w1015p,pctColor:'#f97316',count:k.w1015n,base:k.n},
+    // ─────────────────────────────────────────────────────
+    {i:5,cls:'teal',
+     name:'Triage → Consultation — Average',sub:'Doctor TAT (E-D) column · minutes',
+     val:k.avgTC!=='—'?`${k.avgTC} min`:'—',pct:null,count:k.tcN,base:k.n},
+    {i:6,cls:'red',
+     name:`🔴 Red Category — Doctor Seen > ${thresh} min`,
+     sub:`CTAS Level 1 & 2 (Red) patients where Doctor TAT exceeded ${thresh} minutes`,
+     val:`${k.breachN} patients`,pct:k.breachPct,pctColor:'#ef4444',
+     count:k.breachN,base:k.redWithDocTatN},
+  ];
+  document.getElementById('sum-body').innerHTML=rows.map(r=>`
+    <tr>
+      <td style="color:#94a3b8;font-family:'JetBrains Mono',monospace;font-size:11px">${r.i}</td>
+      <td><div class="mn">${r.name}</div><div class="msub">${r.sub}</div></td>
+      <td><span class="pill ${r.cls}">${r.val}</span></td>
+      <td>${r.pct!==null&&r.pct!=='—'
+        ?`<div class="brow"><div class="bbg"><div class="bfill" style="width:${Math.min(parseFloat(r.pct),100)}%;background:${r.pctColor}"></div></div><span class="btxt">${r.pct}%</span></div>`
+        :`<span style="color:#64748b;font-size:12px">—</span>`}</td>
+      <td><span class="chip">${r.count}</span></td>
+      <td style="color:#cbd5e1;font-size:12px;font-family:'JetBrains Mono',monospace">${r.base}</td>
+    </tr>`).join('');
+}
+
+// ── BREACH PANEL ──────────────────────────────────────────
+function renderBreach(breachRows,thresh){
+  const sorted=[...breachRows].sort((a,b)=>(b.triageToDoc||0)-(a.triageToDoc||0));
+  BREACH_ALL=sorted;BREACH_VIEW=[...sorted];
+  document.getElementById('breach-srch').value='';BREACH_PAGE=1;
+  const redBase=FILT.filter(r=>isRedCtas(r.ctas)).length;
+  document.getElementById('red-base-pill').textContent=`Red patients: ${redBase}`;
+  document.getElementById('breach-count-pill').textContent=`${sorted.length} breached (of ${redBase} red)`;
+  document.getElementById('breach-sub').textContent=
+    `${sorted.length} of ${redBase} Red Category (CTAS Level 1 & 2) patients had Doctor TAT > ${thresh} min · sorted longest wait first · ${FNAME}`;
+  renderBreachTable();
+}
+
+function doBreachSearch(){
+  const q=document.getElementById('breach-srch').value.trim().toLowerCase();
+  BREACH_VIEW=q?BREACH_ALL.filter(r=>
+    (r.token||'').toLowerCase().includes(q)||(r.patient||'').toLowerCase().includes(q)||
+    (r.triageDoc||'').toLowerCase().includes(q)||(r.encDoctor||'').toLowerCase().includes(q)||
+    (r.speciality||'').toLowerCase().includes(q)||(r.erStatus||'').toLowerCase().includes(q)||
+    (r.ctas||'').toLowerCase().includes(q)):[...BREACH_ALL];
+  BREACH_PAGE=1;renderBreachTable();
+}
+
+function breachPillCls(tat,thresh){
+  if(tat>60)return'pill breach-crit';
+  if(tat>thresh)return'pill breach-warn';
+  return'pill breach-ok';
+}
+function breachRowCls(tat){
+  if(tat>90)return'breach-high';
+  if(tat>60)return'breach-med';
+  return'breach-low';
+}
+
+function renderBreachTable(){
+  const total=BREACH_VIEW.length,pages=Math.max(1,Math.ceil(total/BREACH_PER));
+  if(BREACH_PAGE>pages)BREACH_PAGE=pages;
+  const s=(BREACH_PAGE-1)*BREACH_PER,e=s+BREACH_PER,rows=BREACH_VIEW.slice(s,e);
+  const thresh=parseInt(document.getElementById('bc-thresh').value)||40;
+  const tbody=document.getElementById('breach-body');
+  if(!rows.length){
+    tbody.innerHTML=`<tr><td colspan="15" class="empty-row">No breach records found.</td></tr>`;
+  }else{
+    tbody.innerHTML=rows.map((r,i)=>{
+      const globalRank=s+i+1,tat=r.triageToDoc;
+      return`<tr class="${breachRowCls(tat)}">
+        <td style="color:#94a3b8;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">${globalRank}</td>
+        <td><span class="chip">${esc(r.token)}</span></td>
+        <td><div class="mn">${esc(r.patient||'—')}</div></td>
+        <td style="font-size:12px;color:#94a3b8">${esc(r.ageGender||'—')}</td>
+        <td><span class="${getCtasClass(r.ctas)}">${esc(r.ctas||'—')}</span></td>
+        <td>${esc(r.triageDoc||'—')}</td>
+        <td style="font-weight:600;color:#e2e8f0">${esc(r.encDoctor||'—')}</td>
+        <td style="color:#94a3b8">${esc(r.speciality||'—')}</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#94a3b8">${esc(r.triageEnd||'—')}</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#94a3b8">${esc(r.encTime||'—')}</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#94a3b8">${esc(r.docSeen||'—')}</td>
+        <td><span class="${breachPillCls(tat,thresh)}">${tat!==null?tat.toFixed(1):'—'}</span></td>
+        <td><span class="pill blue">${r.tat1!==null?r.tat1.toFixed(1):'—'}</span></td>
+        <td style="color:#94a3b8;font-size:12px">${esc(r.erStatus||'—')}</td>
+        <td style="color:#94a3b8;font-size:12px">${esc(r.arrival||'—')}</td>
+      </tr>`;
+    }).join('');
+  }
+  document.getElementById('breach-pg-info').textContent=
+    total?`Showing ${s+1}–${Math.min(e,total)} of ${total} breach patients`:'0 patients';
+  renderBreachPager(pages);
+}
+
+function renderBreachPager(pages){
+  const wrap=document.getElementById('breach-pgb-wrap');
+  if(pages<=1){wrap.innerHTML='';return;}
+  let h=`<button class="pgb" ${BREACH_PAGE===1?'disabled':''} onclick="goBreachPage(${BREACH_PAGE-1})">Prev</button>`;
+  const max=5,from=Math.max(1,BREACH_PAGE-2),to=Math.min(pages,from+max-1);
+  for(let i=from;i<=to;i++)h+=`<button class="pgb ${i===BREACH_PAGE?'active':''}" onclick="goBreachPage(${i})">${i}</button>`;
+  h+=`<button class="pgb" ${BREACH_PAGE===pages?'disabled':''} onclick="goBreachPage(${BREACH_PAGE+1})">Next</button>`;
+  wrap.innerHTML=h;
+}
+function goBreachPage(p){BREACH_PAGE=p;renderBreachTable();}
+
+function copyBreach(){
+  const thresh=parseInt(document.getElementById('bc-thresh').value)||40;
+  const header=['Rank','Token','Patient Name','Age/Gender','CTAS','Triage Doctor','Encounter Doctor','Speciality','Triage End (C)','Encounter Time (D)','Doctor Seen (E)','Doctor TAT (E-D) min','Triage TAT (B-A) min','ER Status','Arrival Mode'].join('\t');
+  const lines=[header];
+  BREACH_VIEW.forEach((r,i)=>{
+    lines.push([i+1,r.token,r.patient,r.ageGender,r.ctas,r.triageDoc,r.encDoctor,r.speciality,
+      r.triageEnd,r.encTime,r.docSeen,
+      r.triageToDoc!==null?r.triageToDoc.toFixed(1):'',
+      r.tat1!==null?r.tat1.toFixed(1):'',r.erStatus,r.arrival].join('\t'));
+  });
+  navigator.clipboard.writeText(lines.join('\n'))
+    .then(()=>alert(`✓ Copied ${BREACH_VIEW.length} breach patient records to clipboard.`))
+    .catch(()=>alert('Copy failed — please use Ctrl+A on the table.'));
+}
+
+function getCtasClass(ctas){
+  const v=String(ctas||'').trim().toUpperCase();
+  if(v==='1'||v.includes('CTAS 1'))return'c2';
+  if(v==='2'||v.includes('CTAS 2'))return'c2';
+  if(v==='3'||v.includes('CTAS 3'))return'c3';
+  if(v==='4'||v.includes('CTAS 4'))return'c4';
+  return'c5';
+}
+
+function renderDetail(){
+  document.getElementById('det-sub').textContent=`${DET_VIEW.length} records · ${FNAME}`;
+  const total=DET_VIEW.length,pages=Math.max(1,Math.ceil(total/PER));
+  if(PAGE>pages)PAGE=pages;
+  const s=(PAGE-1)*PER,e=s+PER,rows=DET_VIEW.slice(s,e);
+  const tbody=document.getElementById('det-body');
+  if(!rows.length){
+    tbody.innerHTML=`<tr><td colspan="10" class="empty-row">No records found.</td></tr>`;
+  }else{
+    tbody.innerHTML=rows.map(r=>`<tr>
+      <td><span class="chip">${esc(r.token)}</span></td>
+      <td><div class="mn">${esc(r.patient||'—')}</div></td>
+      <td><span class="pill blue">${r.tat1!==null?r.tat1.toFixed(1):'—'}</span></td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11.5px">${esc(r.triageEnd||'—')}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11.5px">${esc(r.docSeen||'—')}</td>
+      <td><span class="pill teal">${r.triageToDoc!==null?r.triageToDoc.toFixed(1):'—'}</span></td>
+      <td><span class="${getCtasClass(r.ctas)}">${esc(r.ctas||'—')}</span></td>
+      <td>${esc(r.speciality||'—')}</td>
+      <td>${esc(r.triageDoc||'—')}</td>
+      <td>${esc(r.erStatus||'—')}</td>
+    </tr>`).join('');
+  }
+  document.getElementById('pg-info').textContent=
+    total?`Showing ${s+1}–${Math.min(e,total)} of ${total}`:'0 records';
+  renderPager(pages);
+}
+
+function doSearch(){
+  const q=document.getElementById('srch').value.trim().toLowerCase();
+  DET_VIEW=q?DET.filter(r=>
+    (r.token||'').toLowerCase().includes(q)||(r.patient||'').toLowerCase().includes(q)||
+    (r.triageDoc||'').toLowerCase().includes(q)||(r.speciality||'').toLowerCase().includes(q)||
+    (r.erStatus||'').toLowerCase().includes(q)||(r.ctas||'').toLowerCase().includes(q))
+  :[...DET];
+  PAGE=1;renderDetail();
+}
+
+function renderPager(pages){
+  const wrap=document.getElementById('pgb-wrap');
+  if(pages<=1){wrap.innerHTML='';return;}
+  let h=`<button class="pgb" ${PAGE===1?'disabled':''} onclick="goPage(${PAGE-1})">Prev</button>`;
+  const max=5,from=Math.max(1,PAGE-2),to=Math.min(pages,from+max-1);
+  for(let i=from;i<=to;i++)h+=`<button class="pgb ${i===PAGE?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  h+=`<button class="pgb" ${PAGE===pages?'disabled':''} onclick="goPage(${PAGE+1})">Next</button>`;
+  wrap.innerHTML=h;
+}
+function goPage(p){PAGE=p;renderDetail();}
+
+// ══════════════════════════════════════════════════════════
+// dlExcel — includes the new 10–15 min row in export
+// ══════════════════════════════════════════════════════════
+function dlExcel(){
+  if(!FILT.length){alert('No data to export.');return;}
+  const thresh=parseInt(document.getElementById('bc-thresh').value)||40;
+  const k=calcKPI(FILT,thresh);
+  const wb=XLSX.utils.book_new();
+  const kpiRows=[
+    {Metric:'Token → Triage — Average TAT',Value:k.avgTT!=='—'?`${k.avgTT} min`:'—',Percentage:'',Count:k.n,Base:k.n,File:FNAME},
+    {Metric:'Token → Triage ≤ 5 min',Value:`${k.w5n} patients`,Percentage:k.w5p!=='—'?`${k.w5p}%`:'',Count:k.w5n,Base:k.n,File:FNAME},
+    {Metric:'Token → Triage 5–10 min',Value:`${k.w10n} patients`,Percentage:k.w10p!=='—'?`${k.w10p}%`:'',Count:k.w10n,Base:k.n,File:FNAME},
+    // ── NEW export row ────────────────────────────────────
+    {Metric:'Token → Triage 10–15 min',Value:`${k.w1015n} patients`,Percentage:k.w1015p!=='—'?`${k.w1015p}%`:'',Count:k.w1015n,Base:k.n,File:FNAME},
+    // ─────────────────────────────────────────────────────
+    {Metric:'Triage → Consultation — Average',Value:k.avgTC!=='—'?`${k.avgTC} min`:'—',Percentage:'',Count:k.tcN,Base:k.n,File:FNAME},
+    {Metric:`Doctor Seen Breach > ${thresh} min`,Value:`${k.breachN} patients`,Percentage:k.breachPct!=='—'?`${k.breachPct}%`:'',Count:k.breachN,Base:k.tcN,File:FNAME},
+  ];
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(kpiRows),'KPI Summary');
+  const breachExport=BREACH_ALL.map((r,i)=>({
+    Rank:i+1,Token:r.token,'Patient Name':r.patient,'Age/Gender':r.ageGender,
+    'CTAS Level':r.ctas,'Triage Doctor':r.triageDoc,'Encounter Doctor':r.encDoctor,
+    Speciality:r.speciality,'Triage End (C)':r.triageEnd,'Encounter Time (D)':r.encTime,
+    'Doctor Seen (E)':r.docSeen,'Doctor TAT (E-D) min':r.triageToDoc!==null?r.triageToDoc.toFixed(1):'',
+    'Triage TAT (B-A) min':r.tat1!==null?r.tat1.toFixed(1):'',
+    'ER Status':r.erStatus,'Arrival Mode':r.arrival,
+  }));
+  if(breachExport.length)
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(breachExport),`Breach > ${thresh} min`);
+  const safeName=(FNAME||'triage').replace(/\.[^/.]+$/,'');
+  XLSX.writeFile(wb,`${safeName}_summary_breach.xlsx`);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// COMPARISON MODULE
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Tab switcher ─────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.cmp-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('sec-' + (tab === 'kpi' ? 'kpi' : 'compare')).classList.add('active');
+  if (tab === 'compare') renderComparison();
+}
+
+// ── Period state ──────────────────────────────────────────────────────────────
+let CMP_PERIOD = 7;
+let CMP_CHARTS = {};
+
+function setPeriod(d) {
+  CMP_PERIOD = d;
+  document.getElementById('pb7').classList.toggle('active', d === 7);
+  document.getElementById('pb30').classList.toggle('active', d === 30);
+  renderComparison();
+}
+
+// ── Date parsing ──────────────────────────────────────────────────────────────
+function parseDate(str) {
+  if (!str || str === '') return null;
+  const s = String(str).trim();
+  // DD/MM/YYYY [HH:mm]
+  let m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+  if (m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+  // YYYY-MM-DD [HH:mm]
+  m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+  // MM/DD/YYYY
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m) {
+    // Heuristic: if first part > 12 it's DD, else treat as MM
+    if (parseInt(m[1]) > 12)
+      return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+    return `${m[3]}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`;
+  }
+  // Try JS Date parse as last resort
+  const dt = new Date(s);
+  if (!isNaN(dt.getTime())) {
+    return dt.toISOString().slice(0, 10);
+  }
+  return null;
+}
+
+function getRowDate(row) {
+  const candidates = [row.triageEnd, row.docSeen, row.encTime];
+  for (const ts of candidates) {
+    const d = parseDate(ts);
+    if (d) return d;
+  }
+  return null;
+}
+
+function groupByDate(rows) {
+  const g = {};
+  for (const r of rows) {
+    const d = getRowDate(r);
+    if (!d) continue;
+    if (!g[d]) g[d] = [];
+    g[d].push(r);
+  }
+  return g;
+}
+
+function calcDailyMetrics(rows, thresh) {
+  const k = calcKPI(rows, thresh);
+  const avgTT = k.avgTT === '—' ? null : parseFloat(k.avgTT);
+  const avgTC = k.avgTC === '—' ? null : parseFloat(k.avgTC);
+  const w5p   = k.w5p  === '—' ? null : parseFloat(k.w5p);
+  const w10p  = k.w10p === '—' ? null : parseFloat(k.w10p);
+  const w1015p= k.w1015p === '—' ? null : parseFloat(k.w1015p);
+  const bpct  = k.breachPct === '—' ? null : parseFloat(k.breachPct);
+  return { n: rows.length, avgTT, avgTC, w5p, w10p, w1015p,
+           breachN: k.breachN, redN: k.redN, bpct };
+}
+
+// ── Format helpers ────────────────────────────────────────────────────────────
+function fmt1(v) { return v == null ? '—' : v.toFixed(1); }
+function fmtDate(iso) {
+  const [y, m, d] = iso.split('-');
+  const dt = new Date(+y, +m - 1, +d);
+  return dt.toLocaleDateString('en-AE', { weekday: 'short', day: '2-digit', month: 'short' });
+}
+function avgOf(arr, key) {
+  const vals = arr.map(d => d[key]).filter(v => v != null);
+  return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+}
+
+// ── Delta badge builder ───────────────────────────────────────────────────────
+function deltaBadge(curr, prev, higherIsBetter, unit='%') {
+  if (curr == null || prev == null) return { cls: 'neutral', html: '—' };
+  const diff = curr - prev;
+  const pct = prev !== 0 ? (diff / Math.abs(prev) * 100) : 0;
+  const sign = diff >= 0 ? '▲ ' : '▼ ';
+  const isGood = higherIsBetter ? diff > 0 : diff < 0;
+  const cls = diff === 0 ? 'neutral' : (isGood ? 'dn-good' : 'up-bad');
+  const arrow = diff === 0 ? '● ' : (diff > 0 ? '▲ ' : '▼ ');
+  return {
+    cls,
+    html: `${arrow}${Math.abs(pct).toFixed(1)}%`,
+    diffVal: diff,
+    prevAvg: prev
+  };
+}
+
+// ── Chart factory ─────────────────────────────────────────────────────────────
+const CHART_OPTS = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { labels: { color: '#7b93b5', font: { size: 11, family: 'Inter' }, boxWidth: 14 } },
+             tooltip: { backgroundColor: 'rgba(7,17,31,.9)', titleColor: '#f0f6ff', bodyColor: '#94a3b8',
+                        borderColor: 'rgba(255,255,255,.1)', borderWidth: 1, padding: 10,
+                        displayColors: true } },
+  scales: {
+    x: { grid: { color: 'rgba(148,163,184,.07)' }, ticks: { color: '#4a6080', font: { size: 10 } } },
+    y: { grid: { color: 'rgba(148,163,184,.07)' }, ticks: { color: '#4a6080', font: { size: 10 } },
+         beginAtZero: true }
+  }
+};
+
+function mkChart(id, type, labels, datasets, yLabel, extraOpts = {}) {
+  if (CMP_CHARTS[id]) { CMP_CHARTS[id].destroy(); delete CMP_CHARTS[id]; }
+  const ctx = document.getElementById(id).getContext('2d');
+  const opts = JSON.parse(JSON.stringify(CHART_OPTS));
+  if (yLabel) opts.scales.y.title = { display: true, text: yLabel, color: '#4a6080', font: { size: 10 } };
+  Object.assign(opts, extraOpts);
+  CMP_CHARTS[id] = new Chart(ctx, { type, data: { labels, datasets }, options: opts });
+}
+
+// ── Insights generator ────────────────────────────────────────────────────────
+function generateInsights(current, previous, period, thresh) {
+  const ins = [];
+
+  // Volume trend
+  const avgVolCurr = avgOf(current, 'n');
+  const avgVolPrev = avgOf(previous, 'n');
+  if (avgVolCurr != null) {
+    if (avgVolPrev != null && avgVolPrev > 0) {
+      const chg = ((avgVolCurr - avgVolPrev) / avgVolPrev * 100);
+      const dir = chg >= 0 ? 'increased' : 'decreased';
+      ins.push({ ico: chg >= 0 ? '📈' : '📉',
+        title: `Volume ${dir} ${Math.abs(chg).toFixed(0)}% vs previous ${period} days`,
+        body: `Average ${avgVolCurr.toFixed(1)} pts/day now vs ${avgVolPrev.toFixed(1)} previously.` });
+    }
+    const maxDay = current.reduce((a, b) => (b.n > a.n ? b : a), current[0]);
+    const minDay = current.reduce((a, b) => (b.n < a.n ? b : a), current[0]);
+    ins.push({ ico: '👥', title: `Busiest day: ${fmtDate(maxDay.date)}`,
+      body: `${maxDay.n} patients. Lightest: ${fmtDate(minDay.date)} (${minDay.n} pts).` });
+  }
+
+  // Compliance trend
+  const avgCompCurr = avgOf(current, 'w5p');
+  const avgCompPrev = avgOf(previous, 'w5p');
+  if (avgCompCurr != null) {
+    const trend = current.length >= 3 ?
+      (avgOf(current.slice(-Math.ceil(current.length/2)), 'w5p') || 0) -
+      (avgOf(current.slice(0, Math.floor(current.length/2)), 'w5p') || 0) : 0;
+    const dir = trend > 1 ? 'improving ▲' : trend < -1 ? 'declining ▼' : 'stable →';
+    const cls = trend > 1 ? 'green' : trend < -1 ? 'red' : 'neutral';
+    ins.push({ ico: trend > 1 ? '✅' : trend < -1 ? '⚠️' : '📊',
+      title: `≤ 5 min compliance is ${dir}`,
+      body: `Period avg ${avgCompCurr.toFixed(1)}%${avgCompPrev != null ? ` vs ${avgCompPrev.toFixed(1)}% prev. period` : ''}.` });
+  }
+
+  // Breach days
+  const breachDays = current.filter(d => d.bpct != null && d.bpct > 25);
+  if (breachDays.length > 0) {
+    ins.push({ ico: '🔴',
+      title: `${breachDays.length} day${breachDays.length > 1 ? 's' : ''} with Red breach rate > 25%`,
+      body: breachDays.slice(0,3).map(d => `${fmtDate(d.date)}: ${d.bpct.toFixed(1)}%`).join(' · ') +
+            (breachDays.length > 3 ? ` +${breachDays.length-3} more` : '') });
+  } else if (current.some(d => d.bpct != null)) {
+    ins.push({ ico: '✅', title: 'Red breach rate under control',
+      body: `No day exceeded 25% breach rate over the last ${period} days.` });
+  }
+
+  // Doctor TAT
+  const avgDtat = avgOf(current, 'avgTC');
+  if (avgDtat != null) {
+    const worstDay = current.filter(d=>d.avgTC!=null).sort((a,b)=>b.avgTC-a.avgTC)[0];
+    ins.push({ ico: avgDtat > 45 ? '⚠️' : '🩺',
+      title: `Avg Doctor TAT: ${avgDtat.toFixed(1)} min`,
+      body: `${avgDtat > 45 ? 'Above target — monitor closely.' : 'Within acceptable range.'} ` +
+            (worstDay ? `Highest: ${fmtDate(worstDay.date)} (${worstDay.avgTC.toFixed(1)} min).` : '') });
+  }
+
+  // Best compliance day
+  const bestComp = current.filter(d=>d.w5p!=null).sort((a,b)=>b.w5p-a.w5p)[0];
+  if (bestComp) ins.push({ ico: '🏆',
+    title: `Best compliance day: ${fmtDate(bestComp.date)}`,
+    body: `${bestComp.w5p.toFixed(1)}% of patients triaged within 5 min (${bestComp.n} patients).` });
+
+  // TAT average vs previous
+  const avgTatCurr = avgOf(current, 'avgTT');
+  const avgTatPrev = avgOf(previous, 'avgTT');
+  if (avgTatCurr != null && avgTatPrev != null) {
+    const diff = avgTatCurr - avgTatPrev;
+    ins.push({ ico: diff <= 0 ? '✅' : '⚠️',
+      title: `Token→Triage avg TAT ${diff <= 0 ? 'improved' : 'worsened'} vs prev. period`,
+      body: `Now ${avgTatCurr.toFixed(1)} min vs ${avgTatPrev.toFixed(1)} min previously (${diff > 0 ? '+' : ''}${diff.toFixed(1)} min).` });
+  }
+
+  return ins;
+}
+
+// ── MAIN RENDER ───────────────────────────────────────────────────────────────
+function renderComparison() {
+  const thresh = parseInt(document.getElementById('bc-thresh').value) || 40;
+
+  // Group all base-filtered rows by date (not date-filtered, so all days are visible)
+  const grouped = groupByDate(CMP_FILE_ROWS.length > 0 ? FILT : FILT);
+  const allDates = Object.keys(grouped).sort();
+
+  document.getElementById('no-date-msg').style.display = 'none';
+  document.getElementById('cmp-table-wrap').style.display = '';
+  document.getElementById('insights-panel').style.display = '';
+  document.querySelectorAll('.trend-grid,.charts-grid').forEach(el => el.style.display = '');
+
+  if (allDates.length === 0) {
+    document.getElementById('no-date-msg').style.display = 'block';
+    document.getElementById('cmp-table-wrap').style.display = 'none';
+    document.getElementById('insights-panel').style.display = 'none';
+    document.querySelectorAll('.trend-grid,.charts-grid').forEach(el => el.style.display = 'none');
+    document.getElementById('cmp-range-lbl').textContent = 'No date information in data';
+    return;
+  }
+
+  const P = CMP_PERIOD;
+
+  // Slice current + previous periods
+  const currentDates  = allDates.slice(-P);
+  const previousDates = allDates.slice(-P * 2, -P);
+
+  const currentData  = currentDates.map(d => ({ date: d, ...calcDailyMetrics(grouped[d], thresh) }));
+  const previousData = previousDates.map(d => ({ date: d, ...calcDailyMetrics(grouped[d], thresh) }));
+
+  // Range label
+  const from = currentDates[0], to = currentDates[currentDates.length - 1];
+  document.getElementById('cmp-range-lbl').textContent =
+    `${fmtDate(from)} → ${fmtDate(to)} (${currentDates.length} days)`;
+  document.getElementById('cmp-table-sub').textContent =
+    `${currentDates.length} days · ${FILT.length} total records · ${FNAME}`;
+
+  // ── Trend cards ────────────────────────────────────────────────────────────
+  const avgVolC   = avgOf(currentData, 'n');
+  const avgVolP   = avgOf(previousData, 'n');
+  const avgCompC  = avgOf(currentData, 'w5p');
+  const avgCompP  = avgOf(previousData, 'w5p');
+  const avgDtatC  = avgOf(currentData, 'avgTC');
+  const avgDtatP  = avgOf(previousData, 'avgTC');
+  const avgBreachC = avgOf(currentData, 'bpct');
+  const avgBreachP = avgOf(previousData, 'bpct');
+
+  function setCard(id, val, unit, subTxt, prevTxt, badge) {
+    document.getElementById('tv-' + id).innerHTML = (val == null ? '—' : val.toFixed(1)) + `<span class="tc-unit">${unit}</span>`;
+    document.getElementById('tv-' + id + '-sub').textContent = subTxt;
+    document.getElementById('tv-' + id + '-prev').textContent = prevTxt;
+    const badgeEl = document.getElementById('tv-' + id + '-badge');
+    badgeEl.className = 'tc-badge ' + badge.cls;
+    badgeEl.textContent = badge.html;
+  }
+
+  setCard('vol', avgVolC, 'pts/day',
+    `Total ${currentData.reduce((a,b)=>a+b.n,0)} patients`,
+    previousData.length ? `Prev. ${P}d avg: ${avgVolP != null ? avgVolP.toFixed(1) : '—'} pts/day` : 'No previous period data',
+    deltaBadge(avgVolC, avgVolP, true, 'pts'));
+
+  setCard('comp', avgCompC, '%',
+    '% triaged within 5 min target',
+    previousData.length ? `Prev. ${P}d avg: ${avgCompP != null ? avgCompP.toFixed(1) : '—'}%` : 'No previous period data',
+    deltaBadge(avgCompC, avgCompP, true));
+
+  setCard('dtat', avgDtatC, 'min',
+    'Avg triage-to-doctor time',
+    previousData.length ? `Prev. ${P}d avg: ${avgDtatP != null ? avgDtatP.toFixed(1) : '—'} min` : 'No previous period data',
+    deltaBadge(avgDtatC, avgDtatP, false, 'min'));
+
+  setCard('breach', avgBreachC, '%',
+    'Red category patients breaching threshold',
+    previousData.length ? `Prev. ${P}d avg: ${avgBreachP != null ? avgBreachP.toFixed(1) : '—'}%` : 'No previous period data',
+    deltaBadge(avgBreachC, avgBreachP, false));
+
+  // ── Chart data ─────────────────────────────────────────────────────────────
+  const labels     = currentData.map(d => fmtDate(d.date));
+  const prevLabels = previousData.map(d => fmtDate(d.date));
+
+  // Align previous to same length for overlay
+  const prevPadded = arr => {
+    if (previousData.length === 0) return [];
+    const padded = new Array(currentData.length).fill(null);
+    previousData.forEach((d, i) => { if (i < padded.length) padded[i] = arr(d); });
+    return padded;
+  };
+
+  const gradLine = (ctx, color) => {
+    const g = ctx.createLinearGradient(0, 0, 0, 220);
+    g.addColorStop(0, color + '44'); g.addColorStop(1, color + '06');
+    return g;
+  };
+
+  // Volume chart
+  mkChart('chartVolume', 'bar', labels, [{
+    label: `Last ${P} days`, data: currentData.map(d => d.n),
+    backgroundColor: 'rgba(56,189,248,.55)', borderColor: '#38bdf8',
+    borderWidth: 1.5, borderRadius: 6
+  }, previousData.length ? {
+    label: `Previous ${P} days`, data: prevPadded(d => d.n),
+    backgroundColor: 'rgba(148,163,184,.2)', borderColor: 'rgba(148,163,184,.5)',
+    borderWidth: 1, borderRadius: 4, borderDash: [4, 4]
+  } : null].filter(Boolean), 'Patients');
+
+  // Compliance chart
+  mkChart('chartCompliance', 'line', labels, [{
+    label: '≤ 5 min %', data: currentData.map(d => d.w5p),
+    borderColor: '#22c55e', borderWidth: 2.5, tension: 0.4, fill: true,
+    backgroundColor: (ctx) => gradLine(ctx.chart.ctx, '#22c55e'), pointBackgroundColor: '#22c55e',
+    pointRadius: 4, pointHoverRadius: 6
+  }, previousData.length ? {
+    label: `Previous ${P}d`, data: prevPadded(d => d.w5p),
+    borderColor: 'rgba(148,163,184,.45)', borderWidth: 1.5, tension: 0.4,
+    borderDash: [5, 4], fill: false, pointRadius: 2, pointBackgroundColor: '#64748b'
+  } : null].filter(Boolean), 'Compliance %');
+
+  // Doctor TAT chart
+  mkChart('chartDoctorTat', 'line', labels, [{
+    label: 'Avg Doctor TAT', data: currentData.map(d => d.avgTC),
+    borderColor: '#a78bfa', borderWidth: 2.5, tension: 0.4, fill: true,
+    backgroundColor: (ctx) => gradLine(ctx.chart.ctx, '#a78bfa'), pointBackgroundColor: '#a78bfa',
+    pointRadius: 4, pointHoverRadius: 6
+  }, previousData.length ? {
+    label: `Previous ${P}d`, data: prevPadded(d => d.avgTC),
+    borderColor: 'rgba(148,163,184,.45)', borderWidth: 1.5, tension: 0.4,
+    borderDash: [5, 4], fill: false, pointRadius: 2, pointBackgroundColor: '#64748b'
+  } : null].filter(Boolean), 'Minutes');
+
+  // Breach rate chart
+  mkChart('chartBreach', 'line', labels, [{
+    label: 'Red Breach %', data: currentData.map(d => d.bpct),
+    borderColor: '#f87171', borderWidth: 2.5, tension: 0.4, fill: true,
+    backgroundColor: (ctx) => gradLine(ctx.chart.ctx, '#f87171'), pointBackgroundColor: '#f87171',
+    pointRadius: 4, pointHoverRadius: 6
+  }, previousData.length ? {
+    label: `Previous ${P}d`, data: prevPadded(d => d.bpct),
+    borderColor: 'rgba(148,163,184,.45)', borderWidth: 1.5, tension: 0.4,
+    borderDash: [5, 4], fill: false, pointRadius: 2, pointBackgroundColor: '#64748b'
+  } : null].filter(Boolean), 'Breach %');
+
+  // Token→Triage avg TAT chart (wide)
+  mkChart('chartTat', 'line', labels, [{
+    label: 'Avg Token→Triage TAT', data: currentData.map(d => d.avgTT),
+    borderColor: '#fbbf24', borderWidth: 2.5, tension: 0.4, fill: true,
+    backgroundColor: (ctx) => gradLine(ctx.chart.ctx, '#fbbf24'), pointBackgroundColor: '#fbbf24',
+    pointRadius: 4, pointHoverRadius: 6
+  }, previousData.length ? {
+    label: `Previous ${P}d`, data: prevPadded(d => d.avgTT),
+    borderColor: 'rgba(148,163,184,.45)', borderWidth: 1.5, tension: 0.4,
+    borderDash: [5, 4], fill: false, pointRadius: 2, pointBackgroundColor: '#64748b'
+  } : null].filter(Boolean), 'Minutes');
+
+  // ── Insights ───────────────────────────────────────────────────────────────
+  const insights = generateInsights(currentData, previousData, P, thresh);
+  document.getElementById('ins-grid').innerHTML = insights.map(i => `
+    <div class="ins-card">
+      <div class="ins-ico">${i.ico}</div>
+      <div><div class="ins-title">${i.title}</div><div class="ins-body">${i.body}</div></div>
+    </div>`).join('');
+
+  // ── Day-by-day table ───────────────────────────────────────────────────────
+  const bestN  = Math.max(...currentData.map(d => d.n));
+  const worstN = Math.min(...currentData.map(d => d.n));
+  const bestComp = Math.max(...currentData.filter(d=>d.w5p!=null).map(d=>d.w5p), -1);
+  const avgTT_all = avgOf(currentData, 'avgTT');
+  const avgTC_all = avgOf(currentData, 'avgTC');
+  const avgComp_all = avgOf(currentData, 'w5p');
+  const avgBreach_all = avgOf(currentData, 'bpct');
+
+  const tableRows = [...currentData].reverse().map(d => {
+    const isBest  = d.w5p != null && d.w5p === bestComp;
+    const isWorst = d.bpct != null && avgBreach_all != null && d.bpct > (avgBreach_all * 1.5);
+    return `<tr class="${isBest ? 'best-row' : ''} ${isWorst ? 'worst-row' : ''}">
+      <td>${fmtDate(d.date)}</td>
+      <td>${d.n}</td>
+      <td>${fmt1(d.avgTT)}</td>
+      <td>${fmt1(d.w5p)}${d.w5p!=null?'%':''}</td>
+      <td>${fmt1(d.w10p)}${d.w10p!=null?'%':''}</td>
+      <td>${fmt1(d.w1015p)}${d.w1015p!=null?'%':''}</td>
+      <td>${fmt1(d.avgTC)}</td>
+      <td>${d.redN}</td>
+      <td>${d.breachN}</td>
+      <td>${fmt1(d.bpct)}${d.bpct!=null?'%':''}</td>
+    </tr>`;
+  }).join('');
+
+  const totPts = currentData.reduce((a,b)=>a+b.n,0);
+  document.getElementById('cmp-tbody').innerHTML = tableRows +
+    `<tr class="avg-row">
+      <td>⌀ Period Avg</td>
+      <td>${avgOf(currentData,'n') != null ? avgOf(currentData,'n').toFixed(1) : '—'}</td>
+      <td>${fmt1(avgTT_all)}</td>
+      <td>${fmt1(avgComp_all)}${avgComp_all!=null?'%':''}</td>
+      <td>${fmt1(avgOf(currentData,'w10p'))}${avgOf(currentData,'w10p')!=null?'%':''}</td>
+      <td>${fmt1(avgOf(currentData,'w1015p'))}${avgOf(currentData,'w1015p')!=null?'%':''}</td>
+      <td>${fmt1(avgTC_all)}</td>
+      <td>—</td><td>—</td>
+      <td>${fmt1(avgBreach_all)}${avgBreach_all!=null?'%':''}</td>
+    </tr>`;
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DATE PICKER FEATURE
+// ══════════════════════════════════════════════════════════════════════════════
+let SELECTED_DATE = '';
+let FILT_DATE     = [];
+let DATE_AVAIL    = [];   // sorted unique dates from ALL
+
+function getActiveFilt() {
+  return (SELECTED_DATE && FILT_DATE.length >= 0 && SELECTED_DATE !== '')
+    ? FILT_DATE : FILT;
+}
+
+function refreshDateFilter() {
+  if (SELECTED_DATE) {
+    FILT_DATE = FILT.filter(r => getRowDate(r) === SELECTED_DATE);
+  } else {
+    FILT_DATE = [];
+  }
+}
+
+function fmtDateShort(iso) {
+  const [y,m,d] = iso.split('-');
+  return new Date(+y, +m-1, +d).toLocaleDateString('en-AE', {weekday:'short',day:'2-digit',month:'short'});
+}
+
+function buildDatePicker() {
+  const base = ALL.filter(r => r.tat1 !== null);
+  const g    = groupByDate(base);
+  DATE_AVAIL = Object.keys(g).sort();
+  const bar  = document.getElementById('date-nav-bar');
+
+  if (DATE_AVAIL.length < 2) { bar.classList.remove('on'); return; }
+
+  bar.classList.add('on');
+  document.getElementById('dnb-all-count').textContent = '(' + base.length + ')';
+
+  const scroll = document.getElementById('dnb-scroll');
+  // Remove old pills (keep All Dates button)
+  scroll.querySelectorAll('.dnb-pill').forEach(p => p.remove());
+
+  // Append date pills
+  DATE_AVAIL.forEach(date => {
+    const n   = g[date].length;
+    const btn = document.createElement('button');
+    btn.className   = 'dnb-pill';
+    btn.dataset.date = date;
+    btn.onclick      = () => selectDate(date);
+    btn.innerHTML    = fmtDateShort(date) + '<span class="dnb-count">(' + n + ')</span>';
+    scroll.appendChild(btn);
+  });
+}
+
+function selectDate(d) {
+  SELECTED_DATE = d;
+  refreshDateFilter();
+
+  // Update pill active state
+  document.querySelectorAll('.dnb-pill').forEach(b => {
+    b.classList.toggle('active', b.dataset.date === d);
+  });
+  document.getElementById('dnb-all-btn').classList.toggle('active', d === '');
+
+  // Scroll active pill into view
+  if (d) {
+    const active = document.querySelector('.dnb-pill.active');
+    if (active) active.scrollIntoView({block:'nearest', inline:'center', behavior:'smooth'});
+  } else {
+    document.getElementById('dnb-scroll').scrollLeft = 0;
+  }
+
+  // Info bar
+  const infoBar = document.getElementById('dnb-info-bar');
+  if (d) {
+    infoBar.classList.add('on');
+    const n = FILT_DATE.length;
+    document.getElementById('dnb-info-badge').textContent =
+      fmtDateShort(d) + '  ·  ' + n + ' patient' + (n !== 1 ? 's' : '');
+  } else {
+    infoBar.classList.remove('on');
+  }
+
+  PAGE = 1; BREACH_PAGE = 1;
+  renderAll();
+}
+
+function navDate(dir) {
+  if (!DATE_AVAIL.length) return;
+  const idx    = SELECTED_DATE ? DATE_AVAIL.indexOf(SELECTED_DATE) : (dir > 0 ? -1 : DATE_AVAIL.length);
+  const newIdx = Math.max(0, Math.min(DATE_AVAIL.length - 1, idx + dir));
+  selectDate(DATE_AVAIL[newIdx]);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// COMPARISON FILE UPLOAD
+// ══════════════════════════════════════════════════════════════════════════════
+let CMP_FILE_ROWS = [];
+let CMP_FILE_NAME = '';
+
+// Wire up the comparison file input
+(function initCmpUpload() {
+  // Run after DOM is ready
+  const tryInit = () => {
+    const zone = document.getElementById('cmp-up-zone');
+    const inp  = document.getElementById('cmp-file-inp');
+    if (!zone || !inp) { setTimeout(tryInit, 200); return; }
+    zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); zone.classList.remove('drag');
+      if (e.dataTransfer.files[0]) loadCmpFile(e.dataTransfer.files[0]);
+    });
+    inp.addEventListener('change', () => { if (inp.files[0]) loadCmpFile(inp.files[0]); });
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryInit);
+  else tryInit();
+})();
+
+// Parse rows from raw JSON (shared logic, doesn't touch globals)
+function parseRowArray(raw) {
+  if (!raw || !raw.length) return [];
+  const lup = buildLookup(raw[0]);
+  return raw.map(row => {
+    const token = getV(row, lup, COLS.token);
+    if (!token) return null;
+    return {
+      token,
+      patient:    getV(row, lup, COLS.patient),
+      ageGender:  getV(row, lup, COLS.ageGender),
+      tat1:       parseNum(getV(row, lup, COLS.tat1)),
+      triageEnd:  getV(row, lup, COLS.triageEnd),
+      encTime:    getV(row, lup, COLS.encTime),
+      docSeen:    getV(row, lup, COLS.docSeen),
+      triageToDoc:parseNum(getV(row, lup, COLS.doctorTat)),
+      speciality: getV(row, lup, COLS.speciality),
+      triageDoc:  getV(row, lup, COLS.triageDoc),
+      encDoctor:  getV(row, lup, COLS.encDoctor),
+      erStatus:   getV(row, lup, COLS.erStatus),
+      ctas:       getV(row, lup, COLS.ctas),
+      arrival:    getV(row, lup, COLS.arrival),
+    };
+  }).filter(Boolean);
+}
+
+function loadCmpFile(file) {
+  CMP_FILE_NAME = file.name;
+  const reader  = new FileReader();
+  reader.onload = e => {
+    try {
+      const bytes = new Uint8Array(e.target.result);
+      const wb    = XLSX.read(bytes, { type: 'array', cellDates: false });
+      const ws    = wb.Sheets[wb.SheetNames[0]];
+      const raw   = XLSX.utils.sheet_to_json(ws, { defval: '', raw: false });
+      const rows  = parseRowArray(raw).filter(r => r.tat1 !== null);
+      CMP_FILE_ROWS = rows;
+      updateCmpDisplay();
+      if (document.getElementById('sec-compare').classList.contains('active')) renderComparison();
+    } catch(err) { alert('Error reading comparison file: ' + err.message); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function clearCmpFile() {
+  CMP_FILE_ROWS = [];
+  CMP_FILE_NAME = '';
+  document.getElementById('cmp-file-inp').value = '';
+  updateCmpDisplay();
+  if (document.getElementById('sec-compare').classList.contains('active')) renderComparison();
+}
+
+function updateCmpDisplay() {
+  const loaded  = document.getElementById('cmp-loaded');
+  const zone    = document.getElementById('cmp-up-zone');
+  const badge   = document.getElementById('cmp-mode-badge');
+  if (CMP_FILE_ROWS.length > 0) {
+    loaded.classList.add('on');
+    document.getElementById('cmp-loaded-name').textContent = CMP_FILE_NAME;
+    const g = groupByDate(CMP_FILE_ROWS);
+    const d = Object.keys(g).sort();
+    document.getElementById('cmp-loaded-sub').textContent =
+      CMP_FILE_ROWS.length + ' records · ' + d.length + ' day' + (d.length!==1?'s':'') +
+      (d.length ? ' · ' + fmtDateShort(d[0]) + (d.length>1?' → '+fmtDateShort(d[d.length-1]):'') : '');
+    badge.textContent = '🔀 File compare mode';
+    badge.style.background = 'rgba(34,197,94,.15)';
+    badge.style.borderColor = 'rgba(34,197,94,.3)';
+    badge.style.color = '#86efac';
+  } else {
+    loaded.classList.remove('on');
+    badge.textContent = '📊 Period mode';
+    badge.style.background = ''; badge.style.borderColor = ''; badge.style.color = '';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PATCHED renderComparison — supports second file overlay
+// ══════════════════════════════════════════════════════════════════════════════
+const _renderComparison_original = renderComparison;
+renderComparison = function() {
+  const thresh = parseInt(document.getElementById('bc-thresh').value) || 40;
+  const P      = CMP_PERIOD;
+
+  // Use base FILT (not date-filtered) for trend data
+  const mainRows = FILT.filter(r => r.tat1 !== null);
+  const grouped  = groupByDate(mainRows);
+  const allDates = Object.keys(grouped).sort();
+
+  document.getElementById('no-date-msg').style.display    = 'none';
+  document.getElementById('cmp-table-wrap').style.display = '';
+  document.getElementById('insights-panel').style.display = '';
+  document.querySelectorAll('.trend-grid,.charts-grid').forEach(el => el.style.display = '');
+
+  if (allDates.length === 0) {
+    document.getElementById('no-date-msg').style.display = 'block';
+    document.getElementById('cmp-table-wrap').style.display = 'none';
+    document.getElementById('insights-panel').style.display = 'none';
+    document.querySelectorAll('.trend-grid,.charts-grid').forEach(el => el.style.display = 'none');
+    document.getElementById('cmp-range-lbl').textContent = 'No date information in data';
+    return;
+  }
+
+  // ── Determine current + previous datasets ──────────────────────────────────
+  let currentDates, previousDates, prevLabel;
+
+  if (CMP_FILE_ROWS.length > 0) {
+    // FILE COMPARE MODE: main file (last P days) vs comparison file (last P days)
+    currentDates  = allDates.slice(-P);
+    const cmpGrouped  = groupByDate(CMP_FILE_ROWS);
+    const cmpAllDates = Object.keys(cmpGrouped).sort();
+    previousDates = cmpAllDates.slice(-P);   // reuse previousDates as cmp dates
+    prevLabel     = '📂 ' + CMP_FILE_NAME.replace(/\.[^/.]+$/, '');
+
+    const currentData  = currentDates.map(d => ({ date: d, ...calcDailyMetrics(grouped[d], thresh) }));
+    const previousData = previousDates.map(d => ({ date: d, ...calcDailyMetrics(cmpGrouped[d], thresh) }));
+
+    _doRenderComparison(currentData, previousData, P, thresh,
+      FNAME.replace(/\.[^/.]+$/,''), prevLabel, false);
+  } else {
+    // PERIOD MODE: main file current P days vs previous P days (same file)
+    currentDates  = allDates.slice(-P);
+    const prevD   = allDates.slice(-P * 2, -P);
+    prevLabel     = `Previous ${P} days`;
+
+    const currentData  = currentDates.map(d => ({ date: d, ...calcDailyMetrics(grouped[d], thresh) }));
+    const previousData = prevD.map(d => ({ date: d, ...calcDailyMetrics(grouped[d], thresh) }));
+
+    _doRenderComparison(currentData, previousData, P, thresh,
+      'Last ' + P + ' days', prevLabel, true);
+  }
+};
+
+function _doRenderComparison(currentData, previousData, P, thresh, currLabel, prevLabel, posAlign) {
+  const from = currentData[0]?.date, to = currentData[currentData.length-1]?.date;
+  document.getElementById('cmp-range-lbl').textContent =
+    (from ? fmtDate(from) + ' → ' + fmtDate(to) : '—') +
+    ' (' + currentData.length + ' days)' +
+    (CMP_FILE_ROWS.length > 0 ? ' vs ' + prevLabel : '');
+  document.getElementById('cmp-table-sub').textContent =
+    currentData.length + ' days · ' + currentData.reduce((a,b)=>a+b.n,0) + ' total records · ' + FNAME;
+
+  // ── Trend KPI cards ────────────────────────────────────────────────────────
+  const avgVolC    = avgOf(currentData, 'n'),       avgVolP    = avgOf(previousData, 'n');
+  const avgCompC   = avgOf(currentData, 'w5p'),     avgCompP   = avgOf(previousData, 'w5p');
+  const avgDtatC   = avgOf(currentData, 'avgTC'),   avgDtatP   = avgOf(previousData, 'avgTC');
+  const avgBreachC = avgOf(currentData, 'bpct'),    avgBreachP = avgOf(previousData, 'bpct');
+
+  function setCard(id, val, unit, subTxt, prevTxt, badge) {
+    document.getElementById('tv-'+id).innerHTML = (val==null?'—':val.toFixed(1))+'<span class="tc-unit">'+unit+'</span>';
+    document.getElementById('tv-'+id+'-sub').textContent  = subTxt;
+    document.getElementById('tv-'+id+'-prev').textContent = prevTxt;
+    const el=document.getElementById('tv-'+id+'-badge');
+    el.className='tc-badge '+badge.cls; el.textContent=badge.html;
+  }
+
+  const prevInfo = n => previousData.length ? prevLabel+': '+(n!=null?n.toFixed(1):'—') : 'No '+prevLabel+' data';
+  setCard('vol',    avgVolC,    'pts/day', 'Total '+currentData.reduce((a,b)=>a+b.n,0)+' patients',   prevInfo(avgVolP),    deltaBadge(avgVolC, avgVolP, true));
+  setCard('comp',   avgCompC,   '%',       '% triaged within 5 min target',                          prevInfo(avgCompP)+'%', deltaBadge(avgCompC, avgCompP, true));
+  setCard('dtat',   avgDtatC,   'min',     'Avg triage-to-doctor time',                              prevInfo(avgDtatP)+' min', deltaBadge(avgDtatC, avgDtatP, false, 'min'));
+  setCard('breach', avgBreachC, '%',       'Red category breach rate',                               prevInfo(avgBreachP)+'%',  deltaBadge(avgBreachC, avgBreachP, false));
+
+  // ── Chart labels + data ────────────────────────────────────────────────────
+  const labels   = currentData.map(d => posAlign ? fmtDate(d.date) : fmtDate(d.date));
+  const prevData = d => {
+    if (!posAlign) {
+      // File compare: align by index (Day 1, Day 2…)
+      const arr = new Array(currentData.length).fill(null);
+      previousData.forEach((p, i) => { if (i < arr.length) arr[i] = d(p); });
+      return arr;
+    } else {
+      // Period mode: align by index
+      const arr = new Array(currentData.length).fill(null);
+      previousData.forEach((p, i) => { if (i < arr.length) arr[i] = d(p); });
+      return arr;
+    }
+  };
+
+  const hasPrev = previousData.length > 0;
+  const prevDS = (key, label, prevColor) => hasPrev ? [{
+    label: prevLabel, data: prevData(d => d[key]),
+    borderColor: prevColor||'rgba(148,163,184,.45)', borderWidth: 1.5, tension: 0.4,
+    borderDash: CMP_FILE_ROWS.length > 0 ? [] : [5,4], fill: false,
+    pointRadius: CMP_FILE_ROWS.length > 0 ? 4 : 2,
+    pointBackgroundColor: prevColor||'#64748b',
+    backgroundColor: CMP_FILE_ROWS.length > 0 ? (prevColor||'rgba(148,163,184,.1)')+'33' : undefined,
+  }] : [];
+
+  const prevBarDS = (key, label, prevColor) => hasPrev ? [{
+    label: prevLabel, data: prevData(d => d[key]),
+    backgroundColor: (prevColor||'rgba(148,163,184,.3)'),
+    borderColor: (prevColor||'rgba(148,163,184,.5)'),
+    borderWidth: 1, borderRadius: 4,
+  }] : [];
+
+  const gradLine = (canvas, color) => {
+    try {
+      const ctx = canvas.getContext('2d');
+      const g = ctx.createLinearGradient(0,0,0,200);
+      g.addColorStop(0, color+'44'); g.addColorStop(1, color+'06'); return g;
+    } catch(e) { return color+'22'; }
+  };
+
+  // Volume
+  mkChart('chartVolume','bar', labels, [
+    { label: currLabel, data: currentData.map(d=>d.n),
+      backgroundColor:'rgba(56,189,248,.55)', borderColor:'#38bdf8', borderWidth:1.5, borderRadius:6 },
+    ...prevBarDS('n', prevLabel, CMP_FILE_ROWS.length>0 ? 'rgba(167,139,250,.5)' : undefined)
+  ], 'Patients');
+
+  // Compliance
+  mkChart('chartCompliance','line', labels, [
+    { label: currLabel, data: currentData.map(d=>d.w5p),
+      borderColor:'#22c55e', borderWidth:2.5, tension:0.4, fill:true,
+      backgroundColor: ctx => gradLine(ctx.chart.canvas,'#22c55e'),
+      pointBackgroundColor:'#22c55e', pointRadius:4, pointHoverRadius:6 },
+    ...prevDS('w5p', prevLabel, CMP_FILE_ROWS.length>0?'#a78bfa':undefined)
+  ], 'Compliance %');
+
+  // Doctor TAT
+  mkChart('chartDoctorTat','line', labels, [
+    { label: currLabel, data: currentData.map(d=>d.avgTC),
+      borderColor:'#a78bfa', borderWidth:2.5, tension:0.4, fill:true,
+      backgroundColor: ctx => gradLine(ctx.chart.canvas,'#a78bfa'),
+      pointBackgroundColor:'#a78bfa', pointRadius:4, pointHoverRadius:6 },
+    ...prevDS('avgTC', prevLabel, CMP_FILE_ROWS.length>0?'#22c55e':undefined)
+  ], 'Minutes');
+
+  // Breach rate
+  mkChart('chartBreach','line', labels, [
+    { label: currLabel, data: currentData.map(d=>d.bpct),
+      borderColor:'#f87171', borderWidth:2.5, tension:0.4, fill:true,
+      backgroundColor: ctx => gradLine(ctx.chart.canvas,'#f87171'),
+      pointBackgroundColor:'#f87171', pointRadius:4, pointHoverRadius:6 },
+    ...prevDS('bpct', prevLabel, CMP_FILE_ROWS.length>0?'#fb923c':undefined)
+  ], 'Breach %');
+
+  // Token→Triage wide chart
+  mkChart('chartTat','line', labels, [
+    { label: currLabel, data: currentData.map(d=>d.avgTT),
+      borderColor:'#fbbf24', borderWidth:2.5, tension:0.4, fill:true,
+      backgroundColor: ctx => gradLine(ctx.chart.canvas,'#fbbf24'),
+      pointBackgroundColor:'#fbbf24', pointRadius:4, pointHoverRadius:6 },
+    ...prevDS('avgTT', prevLabel, CMP_FILE_ROWS.length>0?'#38bdf8':undefined)
+  ], 'Minutes');
+
+  // ── Insights ───────────────────────────────────────────────────────────────
+  const insights = generateInsights(currentData, previousData, P, thresh);
+  document.getElementById('ins-grid').innerHTML = insights.map(i =>
+    '<div class="ins-card"><div class="ins-ico">'+i.ico+'</div><div><div class="ins-title">'+i.title+'</div><div class="ins-body">'+i.body+'</div></div></div>'
+  ).join('');
+
+  // ── Day-by-day table ───────────────────────────────────────────────────────
+  const avgTT_all    = avgOf(currentData,'avgTT'),  avgTC_all    = avgOf(currentData,'avgTC');
+  const avgComp_all  = avgOf(currentData,'w5p'),    avgBreach_all= avgOf(currentData,'bpct');
+  const bestComp = Math.max(...currentData.filter(d=>d.w5p!=null).map(d=>d.w5p), -1);
+
+  const rows = [...currentData].reverse().map(d => {
+    const isBest  = d.w5p != null && d.w5p === bestComp;
+    const isWorst = d.bpct != null && avgBreach_all != null && d.bpct > avgBreach_all * 1.5 && d.bpct > 20;
+    return '<tr class="'+(isBest?'best-row ':'')+(isWorst?'worst-row':'')+'">'+
+      '<td>'+fmtDate(d.date)+'</td>'+
+      '<td>'+d.n+'</td>'+
+      '<td>'+fmt1(d.avgTT)+'</td>'+
+      '<td>'+fmt1(d.w5p)+(d.w5p!=null?'%':'')+'</td>'+
+      '<td>'+fmt1(d.w10p)+(d.w10p!=null?'%':'')+'</td>'+
+      '<td>'+fmt1(d.w1015p)+(d.w1015p!=null?'%':'')+'</td>'+
+      '<td>'+fmt1(d.avgTC)+'</td>'+
+      '<td>'+d.redN+'</td>'+
+      '<td>'+d.breachN+'</td>'+
+      '<td>'+fmt1(d.bpct)+(d.bpct!=null?'%':'')+'</td></tr>';
+  }).join('');
+
+  document.getElementById('cmp-tbody').innerHTML = rows +
+    '<tr class="avg-row">'+
+    '<td>⌀ Period Avg</td>'+
+    '<td>'+(avgOf(currentData,'n')!=null?avgOf(currentData,'n').toFixed(1):'—')+'</td>'+
+    '<td>'+fmt1(avgTT_all)+'</td>'+
+    '<td>'+fmt1(avgComp_all)+(avgComp_all!=null?'%':'')+'</td>'+
+    '<td>'+fmt1(avgOf(currentData,'w10p'))+(avgOf(currentData,'w10p')!=null?'%':'')+'</td>'+
+    '<td>'+fmt1(avgOf(currentData,'w1015p'))+(avgOf(currentData,'w1015p')!=null?'%':'')+'</td>'+
+    '<td>'+fmt1(avgTC_all)+'</td>'+
+    '<td>—</td><td>—</td>'+
+    '<td>'+fmt1(avgBreach_all)+(avgBreach_all!=null?'%':'')+'</td></tr>';
+}
+
+</script>
+</body>
+</html>
