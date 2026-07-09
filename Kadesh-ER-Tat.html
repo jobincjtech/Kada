@@ -303,6 +303,58 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
 }
 .drange-result b{color:#38bdf8}
 
+
+/* ─── HEAT MAP MODULE ──────────────────────────────────────────────────────── */
+.hm-panel{display:none;background:linear-gradient(180deg,rgba(15,23,42,.65),rgba(15,23,42,.48));border:1px solid rgba(255,255,255,.09);border-radius:24px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px;backdrop-filter:blur(14px)}
+.hm-panel.on{display:block}
+.hm-hdr{padding:16px 22px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(90deg,rgba(234,88,12,.1),transparent);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hm-hdr h2{font-size:14px;font-weight:700;color:#fff}
+.hm-hdr p{font-size:11.5px;color:#64748b;margin-top:2px}
+.hm-filter-bar{padding:12px 22px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:rgba(255,255,255,.02)}
+.hm-sel{padding:7px 11px;border:1px solid rgba(255,255,255,.09);border-radius:10px;background:rgba(255,255,255,.06);color:#e2e8f0;font-size:11.5px;font-family:'Inter',sans-serif;cursor:pointer}
+.hm-sel:focus{outline:none;border-color:rgba(234,88,12,.5)}
+.hm-shift-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:#64748b;margin-left:8px}
+.hm-shift-btn{padding:6px 12px;border:1px solid rgba(255,255,255,.08);border-radius:9px;background:rgba(255,255,255,.04);color:#64748b;font-size:11.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:.15s;white-space:nowrap}
+.hm-shift-btn:hover{background:rgba(234,88,12,.12);border-color:rgba(234,88,12,.3);color:#fb923c}
+.hm-shift-btn.active{background:rgba(234,88,12,.18);border-color:rgba(234,88,12,.45);color:#f97316}
+.hm-dl-btn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.05);color:#94a3b8;font-size:11.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:.15s}
+.hm-dl-btn:hover{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.3);color:#38bdf8}
+.hm-dl-btn svg{stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hm-summary{display:flex;gap:10px;padding:14px 22px;border-bottom:1px solid rgba(255,255,255,.07);flex-wrap:wrap}
+.hm-kpi{flex:1;min-width:130px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:12px 14px}
+.hm-kpi-lbl{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.hm-kpi-val{font-size:22px;font-weight:800;letter-spacing:-1px;line-height:1}
+.hm-kpi-sub{font-size:10.5px;color:#64748b;margin-top:3px}
+.hm-body{padding:18px 22px}
+.hm-grid-wrap{overflow-x:auto;border-radius:14px;border:1px solid rgba(255,255,255,.07);margin-bottom:16px}
+.hm-grid{border-collapse:collapse;min-width:100%;font-size:10px;font-family:'JetBrains Mono',monospace}
+.hm-grid th.hm-corner{width:90px;background:rgba(255,255,255,.04);padding:7px 10px;font-size:9px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(255,255,255,.08)}
+.hm-grid th.hm-h-hdr{width:34px;min-width:34px;padding:6px 2px;text-align:center;font-size:9.5px;font-weight:700;color:#94a3b8;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.08);border-left:1px solid rgba(255,255,255,.05);white-space:nowrap}
+.hm-grid th.hm-h-hdr.peak-hour{color:#f97316;background:rgba(249,115,22,.1)}
+.hm-grid th.hm-tot-hdr{width:48px;padding:6px 6px;text-align:center;font-size:9px;font-weight:800;color:#64748b;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.08);border-left:1px solid rgba(255,255,255,.08)}
+.hm-grid td.hm-date-lbl{padding:6px 10px;font-size:10.5px;font-weight:700;color:#7dd3fc;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.05);white-space:nowrap;min-width:90px}
+.hm-grid td.hm-cell{width:34px;min-width:34px;height:30px;text-align:center;vertical-align:middle;border-left:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04);cursor:default;transition:transform .1s;position:relative;font-size:10px;font-weight:700}
+.hm-grid td.hm-cell:hover{transform:scale(1.15);z-index:10;border-color:rgba(255,255,255,.25)!important;outline:1px solid rgba(255,255,255,.35)}
+.hm-grid td.hm-tot-cell{padding:4px 6px;text-align:center;font-size:10.5px;font-weight:800;border-left:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.04);color:#e2e8f0;background:rgba(255,255,255,.04)}
+.hm-grid tr.hm-sum-row td,.hm-grid tr.hm-sum-row th{background:rgba(255,255,255,.06)!important;border-top:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:800;color:#f0f6ff;padding:7px 2px}
+.hm-grid tr.hm-sum-row td.hm-date-lbl{color:#38bdf8;font-size:10px}
+.hc0{background:#0d1117;color:transparent}
+.hc1{background:#0c2340;color:#3b82f6}
+.hc2{background:#1e3a8a;color:#93c5fd}
+.hc3{background:#065f46;color:#6ee7b7}
+.hc4{background:#14532d;color:#86efac}
+.hc5{background:#713f12;color:#fde68a}
+.hc6{background:#92400e;color:#fcd34d}
+.hc7{background:#7c2d12;color:#fdba74}
+.hc8{background:#7f1d1d;color:#fca5a5;animation:pulse-red 2s infinite}
+@keyframes pulse-red{0%,100%{box-shadow:none}50%{box-shadow:inset 0 0 6px rgba(239,68,68,.4)}}
+.hm-legend{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.hm-legend-lbl{font-size:10px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-right:4px}
+.hm-leg-item{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:#64748b;font-family:'JetBrains Mono',monospace}
+.hm-leg-swatch{width:22px;height:16px;border-radius:4px}
+.hm-chart-wrap{position:relative;height:200px;margin-top:4px}
+.hm-notime{padding:36px;text-align:center;color:#64748b;font-size:13px}
+
 /* ─── FINAL ANALYSIS PANEL ──────────────────────────────────────────────────── */
 .analysis-panel{
   display:none;background:linear-gradient(180deg,rgba(15,23,42,.65),rgba(15,23,42,.48));
@@ -789,7 +841,51 @@ tbody tr:hover{background:rgba(255,255,255,.03)}
       </div>
     </div>
 
-    <div class="breach-wrap" id="breach-wrap">
+    
+    <!-- HEAT MAP MODULE -->
+    <div class="hm-panel" id="hm-wrap">
+      <div class="hm-hdr">
+        <div><h2>🔥 Patient Volume Heat Map — Hourly Distribution</h2><p>Colour-coded by patient count · Green = low · Yellow = moderate · Red = peak</p></div>
+        <button class="hm-dl-btn" onclick="hmDownloadCSV()"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export CSV</button>
+      </div>
+      <div class="hm-filter-bar">
+        <select class="hm-sel" id="hm-date-sel" onchange="hmApplyFilters()"><option value="">All Dates</option></select>
+        <span class="hm-shift-lbl">Shift</span>
+        <button class="hm-shift-btn active" id="hm-sb-all"   onclick="setHmShift('all')">All Day</button>
+        <button class="hm-shift-btn"        id="hm-sb-night" onclick="setHmShift('night')">🌙 Night (0–5)</button>
+        <button class="hm-shift-btn"        id="hm-sb-morn"  onclick="setHmShift('morning')">🌅 Morning (6–11)</button>
+        <button class="hm-shift-btn"        id="hm-sb-aft"   onclick="setHmShift('afternoon')">☀️ Afternoon (12–17)</button>
+        <button class="hm-shift-btn"        id="hm-sb-eve"   onclick="setHmShift('evening')">🌆 Evening (18–23)</button>
+      </div>
+      <div class="hm-summary">
+        <div class="hm-kpi"><div class="hm-kpi-lbl">Peak Hour</div><div class="hm-kpi-val" id="hm-peak-hour" style="color:#f97316">—</div><div class="hm-kpi-sub" id="hm-peak-count">—</div></div>
+        <div class="hm-kpi"><div class="hm-kpi-lbl">Quietest Hour</div><div class="hm-kpi-val" id="hm-quiet-hour" style="color:#22c55e">—</div><div class="hm-kpi-sub" id="hm-quiet-count">—</div></div>
+        <div class="hm-kpi"><div class="hm-kpi-lbl">Busiest Day</div><div class="hm-kpi-val" id="hm-busy-day" style="color:#38bdf8;font-size:14px">—</div><div class="hm-kpi-sub" id="hm-busy-day-count">—</div></div>
+        <div class="hm-kpi"><div class="hm-kpi-lbl">Avg / Hour</div><div class="hm-kpi-val" id="hm-avg-per-hr" style="color:#a78bfa">—</div><div class="hm-kpi-sub" id="hm-avg-sub">active hours</div></div>
+        <div class="hm-kpi"><div class="hm-kpi-lbl">3-hr Peak Window</div><div class="hm-kpi-val" id="hm-peak-window" style="color:#fbbf24;font-size:14px">—</div><div class="hm-kpi-sub">consecutive busiest block</div></div>
+      </div>
+      <div class="hm-body">
+        <div class="hm-legend">
+          <span class="hm-legend-lbl">Volume</span>
+          <span class="hm-leg-item"><span class="hm-leg-swatch hc0" style="border:1px solid #222"></span>0</span>
+          <span class="hm-leg-item"><span class="hm-leg-swatch hc1"></span>1–2</span>
+          <span class="hm-leg-item"><span class="hm-leg-swatch hc2"></span>3–4</span>
+          <span class="hm-leg-item"><span class="hm-leg-swatch hc3"></span>5–7</span>
+          <span class="hm-leg-item"><span class="hm-leg-swatch hc4"></span>8–10</span>
+          <span class="hm-leg-item"><span class="hm-leg-swatch hc5"></span>11–14</span>
+          <span class="hm-leg-item"><span class="hm-leg-swatch hc6"></span>15–19</span>
+          <span class="hm-leg-item"><span class="hm-leg-swatch hc7"></span>20–25</span>
+          <span class="hm-leg-item"><span class="hm-leg-swatch hc8"></span>26+ 🔴</span>
+        </div>
+        <div class="hm-grid-wrap" id="hm-grid-wrap"><div class="hm-notime" id="hm-notime" style="display:none">No hour timestamps found in the data. Ensure Triage End Time or Encounter Time columns contain time values.</div></div>
+        <div style="margin-top:16px">
+          <div style="font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#64748b;margin-bottom:10px">Hourly Patient Distribution</div>
+          <div class="hm-chart-wrap"><canvas id="hmHourlyChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+<div class="breach-wrap" id="breach-wrap">
       <div class="breach-hdr">
         <div class="breach-hdr-left">
           <div class="breach-icon">
@@ -1163,7 +1259,7 @@ function parseRows(raw){
   }).filter(Boolean);
   FILT=ALL.filter(r=>r.tat1!==null);
   populateFilters();
-  ['filebar','filters','actbar','kpi-wrap','sum-wrap','breach-wrap','det-wrap'].forEach(id=>
+  ['filebar','filters','actbar','kpi-wrap','sum-wrap','hm-wrap','breach-wrap','det-wrap'].forEach(id=>
     document.getElementById(id).classList.add('on'));
   document.getElementById('fb-name').textContent=FNAME||'Uploaded File';
   document.getElementById('fb-count').textContent=
@@ -3331,6 +3427,259 @@ parseRows = function(raw) {
   _origParseRows(raw);
   // Ensure analysis panel is included
   document.getElementById('analysis-wrap')?.classList.add('on');
+};
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HEAT MAP MODULE
+// ══════════════════════════════════════════════════════════════════════════════
+let HM_SHIFT = 'all';
+let HM_DATE  = '';
+let HM_CHART = null;
+
+const SHIFT_RANGES = {
+  all:       [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
+  night:     [0,1,2,3,4,5],
+  morning:   [6,7,8,9,10,11],
+  afternoon: [12,13,14,15,16,17],
+  evening:   [18,19,20,21,22,23],
+};
+
+function getPatientHour(row) {
+  const candidates = [row.triageEnd, row.encTime, row.docSeen];
+  for (const ts of candidates) {
+    if (!ts || ts === '') continue;
+    const s = String(ts).trim();
+    const m = s.match(/(?:^|\s|T)(\d{1,2}):(\d{2})(?::\d{2})?(?:\s*(AM|PM))?/i);
+    if (m) {
+      let h = parseInt(m[1]);
+      const ampm = m[3] ? m[3].toUpperCase() : '';
+      if (ampm === 'PM' && h < 12) h += 12;
+      if (ampm === 'AM' && h === 12) h = 0;
+      if (h >= 0 && h <= 23) return h;
+    }
+  }
+  return null;
+}
+
+function hmColorClass(count) {
+  if (count === 0)  return 'hc0';
+  if (count <= 2)   return 'hc1';
+  if (count <= 4)   return 'hc2';
+  if (count <= 7)   return 'hc3';
+  if (count <= 10)  return 'hc4';
+  if (count <= 14)  return 'hc5';
+  if (count <= 19)  return 'hc6';
+  if (count <= 25)  return 'hc7';
+  return 'hc8';
+}
+
+function fmt12(h) {
+  if (h === 0)  return '12 AM';
+  if (h < 12)  return h + ' AM';
+  if (h === 12) return '12 PM';
+  return (h - 12) + ' PM';
+}
+
+function setHmShift(shift) {
+  HM_SHIFT = shift;
+  const idMap = { all:'all', night:'night', morning:'morn', afternoon:'aft', evening:'eve' };
+  Object.entries(idMap).forEach(([s, id]) => {
+    document.getElementById('hm-sb-' + id)?.classList.toggle('active', s === shift);
+  });
+  renderHeatMap();
+}
+
+function hmApplyFilters() {
+  HM_DATE = document.getElementById('hm-date-sel')?.value || '';
+  renderHeatMap();
+}
+
+function populateHmDateSel(dates) {
+  const sel = document.getElementById('hm-date-sel');
+  if (!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">All Dates</option>';
+  dates.forEach(d => {
+    const o = document.createElement('option');
+    o.value = d; o.textContent = fmtDateShort(d);
+    sel.appendChild(o);
+  });
+  sel.value = dates.includes(cur) ? cur : '';
+}
+
+function renderHeatMap() {
+  const rows = getActiveFilt();
+  const hours = SHIFT_RANGES[HM_SHIFT];
+  const filtRows = HM_DATE ? rows.filter(r => getRowDate(r) === HM_DATE) : rows;
+
+  const entries = filtRows
+    .map(r => ({ date: getRowDate(r), hour: getPatientHour(r) }))
+    .filter(e => e.date && e.hour !== null && hours.includes(e.hour));
+
+  const notime  = document.getElementById('hm-notime');
+  const gridWrap= document.getElementById('hm-grid-wrap');
+  const setT    = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+
+  if (!entries.length) {
+    gridWrap.innerHTML = '';
+    if (notime) notime.style.display = 'block';
+    ['hm-peak-hour','hm-peak-count','hm-quiet-hour','hm-quiet-count',
+     'hm-busy-day','hm-busy-day-count','hm-avg-per-hr','hm-peak-window'].forEach(id=>setT(id,'—'));
+    if (HM_CHART) { HM_CHART.destroy(); HM_CHART = null; }
+    return;
+  }
+  if (notime) notime.style.display = 'none';
+
+  const dates = HM_DATE ? [HM_DATE]
+    : [...new Set(entries.map(e => e.date))].sort();
+
+  const matrix  = {};
+  const hourTot = {};
+  const dateTot = {};
+
+  dates.forEach(d => { matrix[d] = {}; dateTot[d] = 0; });
+  hours.forEach(h => { hourTot[h] = 0; });
+  entries.forEach(({ date, hour }) => {
+    matrix[date][hour]  = (matrix[date][hour]  || 0) + 1;
+    hourTot[hour]       = (hourTot[hour]        || 0) + 1;
+    dateTot[date]       = (dateTot[date]        || 0) + 1;
+  });
+
+  // Populate date dropdown with all available dates
+  const allDates = [...new Set(rows.map(r => getRowDate(r)).filter(Boolean))].sort();
+  populateHmDateSel(allDates);
+  document.getElementById('hm-date-sel').value = HM_DATE;
+
+  // KPI cards
+  const hourArr   = hours.map(h => ({ h, total: hourTot[h]||0 })).filter(x => x.total > 0);
+  const peakHour  = hourArr.reduce((a, b) => b.total > a.total ? b : a, { h:-1, total:-1 });
+  const quietHour = hourArr.reduce((a, b) => b.total < a.total ? b : a, { h:-1, total:Infinity });
+  const busyDay   = Object.entries(dateTot).sort((a,b)=>b[1]-a[1])[0];
+  const totalPts  = entries.length;
+  const avgPerHr  = hourArr.length ? totalPts / hourArr.length : 0;
+
+  let bestWin = null, bestWinCnt = 0;
+  for (let i = 0; i < hours.length - 2; i++) {
+    const win = hours.slice(i, i+3);
+    const cnt = win.reduce((s,h) => s+(hourTot[h]||0), 0);
+    if (cnt > bestWinCnt) { bestWinCnt = cnt; bestWin = win; }
+  }
+
+  setT('hm-peak-hour',    peakHour.h  >= 0 ? fmt12(peakHour.h) : '—');
+  setT('hm-peak-count',   peakHour.h  >= 0 ? peakHour.total + ' patients' : '—');
+  setT('hm-quiet-hour',   quietHour.h >= 0 && hourArr.length > 1 ? fmt12(quietHour.h) : '—');
+  setT('hm-quiet-count',  quietHour.h >= 0 && hourArr.length > 1 ? quietHour.total + ' patients' : '—');
+  setT('hm-busy-day',     busyDay ? fmtDateShort(busyDay[0]) : '—');
+  setT('hm-busy-day-count', busyDay ? busyDay[1] + ' patients' : '—');
+  setT('hm-avg-per-hr',   avgPerHr.toFixed(1));
+  setT('hm-avg-sub',      `across ${hourArr.length} active hours`);
+  setT('hm-peak-window',  bestWin ? fmt12(bestWin[0]) + ' – ' + fmt12(bestWin[2]) : '—');
+
+  // Build grid
+  let tbl = '<table class="hm-grid"><thead><tr>';
+  tbl += '<th class="hm-corner">📅 Date \\ ⏰ Hour</th>';
+  hours.forEach(h => {
+    const isPk = h === peakHour.h;
+    tbl += `<th class="hm-h-hdr${isPk?' peak-hour':''}" title="${fmt12(h)}">${h<10?'0'+h:h}</th>`;
+  });
+  tbl += '<th class="hm-tot-hdr">TOTAL</th></tr></thead><tbody>';
+
+  dates.forEach(date => {
+    const isBusiest = busyDay && date === busyDay[0] && dates.length > 1;
+    tbl += `<tr><td class="hm-date-lbl"${isBusiest?' style="color:#fbbf24"':''}>${fmtDateShort(date)}${isBusiest?' ★':''}</td>`;
+    hours.forEach(h => {
+      const cnt = matrix[date]?.[h] || 0;
+      tbl += `<td class="hm-cell ${hmColorClass(cnt)}" title="${fmtDateShort(date)} ${fmt12(h)} — ${cnt} patient${cnt!==1?'s':''}">${cnt||''}</td>`;
+    });
+    tbl += `<td class="hm-tot-cell">${dateTot[date]||0}</td></tr>`;
+  });
+
+  // Total row
+  tbl += '<tr class="hm-sum-row"><td class="hm-date-lbl">HOURLY TOTAL</td>';
+  hours.forEach(h => {
+    const cnt = hourTot[h]||0;
+    const perDay = dates.length ? cnt/dates.length : 0;
+    tbl += `<td class="hm-cell ${hmColorClass(Math.round(perDay))}" title="${fmt12(h)} total: ${cnt} (avg ${perDay.toFixed(1)}/day)">${cnt||''}</td>`;
+  });
+  tbl += `<td class="hm-tot-cell">${totalPts}</td></tr></tbody></table>`;
+  gridWrap.innerHTML = tbl;
+
+  // Hourly bar chart
+  if (HM_CHART) { HM_CHART.destroy(); HM_CHART = null; }
+  const ctx = document.getElementById('hmHourlyChart')?.getContext('2d');
+  if (!ctx) return;
+  const chartData = hours.map(h => hourTot[h]||0);
+  const maxVal    = Math.max(...chartData, 1);
+  const barColors = chartData.map(v => {
+    const r = v / maxVal;
+    if (r === 0)  return 'rgba(13,17,23,.4)';
+    if (r < 0.15) return 'rgba(28,65,140,.75)';
+    if (r < 0.30) return 'rgba(5,150,105,.75)';
+    if (r < 0.50) return 'rgba(101,163,13,.8)';
+    if (r < 0.65) return 'rgba(217,119,6,.8)';
+    if (r < 0.80) return 'rgba(234,88,12,.85)';
+    return 'rgba(220,38,38,.9)';
+  });
+
+  HM_CHART = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: hours.map(h => `${h<10?'0'+h:h}:00`), datasets: [{
+      label: 'Patients', data: chartData, backgroundColor: barColors, borderRadius: 5, borderSkipped: false
+    }]},
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor:'rgba(7,17,31,.92)', titleColor:'#f0f6ff', bodyColor:'#94a3b8',
+          borderColor:'rgba(255,255,255,.1)', borderWidth:1, padding:10,
+          callbacks: {
+            title: ([i]) => fmt12(hours[i.dataIndex]),
+            label: i => `${i.parsed.y} patients`,
+            afterLabel: i => `${(i.parsed.y/maxVal*100).toFixed(0)}% of peak`
+          }
+        }
+      },
+      scales: {
+        x: { grid:{color:'rgba(148,163,184,.06)'}, ticks:{color:'#4a6080',font:{size:9}} },
+        y: { grid:{color:'rgba(148,163,184,.06)'}, ticks:{color:'#4a6080',font:{size:10}},
+             beginAtZero:true, title:{display:true,text:'Patients',color:'#4a6080',font:{size:10}} }
+      }
+    }
+  });
+}
+
+function hmDownloadCSV() {
+  const rows  = getActiveFilt();
+  const hours = SHIFT_RANGES[HM_SHIFT];
+  const filtRows = HM_DATE ? rows.filter(r=>getRowDate(r)===HM_DATE) : rows;
+  const entries  = filtRows.map(r=>({date:getRowDate(r),hour:getPatientHour(r)}))
+                           .filter(e=>e.date&&e.hour!==null&&hours.includes(e.hour));
+  if (!entries.length) { alert('No data to export.'); return; }
+  const dates = [...new Set(entries.map(e=>e.date))].sort();
+  const matrix={}, hourTot={}, dateTot={};
+  dates.forEach(d=>{matrix[d]={};dateTot[d]=0;});
+  hours.forEach(h=>{hourTot[h]=0;});
+  entries.forEach(({date,hour})=>{
+    matrix[date][hour]=(matrix[date][hour]||0)+1;
+    hourTot[hour]=(hourTot[hour]||0)+1;
+    dateTot[date]=(dateTot[date]||0)+1;
+  });
+  const header=['Date',...hours.map(h=>`${h<10?'0'+h:h}:00`),'Total'].join(',');
+  const dataRows=dates.map(d=>[fmtDateShort(d),...hours.map(h=>matrix[d][h]||0),dateTot[d]].join(','));
+  const sumRow=['TOTAL',...hours.map(h=>hourTot[h]||0),entries.length].join(',');
+  const csv=[header,...dataRows,sumRow].join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=(FNAME||'triage').replace(/\.[^/.]+$/,'')+'_heatmap.csv';
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+const _hmRenderAll = renderAll;
+renderAll = function() {
+  _hmRenderAll();
+  try { renderHeatMap(); } catch(e) { console.warn('HeatMap:', e); }
 };
 
 </script>
