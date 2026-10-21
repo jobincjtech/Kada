@@ -473,6 +473,101 @@ footer b { color: var(--text-2); }
   .topbar-row .brand-mark.sm { display: none; }
 }
 
+/* ---------- v3: Billed / Unbilled / Consolidated ---------- */
+:root { --unb: #c4581c; --unb-2: #d96a2a; --unb-bg: #fdf0e6; --billed: var(--primary); }
+:root[data-theme="dark"] { --unb: #f59a5b; --unb-2: #f7ad77; --unb-bg: #35210f; }
+.modtabs { display: flex; gap: 4px; padding: 4px; border-radius: 13px; background: var(--surface-2); border: 1px solid var(--border); margin-left: auto; overflow-x: auto; max-width: 100%; }
+.modtab { border: 0; background: transparent; padding: 9px 14px; border-radius: 10px; font-weight: 700; font-size: 13px; color: var(--text-2); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; transition: background .15s, color .15s, box-shadow .15s; }
+.modtab:hover { background: var(--surface); color: var(--text); }
+.modtab.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 4px 12px rgba(10,50,90,.1); }
+.modtab.active[data-view="billed"] { color: var(--primary); }
+.modtab.active[data-view="unbilled"] { color: var(--unb); }
+.mdot { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
+.mdot.b { background: var(--primary); } .mdot.u { background: var(--unb); } .mdot.c { background: linear-gradient(135deg, var(--primary) 50%, var(--unb) 50%); }
+.mt-n:empty { display: none; }
+.mt-n { font-size: 11px; padding: 1px 7px; border-radius: 99px; background: color-mix(in srgb, var(--primary) 14%, transparent); color: var(--primary); }
+.mt-n.u { background: var(--unb-bg); color: var(--unb); }
+.top-actions { margin-left: auto; }
+.modrow { padding: 0 26px 10px; }
+.modrow .modtabs { margin: 0; display: inline-flex; }
+.modtab { padding: 9px 18px; }
+.tabbar { position: relative !important; top: auto !important; }
+.btn.primary.unb { background: var(--unb); border-color: var(--unb); color: #fff; box-shadow: 0 4px 12px color-mix(in srgb, var(--unb) 30%, transparent); }
+.btn.primary.unb:hover:not(:disabled) { background: var(--unb-2); color: #fff; }
+:root[data-theme="dark"] .btn.primary.unb, :root[data-theme="dark"] .btn.primary.unb:hover:not(:disabled) { color: #1a0d03; }
+.hi.unb { background: var(--unb-bg) !important; color: var(--unb) !important; }
+.view-unbilled .tabbtn.active { background: var(--unb); color: #fff; box-shadow: 0 4px 12px color-mix(in srgb, var(--unb) 30%, transparent); }
+:root[data-theme="dark"] .view-unbilled .tabbtn.active { color: #1a0d03; }
+.view-unbilled .file-chip .fc-ic { color: var(--unb); background: var(--unb-bg); }
+.view-unbilled .file-chip.loaded .fc-ic { color: var(--ok); background: var(--ok-bg); }
+.accent-unb { border-top: 3px solid var(--unb); }
+#view-billed > #sec-summary { border-top: 3px solid var(--primary); }
+.kpi.hero { background: linear-gradient(135deg, var(--unb-bg), var(--surface-2)); border-color: color-mix(in srgb, var(--unb) 35%, var(--border)); }
+.kpi.hero .kv { color: var(--unb); font-size: 32px; }
+.kpis.k3 { grid-template-columns: 1.2fr 1fr 1fr 1fr; }
+.na { color: var(--muted); font-style: italic; font-weight: 600; font-size: 12px; }
+.tag { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; padding: 2px 8px; border-radius: 6px; }
+.tag.b { background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--primary); }
+.tag.u { background: var(--unb-bg); color: var(--unb); }
+.cons-table th.b-h { color: var(--primary); box-shadow: inset 0 -3px 0 var(--primary); }
+.cons-table th.u-h { color: var(--unb); box-shadow: inset 0 -3px 0 var(--unb); }
+.cons-table td.b-c { background: color-mix(in srgb, var(--primary) 3.5%, transparent); }
+.cons-table td.u-c { background: color-mix(in srgb, var(--unb) 5%, transparent); }
+.cons-table th.grp { text-align: center; font-size: 11px; letter-spacing: .06em; }
+.status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.status-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 16px; display: flex; gap: 14px; align-items: center; border-left: 4px solid var(--sc); }
+.status-card .si { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; flex: none; color: var(--sc); background: color-mix(in srgb, var(--sc) 13%, transparent); }
+.status-card .st { min-width: 0; flex: 1; }
+.status-card .st small { display: block; font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--sc); }
+.status-card .st b { display: block; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.status-card .st span { font-size: 12px; color: var(--muted); }
+.status-card.missing { border-left-style: dashed; opacity: .9; }
+.note-box { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--surface-2); border: 1px dashed var(--border); font-size: 12.5px; color: var(--text-2); }
+.note-box p { margin: 0 0 4px; } .note-box p:last-child { margin: 0; }
+.chart-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.chart-h { margin: 0 0 8px; font-size: 13px; color: var(--text-2); }
+.reason { font-size: 12px; }
+.reason.billed { color: var(--text-2); }
+.reason.odd { color: var(--warn); font-weight: 700; }
+.reason.cpt { color: var(--muted); }
+.filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.u-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .modrow { padding: 0 16px 10px; } .modrow .modtabs { display: flex; } }
+@media (max-width: 980px) { .status-grid, .chart-2col { grid-template-columns: 1fr; } .tabbar { top: 0; } .kpis.k3 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px) { .u-card-grid { grid-template-columns: 1fr; } .modtab { padding: 8px 10px; font-size: 12.5px; } }
+
+/* ---------- v4: ActivitySheetDate filter ---------- */
+.filter-bar { padding: 12px 14px; border-left: 4px solid var(--unb); }
+.fb-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.fb-title { display: flex; align-items: center; gap: 10px; margin-right: 6px; }
+.fb-title .hi { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; }
+.fb-title b { display: block; font-size: 13.5px; }
+.fb-title small { display: block; font-size: 12px; color: var(--unb); font-weight: 700; }
+.seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); }
+.seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 12.5px; color: var(--text-2); cursor: pointer; }
+.seg button.active { background: var(--unb); color: #fff; }
+:root[data-theme="dark"] .seg button.active { color: #1a0d03; }
+.fb-in { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.fb-in input { border: 1px solid var(--border); border-radius: 9px; padding: 6px 9px; background: var(--surface); color: var(--text); font-weight: 600; }
+.fb-in input:focus { outline: none; border-color: var(--unb); }
+.fb-chk { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; color: var(--text-2); cursor: pointer; }
+.fb-chk input { accent-color: var(--unb); width: 15px; height: 15px; }
+.fb-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.dchip { border: 1px solid var(--border); background: var(--surface); border-radius: 99px; padding: 5px 11px; font-size: 12.5px; font-weight: 600; color: var(--text-2); cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: background .15s, border-color .15s; }
+.dchip:hover { border-color: var(--unb); }
+.dchip b { font-size: 11px; padding: 1px 7px; border-radius: 99px; background: var(--unb-bg); color: var(--unb); }
+.dchip.on { background: var(--unb); border-color: var(--unb); color: #fff; }
+.dchip.on b { background: rgba(255,255,255,.25); color: #fff; }
+.dchip.pend { border-style: dashed; }
+.fb-note { margin-top: 8px; font-size: 12px; color: var(--muted); }
+.fb-note b { color: var(--text-2); }
+.filter-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 99px; background: var(--unb-bg); color: var(--unb); margin-left: 8px; vertical-align: middle; }
+.dw-table tr.in td { background: color-mix(in srgb, var(--unb) 7%, transparent); }
+.dw-table tr.out td { opacity: .55; }
+.dw-table tbody tr:not(.grand) { cursor: pointer; }
+.dw-wrap { margin-bottom: 18px; }
+.dw-wrap h4 { margin: 0 0 8px; font-size: 13.5px; display: flex; align-items: center; gap: 8px; }
+
 /* Print-only header */
 .print-head { display: none; }
 
@@ -514,7 +609,9 @@ footer b { color: var(--text-2); }
     --primary: #0a5aa8; --teal: #0e9f9f; --c1: #0a5aa8; --c2: #0e9f9f; --c3: #5b4ccf; --gross: #0a5aa8; --disc: #e8892b; --net: #12a37f; --on-primary: #fff;
   }
   body { background: #fff !important; font-size: 12px; }
-  #sec-overview, #sec-chart { display: block !important; }
+  .tabpanel[data-print] { display: block !important; }
+  .no-print, .modtabs, .status-grid .btn { display: none !important; }
+  .chart-2col { grid-template-columns: 1fr 1fr !important; }
   .tabbar, .drop-overlay, .sidebar, .topbar, #sec-upload, #sec-preview, #sec-history, #sec-validation, .summary-actions, .inv-head .tools, .panel-head .tools, #toasts, .loader, footer .no-print { display: none !important; }
   #app { display: block; }
   .content { padding: 0; gap: 12px; }
@@ -576,7 +673,7 @@ footer b { color: var(--text-2); }
         <div class="brand-mark sm"><svg viewBox="0 0 24 24" fill="#fff"><path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z"/></svg></div>
         <div class="title-block">
           <h1>Kadesh Observation Matrix</h1>
-          <p>Aster Hospital Mankhool · Daily ER &amp; Observation charge summary · Codes 17.21 · 17.22 · 17.24</p>
+          <p>Aster Hospital Mankhool · ER &amp; Observation charges · Codes 17.21 · 17.22 · 17.24</p>
         </div>
         <div class="top-actions">
           <div class="clock"><b id="clockTime">--:--:--</b><span id="clockDate">—</span></div>
@@ -584,19 +681,28 @@ footer b { color: var(--text-2); }
           <button class="icon-btn" id="logoutBtn" title="Logout" aria-label="Logout"><svg class="i" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
         </div>
       </div>
+      <div class="modrow">
+          <nav class="modtabs" id="modTabs" role="tablist" aria-label="Dashboard">
+            <button class="modtab active" data-view="billed" role="tab"><i class="mdot b"></i>Billed Observation<span class="mt-n" id="mtB"></span></button>
+            <button class="modtab" data-view="unbilled" role="tab"><i class="mdot u"></i>Unbilled Observation<span class="mt-n u" id="mtU"></span></button>
+            <button class="modtab" data-view="cons" role="tab"><i class="mdot c"></i>Consolidated Summary</button>
+          </nav>
+      </div>
       <div class="marquee" aria-hidden="true"><div class="marquee-track" id="marqueeTrack"></div></div>
     </header>
 
     <div class="content">
       <div class="print-head">
-        <h1>Kadesh Observation Matrix — Management Summary</h1>
+        <h1 id="printTitle">Kadesh Observation Matrix — Management Summary</h1>
         <p id="printMeta">Aster Hospital Mankhool</p>
       </div>
 
+      <!-- ===================== BILLED VIEW ===================== -->
+      <div class="view" id="view-billed">
       <!-- Compact upload bar -->
-      <section class="panel upload-bar" id="sec-upload">
+      <section class="panel upload-bar no-print" id="sec-upload">
         <div class="ub-row">
-          <button type="button" class="btn primary" id="browseBtn"><svg class="i" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>Upload Excel</button>
+          <button type="button" class="btn primary" id="browseBtn"><svg class="i" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg><span id="browseTxt">Upload Billed Excel</span></button>
           <input type="file" id="fileInput" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" hidden>
           <div class="file-chip" id="fileChip">
             <span class="fc-ic"><svg class="i" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg></span>
@@ -608,8 +714,9 @@ footer b { color: var(--text-2); }
             <small id="reportDateHint" hidden></small>
           </label>
           <div class="ub-tools">
+            <button class="btn sm" id="refreshBtn" disabled title="Recalculate from the loaded file"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>Refresh</button>
             <button class="btn sm" id="mapToggle" title="Worksheet & column mapping" disabled><svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h6"/></svg>Mapping</button>
-            <button class="btn sm danger" id="resetBtn" disabled title="Clear and start fresh"><svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Reset</button>
+            <button class="btn sm danger" id="resetBtn" disabled title="Clear and start fresh"><svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Clear File</button>
           </div>
         </div>
         <div class="progress" id="progress" hidden>
@@ -639,10 +746,10 @@ footer b { color: var(--text-2); }
       <!-- Management Summary (first) -->
       <section class="panel" id="sec-summary">
         <div class="panel-head">
-          <h2><span class="hi"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg></span>Management Summary</h2>
+          <h2><span class="hi"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg></span>Billed Observation — Management Summary</h2>
           <div class="tools summary-actions">
-            <button class="btn primary" id="copySummary" disabled><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy Summary</button>
-            <button class="btn" id="exportXlsx" disabled title="Export Excel"><svg class="i" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 13l6 5M15 13l-6 5"/></svg>Excel</button>
+            <button class="btn primary" id="copySummary" disabled><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy Billed Summary</button>
+            <button class="btn" id="exportXlsx" disabled title="Export Billed Excel"><svg class="i" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 13l6 5M15 13l-6 5"/></svg>Export Billed Excel</button>
             <button class="btn" id="exportCsv" disabled title="Export CSV"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></svg>CSV</button>
             <button class="btn" id="printBtn" disabled title="Print / Save PDF"><svg class="i" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>Print / PDF</button>
           </div>
@@ -654,7 +761,7 @@ footer b { color: var(--text-2); }
       </section>
 
       <!-- Tabs -->
-      <nav class="tabbar" id="tabbar" role="tablist">
+      <nav class="tabbar" id="tabbar" data-group="b" role="tablist">
         <button class="tabbtn active" data-target="sec-overview" role="tab"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Investigation Breakdown</button>
         <button class="tabbtn" data-target="sec-chart" role="tab"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Charts</button>
         <button class="tabbtn" data-target="sec-preview" role="tab"><svg class="i" viewBox="0 0 24 24"><path d="M3 5h18M3 10h18M3 15h18M3 20h12"/></svg>Data Rows <span class="tb-n" id="tbRows"></span></button>
@@ -662,7 +769,7 @@ footer b { color: var(--text-2); }
         <button class="tabbtn" data-target="sec-history" role="tab"><svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>History <span class="tb-n" id="tbHist"></span></button>
       </nav>
 
-      <section class="panel tabpanel" id="sec-overview">
+      <section class="panel tabpanel" id="sec-overview" data-group="b" data-print>
         <div class="panel-head">
           <h2><span class="hi"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>Investigation Breakdown</h2>
           <div class="desc">Unit, Gross, Discount and Net totals per investigation code, with share of the grand total.</div>
@@ -670,7 +777,7 @@ footer b { color: var(--text-2); }
         <div id="overview"></div>
       </section>
 
-      <section class="panel tabpanel" id="sec-chart" hidden>
+      <section class="panel tabpanel" id="sec-chart" data-group="b" data-print hidden>
         <div class="panel-head">
           <h2><span class="hi"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>Gross vs Discount vs Net</h2>
           <div class="desc">Amount comparison (AED) across the three investigations.</div>
@@ -678,7 +785,7 @@ footer b { color: var(--text-2); }
         <div id="chart"></div>
       </section>
 
-      <section class="panel tabpanel" id="sec-preview" hidden>
+      <section class="panel tabpanel" id="sec-preview" data-group="b" hidden>
         <div class="panel-head">
           <h2><span class="hi"><svg class="i" viewBox="0 0 24 24"><path d="M3 5h18M3 10h18M3 15h18M3 20h12"/></svg></span>Detailed Data Rows</h2>
           <div class="desc">The exact Excel rows counted for each investigation. Highlighted rows have a reconciliation difference.</div>
@@ -686,7 +793,7 @@ footer b { color: var(--text-2); }
         <div id="preview"></div>
       </section>
 
-      <section class="panel tabpanel" id="sec-validation" hidden>
+      <section class="panel tabpanel" id="sec-validation" data-group="b" hidden>
         <div class="panel-head">
           <h2><span class="hi"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span>Data Validation &amp; Reconciliation</h2>
           <div class="desc">Required columns, blank vs invalid values, and Gross − Disc vs Net per row. Totals are never altered.</div>
@@ -694,7 +801,7 @@ footer b { color: var(--text-2); }
         <div id="validation"></div>
       </section>
 
-      <section class="panel tabpanel" id="sec-history" hidden>
+      <section class="panel tabpanel" id="sec-history" data-group="b" hidden>
         <div class="panel-head">
           <h2><span class="hi"><svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg></span>Upload History <span class="chip">this session</span></h2>
           <div class="tools"><button class="btn sm danger" id="clearHistory"><svg class="i" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>Clear history</button></div>
@@ -702,6 +809,139 @@ footer b { color: var(--text-2); }
         </div>
         <div id="history"></div>
       </section>
+      </div>
+      <!-- ===================== UNBILLED VIEW ===================== -->
+      <div class="view view-unbilled" id="view-unbilled" hidden>
+        <section class="panel upload-bar no-print" id="u-upload">
+          <div class="ub-row">
+            <button type="button" class="btn primary unb" id="uBrowse"><svg class="i" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg><span id="uBrowseTxt">Upload Unbilled Excel</span></button>
+            <input type="file" id="uFile" accept=".xlsx,.xls,.csv,.htm,.html,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,text/html" hidden>
+            <div class="file-chip" id="uChip">
+              <span class="fc-ic"><svg class="i" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg></span>
+              <div class="fc-txt"><b id="uFileName">No unbilled file loaded</b><span id="uMeta">Upload the ER Activity Sheet export (CPTCode, InvoiceDate, PayableAmount, InvNetAmount)</span></div>
+            </div>
+            <label class="date-field" title="Auto-detected from ActivitySheetDate / Encounterdate; change if needed">
+              <span>Report date</span>
+              <input type="date" id="uDate" aria-label="Unbilled report date">
+            </label>
+            <div class="ub-tools">
+              <button class="btn sm" id="uRefresh" disabled title="Recalculate from the loaded file"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>Refresh</button>
+              <button class="btn sm" id="uMapToggle" disabled title="Worksheet & column mapping"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h6"/></svg>Mapping</button>
+              <button class="btn sm danger" id="uClear" disabled title="Clear the unbilled file only"><svg class="i" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>Clear File</button>
+            </div>
+          </div>
+          <div class="progress" id="uProgress" hidden>
+            <div class="progress-top"><span id="uProgressLabel">Reading file…</span><span id="uProgressPct">0%</span></div>
+            <div class="bar"><div id="uProgressBar"></div></div>
+          </div>
+          <div id="uBanner"></div>
+          <details class="mapping" id="uMapping" hidden>
+            <summary><svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h6"/></svg>Worksheet &amp; column mapping <span class="chip" id="uMapMode">auto-detected</span><svg class="i chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary>
+            <div class="map-grid">
+              <div><label for="uSelSheet">Worksheet</label><select id="uSelSheet"></select></div>
+              <div><label for="uSelHeader">Header row (Excel row #)</label><input type="number" id="uSelHeader" min="1"></div>
+              <div><label for="uSelCpt">CPTCode column</label><select id="uSelCpt"></select></div>
+              <div><label for="uSelInvdate">InvoiceDate column</label><select id="uSelInvdate"></select></div>
+              <div><label for="uSelPayable">PayableAmount column</label><select id="uSelPayable"></select></div>
+              <div><label for="uSelInvnet">InvNetAmount column</label><select id="uSelInvnet"></select></div>
+            </div>
+            <div class="map-actions">
+              <button class="btn primary sm" id="uApplyMap">Apply mapping &amp; recalculate</button>
+              <button class="btn sm" id="uAutoMap">Re-run auto-detect</button>
+            </div>
+          </details>
+        </section>
+
+        <section class="panel filter-bar no-print" id="uFilterBar" hidden>
+          <div class="fb-row">
+            <div class="fb-title"><span class="hi unb"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><div><b>ActivitySheetDate filter</b><small id="uDfSummary">All dates</small></div></div>
+            <div class="seg" id="uDfMode" role="group" aria-label="Date filter mode">
+              <button data-m="all" class="active">All dates</button><button data-m="single">Single date</button><button data-m="range">Date range</button>
+            </div>
+            <label class="fb-in" id="uDfFromWrap" hidden><span id="uDfFromLbl">Date</span><input type="date" id="uDfFrom"></label>
+            <label class="fb-in" id="uDfToWrap" hidden><span>To</span><input type="date" id="uDfTo"></label>
+            <label class="fb-chk" id="uDfBlankWrap" hidden title="Rows whose ActivitySheetDate has not been updated yet"><input type="checkbox" id="uDfBlank"><span>Include blank ActivitySheetDate</span></label>
+            <button class="btn sm" id="uDfReset" hidden><svg class="i" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>Clear filter</button>
+          </div>
+          <div class="fb-chips" id="uDfChips"></div>
+          <div class="fb-note" id="uDfNote"></div>
+        </section>
+
+        <section class="panel accent-unb" id="u-summary-panel">
+          <div class="panel-head">
+            <h2><span class="hi unb"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Unbilled Observation Summary</h2>
+            <div class="tools summary-actions">
+              <button class="btn primary unb" id="uCopy" disabled><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy Unbilled Summary</button>
+              <button class="btn" id="uExport" disabled><svg class="i" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 13l6 5M15 13l-6 5"/></svg>Export Unbilled Excel</button>
+              <button class="btn" id="uPrint" disabled><svg class="i" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>Print / PDF</button>
+            </div>
+            <div class="desc" id="uDesc">Rows with CPTCode 17.21 / 17.22 / 17.24 and a blank InvoiceDate.</div>
+          </div>
+          <div id="uKpis"></div>
+          <div id="uSummary"></div>
+          <div class="print-sign"><div>Prepared by (IT)</div><div>Verified by</div><div>Approved by</div></div>
+        </section>
+
+        <nav class="tabbar no-print" data-group="u" role="tablist">
+          <button class="tabbtn active" data-target="u-overview" role="tab"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>CPT Breakdown</button>
+          <button class="tabbtn" data-target="u-preview" role="tab"><svg class="i" viewBox="0 0 24 24"><path d="M3 5h18M3 10h18M3 15h18M3 20h12"/></svg>Unbilled Rows <span class="tb-n" id="utbRows"></span></button>
+          <button class="tabbtn" data-target="u-excluded" role="tab"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>Excluded Records <span class="tb-n" id="utbExc"></span></button>
+          <button class="tabbtn" data-target="u-validation" role="tab"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>Validation <span class="tb-n" id="utbVal"></span></button>
+        </nav>
+        <section class="panel tabpanel" id="u-overview" data-group="u" data-print>
+          <div class="panel-head"><h2><span class="hi unb"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>Unbilled by CPT Code</h2>
+            <div class="desc">Unbilled count, PayableAmount and InvNetAmount per code, with invoiced rows shown for context.</div></div>
+          <div id="uOverview"></div>
+        </section>
+        <section class="panel tabpanel" id="u-preview" data-group="u" hidden>
+          <div class="panel-head"><h2><span class="hi unb"><svg class="i" viewBox="0 0 24 24"><path d="M3 5h18M3 10h18M3 15h18M3 20h12"/></svg></span>Unbilled Rows</h2>
+            <div class="desc">Every row counted as unbilled (CPT in scope, InvoiceDate blank).</div></div>
+          <div id="uPreview"></div>
+        </section>
+        <section class="panel tabpanel" id="u-excluded" data-group="u" hidden>
+          <div class="panel-head"><h2><span class="hi unb"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span>Excluded Records</h2>
+            <div class="desc">Rows not counted as unbilled, with the reason for each.</div></div>
+          <div id="uExcluded"></div>
+        </section>
+        <section class="panel tabpanel" id="u-validation" data-group="u" hidden>
+          <div class="panel-head"><h2><span class="hi unb"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span>Unbilled Data Validation</h2>
+            <div class="desc">Required columns, InvoiceDate blank check and financial value checks.</div></div>
+          <div id="uValidation"></div>
+        </section>
+      </div>
+
+      <!-- ===================== CONSOLIDATED VIEW ===================== -->
+      <div class="view" id="view-cons" hidden>
+        <div class="status-grid" id="cStatus"></div>
+        <section class="panel" id="c-summary-panel">
+          <div class="panel-head">
+            <h2><span class="hi"><svg class="i" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span>Consolidated Billed &amp; Unbilled Summary</h2>
+            <div class="tools summary-actions">
+              <button class="btn primary" id="cCopy" disabled><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy Consolidated Summary</button>
+              <button class="btn" id="cCopyB" disabled>Copy Billed</button>
+              <button class="btn" id="cCopyU" disabled>Copy Unbilled</button>
+              <button class="btn" id="cExport" disabled><svg class="i" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 13l6 5M15 13l-6 5"/></svg>Export Consolidated Excel</button>
+              <button class="btn" id="cPrint" disabled><svg class="i" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>Print / PDF</button>
+            </div>
+            <div class="desc" id="cDesc">Billed and unbilled results side by side. Amounts of different types are never added together.</div>
+          </div>
+          <div id="cKpis"></div>
+          <div id="cTable"></div>
+          <div class="note-box" id="cNote"></div>
+        </section>
+        <section class="panel" id="c-detail-panel">
+          <div class="panel-head"><h2><span class="hi"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg></span>Detailed Consolidated Report</h2>
+            <div class="desc">Includes billed Gross and Discount amounts.</div></div>
+          <div id="cDetail"></div>
+        </section>
+        <section class="panel" id="c-chart-panel">
+          <div class="panel-head"><h2><span class="hi"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>Billed vs Unbilled Comparison</h2>
+            <div class="desc">Amounts (AED) and volumes per CPT code. Volume chart compares two different measures — see note.</div></div>
+          <div class="chart-2col"><div><h4 class="chart-h">Amounts (AED)</h4><div id="cChartAmt"></div></div><div><h4 class="chart-h">Volume — Billed Units vs Unbilled Records</h4><div id="cChartVol"></div></div></div>
+        </section>
+        <div class="print-sign"><div>Prepared by (IT)</div><div>Verified by</div><div>Approved by</div></div>
+      </div>
+
     </div>
 
     <footer>© 2026 <b>JoBiN TeCh</b> | Kadesh Observation Matrix | Aster Hospital Mankhool</footer>
@@ -963,6 +1203,7 @@ function initLogin() {
 }
 function logout() {
   resetDashboard(true);
+  uReset(true);
   sDel('kom_auth');
   $('app').hidden = true;
   $('login').hidden = false;
@@ -1309,6 +1550,8 @@ function renderFileMeta() {
   $('fileChip').classList.toggle('loaded', !!S.result);
   $('resetBtn').disabled = !has;
   $('mapToggle').disabled = !has;
+  $('refreshBtn').disabled = !has;
+  $('browseTxt').textContent = has ? 'Replace Billed File' : 'Upload Billed Excel';
   var ok = !!S.result;
   ['copySummary', 'exportXlsx', 'exportCsv', 'printBtn'].forEach(function (id) { $(id).disabled = !ok; });
 }
@@ -1580,6 +1823,7 @@ function addHistory() {
 function renderAll() {
   renderFileMeta(); renderOverview(); renderSummary(); renderChart(); renderValidation(); renderPreview(); renderHistory();
   updateTabCounts();
+  cRender();
 }
 
 function resetDashboard(silent) {
@@ -1714,13 +1958,16 @@ function init() {
   fi.onchange = function () { if (fi.files[0]) handleFile(fi.files[0]); fi.value = ''; };
   // Drop a report anywhere on the page
   var hasFiles = function (e) { return e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types || [], 'Files') >= 0; };
-  window.addEventListener('dragenter', function (e) { if (!hasFiles(e) || $('app').hidden) return; e.preventDefault(); dragDepth++; ov.hidden = false; });
+  window.addEventListener('dragenter', function (e) { if (!hasFiles(e) || $('app').hidden) return; e.preventDefault(); dragDepth++; ov.querySelector('b').textContent = VIEW === 'unbilled' ? 'Drop the UNBILLED report to process it' : VIEW === 'billed' ? 'Drop the BILLED report to process it' : 'Switch to Billed or Unbilled tab to upload'; ov.hidden = false; });
   window.addEventListener('dragleave', function (e) { if (!hasFiles(e)) return; dragDepth = Math.max(0, dragDepth - 1); if (!dragDepth) ov.hidden = true; });
   window.addEventListener('dragover', function (e) { e.preventDefault(); });
   window.addEventListener('drop', function (e) {
     e.preventDefault(); dragDepth = 0; ov.hidden = true;
     if ($('app').hidden) return;
-    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) handleFile(f);
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (!f) return;
+    if (VIEW === 'unbilled') uHandleFile(f);
+    else if (VIEW === 'billed') handleFile(f);
+    else toast('Open the Billed or Unbilled tab to upload a file', 'warn');
   });
   $('mapToggle').onclick = function () { var m = $('mapping'); m.hidden = false; m.open = !m.open; };
   Array.prototype.forEach.call(document.querySelectorAll('.tabbtn'), function (b) { b.onclick = function () { showTab(b.getAttribute('data-target')); }; });
@@ -1744,7 +1991,9 @@ function init() {
   $('copySummary').onclick = copySummary;
   $('exportXlsx').onclick = exportXlsx;
   $('exportCsv').onclick = exportCsv;
-  $('printBtn').onclick = function () { renderSummary(); window.print(); };
+  $('printBtn').onclick = function () { renderSummary(); printView('Billed Observation — Management Summary', 'Report date: ' + niceDate($('reportDate').value) + ' · Source: ' + (S.file ? S.file.name : '')); };
+  $('refreshBtn').onclick = function () { if (S.wb) runAnalysis(false); };
+  uInit();
   $('clearHistory').onclick = function () {
     modal({ title: 'Clear upload history?', icon: 'info', html: 'This removes the session log only. The report currently on screen is not affected.',
       buttons: [{ label: 'Cancel' }, { label: 'Clear history', primary: true, onClick: function () { history = []; sDel('kom_history'); renderHistory(); toast('History cleared'); } }] });
@@ -1752,12 +2001,15 @@ function init() {
   initLogin();
 }
 function showTab(id, scroll) {
-  Array.prototype.forEach.call(document.querySelectorAll('.tabbtn'), function (b) {
+  var panel = $(id); if (!panel) return;
+  var g = panel.getAttribute('data-group') || 'b';
+  var bar = document.querySelector('.tabbar[data-group="' + g + '"]');
+  Array.prototype.forEach.call(bar.querySelectorAll('.tabbtn'), function (b) {
     var on = b.getAttribute('data-target') === id; b.classList.toggle('active', on); b.setAttribute('aria-selected', on);
   });
-  Array.prototype.forEach.call(document.querySelectorAll('.tabpanel'), function (p) { p.hidden = p.id !== id; });
+  Array.prototype.forEach.call(document.querySelectorAll('.tabpanel[data-group="' + g + '"]'), function (p) { p.hidden = p.id !== id; });
   if (id === 'sec-chart') renderChart(); // replay bar animation
-  if (scroll) $('tabbar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (scroll) bar.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 function updateTabCounts() {
   var R = S.result;
@@ -1767,6 +2019,7 @@ function updateTabCounts() {
   $('tbVal').textContent = R ? (issues ? issues + ' issue' + (issues > 1 ? 's' : '') : '✓') : '';
   $('tbVal').className = 'tb-n' + (issues ? ' warn' : '');
   $('tbHist').textContent = history.length || '';
+  $('mtB').textContent = R ? '✓' : '';
 }
 function autoDetectSheet(name) {
   var a = getAoa(name), best = 0, bestScore = -1;
@@ -1774,8 +2027,777 @@ function autoDetectSheet(name) {
   return best;
 }
 
+/* ============================================================
+   VIEW SWITCHING (Billed / Unbilled / Consolidated)
+   ============================================================ */
+var VIEW = 'billed';
+function showView(v) {
+  VIEW = v;
+  ['billed', 'unbilled', 'cons'].forEach(function (k) { $('view-' + k).hidden = k !== v; });
+  Array.prototype.forEach.call(document.querySelectorAll('.modtab'), function (b) {
+    var on = b.getAttribute('data-view') === v; b.classList.toggle('active', on); b.setAttribute('aria-selected', on);
+  });
+  sSet('kom_view', v);
+  if (v === 'cons') cRender();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function printView(title, meta) {
+  $('printTitle').textContent = 'Kadesh Observation Matrix — ' + title;
+  $('printMeta').textContent = 'Aster Hospital Mankhool · ' + meta + ' · Generated: ' + niceDateTime(Date.now());
+  window.print();
+}
+
+/* ============================================================
+   UNBILLED MODULE
+   Source: ER Activity Sheet export (often an HTML table saved as .xls)
+   Rule:  CPTCode exactly 17.21 / 17.22 / 17.24 (as text)  AND  InvoiceDate blank
+   ============================================================ */
+var U_REQ = {
+  cpt:     { label: 'CPTCode',       syn: ['cptcode', 'cpt', 'cptcodes'] },
+  invdate: { label: 'InvoiceDate',   syn: ['invoicedate', 'invdate', 'invoicedt'] },
+  payable: { label: 'PayableAmount', syn: ['payableamount', 'payableamt', 'payable'] },
+  invnet:  { label: 'InvNetAmount',  syn: ['invnetamount', 'invoicenetamount', 'invnetamt'] }
+};
+var U_OPT = {
+  regno:     { label: 'Reg. No',        syn: ['registrationno', 'regno', 'uhid', 'mrn'] },
+  patient:   { label: 'Patient',        syn: ['patientname', 'patient'] },
+  encno:     { label: 'Encounter No',   syn: ['encounterno'] },
+  encdate:   { label: 'Encounter Date', syn: ['encounterdate'] },
+  service:   { label: 'Service Name',   syn: ['servicename'] },
+  doctor:    { label: 'Doctor',         syn: ['doctorname'] },
+  payer:     { label: 'Payer',          syn: ['payername', 'payer'] },
+  status:    { label: 'Enc. Status',    syn: ['encounerstatus', 'encounterstatus'] },
+  invno:     { label: 'Invoice No',     syn: ['invoiceno'] },
+  asdate:    { label: 'Activity Sheet Date', syn: ['activitysheetdate'] },
+  performed: { label: 'Performed',      syn: ['isperformedstatus'] }
+};
+var U = { wb: null, file: null, hash: null, uploadedAt: null, sheet: null, headerRow: null, map: null, opt: null, cache: {}, result: null, tab: 'all', search: '', xfilter: 'all', xsearch: '', hashes: [],
+  df: { mode: 'all', from: '', to: '', blank: false } };
+/* ActivitySheetDate filter: mode all | single | range | blank (blank-only) */
+function uDateIn(d) {
+  var f = U.df;
+  if (f.mode === 'all') return true;
+  if (f.mode === 'blank') return !d;
+  if (!d) return f.blank;
+  var from = f.from || '0000-00-00', to = f.mode === 'single' ? (f.from || '9999-99-99') : (f.to || '9999-99-99');
+  if (from > to) { var x = from; from = to; to = x; }
+  return d >= from && d <= to;
+}
+function uFilterLabel() {
+  var f = U.df;
+  if (f.mode === 'all') return 'All ActivitySheetDates';
+  if (f.mode === 'blank') return 'ActivitySheetDate blank (not yet updated)';
+  var s = f.mode === 'single' ? (f.from ? niceDate(f.from) : 'any date') : ((f.from ? niceDate(f.from) : 'start') + ' – ' + (f.to ? niceDate(f.to) : 'end'));
+  return 'ActivitySheetDate ' + s + (f.blank ? ' + blank' : '');
+}
+
+function uMapHeaderRow(row) {
+  var map = {}, opt = {}, score = 0;
+  if (!row) return { map: map, opt: opt, score: 0 };
+  for (var c = 0; c < row.length; c++) {
+    var n = normHeader(row[c]); if (!n) continue; var k;
+    for (k in U_REQ) if (map[k] === undefined && U_REQ[k].syn.indexOf(n) >= 0) { map[k] = c; score++; }
+    for (k in U_OPT) if (opt[k] === undefined && U_OPT[k].syn.indexOf(n) >= 0) opt[k] = c;
+  }
+  return { map: map, opt: opt, score: score };
+}
+function uGetAoa(name) {
+  if (!U.cache[name]) {
+    var ws = U.wb.Sheets[name], ref = ws['!ref'];
+    var rg = ref ? XLSX.utils.decode_range(ref) : { s: { r: 0, c: 0 } };
+    U.cache[name] = {
+      rows: ref ? XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: null, blankrows: true }) : [],
+      text: ref ? XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, defval: null, blankrows: true }) : [],
+      r0: rg.s.r, c0: rg.s.c
+    };
+  }
+  return U.cache[name];
+}
+function uAutoDetect(wb) {
+  var best = null;
+  wb.SheetNames.forEach(function (name) {
+    var a = uGetAoa(name), lim = Math.min(a.rows.length, 200);
+    for (var r = 0; r < lim; r++) {
+      var m = uMapHeaderRow(a.rows[r]);
+      if (m.map.cpt === undefined) continue;
+      if (!best || m.score > best.score) best = { sheet: name, headerRow: r, map: m.map, opt: m.opt, score: m.score };
+      if (m.score === 4) break;
+    }
+  });
+  if (!best) return { ok: false, sheet: wb.SheetNames[0], headerRow: 0, map: {}, opt: {} };
+  return { ok: best.score === 4, sheet: best.sheet, headerRow: best.headerRow, map: best.map, opt: best.opt };
+}
+/* CPT code as TEXT — never compared as a number (17.2 ≠ 17.20 ≠ 17.21) */
+function cptText(v, t) {
+  if (v === null || v === undefined) return '';
+  if (typeof v === 'number') return cleanText(t != null ? t : String(v));
+  return cleanText(v).replace(/^'/, '');
+}
+/* Blank = empty cell, empty string, or whitespace / &nbsp; only. 0, "N/A", bad dates are NOT blank. */
+function isBlankCell(v) {
+  if (v === null || v === undefined) return true;
+  if (typeof v === 'string') return v.replace(/[\s ​﻿]/g, '') === '';
+  return false;
+}
+function isDateLike(v) {
+  if (v instanceof Date) return !isNaN(v);
+  if (typeof v === 'number') return v > 20000 && v < 80000;
+  return parseBillDate(v) !== null;
+}
+function cellStr(v, t) {
+  if (v instanceof Date) return v.toLocaleString('en-GB');
+  return cleanText(t != null ? t : v);
+}
+
+function uAnalyze() {
+  var a = uGetAoa(U.sheet), rows = a.rows, txt = a.text, map = U.map, opt = U.opt || {};
+  var res = {
+    sheet: U.sheet, headerExcelRow: a.r0 + U.headerRow + 1, totalSheetRows: rows.length, dataRows: 0,
+    otherRows: 0, otherCodes: {}, excluded: [], targets: {}, dates: {}, byDate: {}, dateOut: 0, dateOutUnbilled: 0, hasAsDate: opt.asdate !== undefined, optUsed: JSON.parse(JSON.stringify(opt)), mapUsed: JSON.parse(JSON.stringify(map)), c0: a.c0
+  };
+  TARGETS.forEach(function (t) {
+    res.targets[t.key] = { rows: [], count: 0, sum: { payable: 0, invnet: 0 }, blank: { payable: 0, invnet: 0 }, invalid: { payable: [], invnet: [] }, inFile: 0, billed: 0, billedPayable: 0, odd: 0 };
+  });
+  for (var r = U.headerRow + 1; r < rows.length; r++) {
+    var row = rows[r]; if (!row) continue;
+    var any = false;
+    for (var c = 0; c < row.length; c++) if (!isBlankCell(row[c])) { any = true; break; }
+    if (!any) continue;
+    res.dataRows++;
+    var trow = txt[r] || [];
+    var o = {}; for (var ok in opt) o[ok] = cellStr(row[opt[ok]], trow[opt[ok]]);
+    var dsrc = opt.asdate !== undefined ? row[opt.asdate] : (opt.encdate !== undefined ? row[opt.encdate] : null);
+    var dd = parseBillDate(dsrc); if (dd) res.dates[dd] = (res.dates[dd] || 0) + 1;
+    var cpt = cptText(row[map.cpt], trow[map.cpt]);
+    var excelRow = a.r0 + r + 1;
+    var t = null;
+    for (var i = 0; i < TARGETS.length; i++) if (TARGETS[i].code === cpt) { t = TARGETS[i]; break; }
+    var pay = parseNum(row[map.payable]), net = parseNum(row[map.invnet]);
+    // ActivitySheetDate: date-wise tally of unbilled rows (unfiltered), then apply the date filter
+    var asd = opt.asdate !== undefined ? parseBillDate(row[opt.asdate]) : null;
+    var isUnb = !!t && isBlankCell(row[map.invdate]);
+    if (isUnb) {
+      var bk = asd || 'blank', bd = res.byDate[bk] || (res.byDate[bk] = { c: {}, count: 0, pay: 0, net: 0 });
+      bd.c[t.code] = (bd.c[t.code] || 0) + 1; bd.count++; bd.pay += toScaled(pay.v); bd.net += toScaled(net.v);
+    }
+    if (!uDateIn(asd)) { res.dateOut++; if (isUnb) res.dateOutUnbilled++; continue; }
+    if (!t) {
+      res.otherRows++; res.otherCodes[cpt || '(blank)'] = (res.otherCodes[cpt || '(blank)'] || 0) + 1;
+      if (/^17\.2/.test(cpt) || /observation|emergency\s*room/i.test(o.service || '')) {
+        res.excluded.push({ excelRow: excelRow, cpt: cpt, o: o, invTxt: cellStr(row[map.invdate], trow[map.invdate]), pay: pay, net: net, kind: 'cpt', reason: 'CPT code "' + (cpt || 'blank') + '" is not 17.21 / 17.22 / 17.24' });
+      }
+      continue;
+    }
+    var T = res.targets[t.key]; T.inFile++;
+    var iv = row[map.invdate];
+    if (!isBlankCell(iv)) {
+      var ivTxt = cellStr(iv, trow[map.invdate]), isD = isDateLike(iv);
+      T.billed++; T.billedPayable += toScaled(pay.v); if (!isD) T.odd++;
+      res.excluded.push({ excelRow: excelRow, cpt: cpt, code: t.code, o: o, invTxt: ivTxt, pay: pay, net: net, kind: isD ? 'billed' : 'odd',
+        reason: isD ? 'Already invoiced — InvoiceDate ' + ivTxt : 'InvoiceDate is not blank ("' + ivTxt + '") — not counted as unbilled, please review' });
+      continue;
+    }
+    // Unbilled row
+    [['payable', pay], ['invnet', net]].forEach(function (p) {
+      if (p[1].s === 'blank') T.blank[p[0]]++;
+      else if (p[1].s === 'invalid') T.invalid[p[0]].push({ row: excelRow, raw: String(p[1].raw) });
+      T.sum[p[0]] += toScaled(p[1].v);
+    });
+    T.count++;
+    T.rows.push({ excelRow: excelRow, cpt: cpt, code: t.code, o: o, pay: pay, net: net });
+  }
+  var g = { count: 0, payable: 0, invnet: 0, billed: 0, inFile: 0 };
+  TARGETS.forEach(function (t) {
+    var T = res.targets[t.key];
+    T.total = { count: T.count, payable: fromScaled(T.sum.payable), invnet: fromScaled(T.sum.invnet) };
+    g.count += T.count; g.payable += T.sum.payable; g.invnet += T.sum.invnet; g.billed += T.billed; g.inFile += T.inFile;
+  });
+  res.grand = { count: g.count, payable: fromScaled(g.payable), invnet: fromScaled(g.invnet), billed: g.billed, inFile: g.inFile };
+  var bestD = null, bestN = 0;
+  for (var d in res.dates) if (res.dates[d] > bestN) { bestN = res.dates[d]; bestD = d; }
+  res.autoDate = bestD;
+  return res;
+}
+
+/* ---------- file handling ---------- */
+function uSetProgress(pct, label) {
+  $('uProgress').hidden = false; $('uProgressBar').style.width = pct + '%';
+  $('uProgressPct').textContent = Math.round(pct) + '%'; if (label) $('uProgressLabel').textContent = label;
+}
+function uBanner(kind, html) {
+  $('uBanner').innerHTML = html ? '<div class="banner ' + kind + '">' + icon(kind === 'ok' ? 'check' : kind === 'err' ? 'x' : 'alert') + '<div>' + html + '</div></div>' : '';
+}
+function uHandleFile(file) {
+  if (!file) return;
+  if (!/\.(xlsx|xls|csv|xlsm|htm|html)$/i.test(file.name)) { uBanner('err', '<b>Unsupported file type.</b> Please upload an .xlsx, .xls or .csv report.'); toast('Unsupported file type', 'err'); return; }
+  var reader = new FileReader();
+  showLoader(true, 'Reading ' + file.name + '…'); uSetProgress(2, 'Reading file…');
+  reader.onprogress = function (e) { if (e.lengthComputable) uSetProgress(5 + (e.loaded / e.total) * 35, 'Reading file…'); };
+  reader.onerror = function () { showLoader(false); $('uProgress').hidden = true; uBanner('err', '<b>Could not read the file.</b>'); };
+  reader.onload = function () {
+    var buf = reader.result, hash = fileHash(buf);
+    var go = function () { uParse(file, buf, hash); };
+    if (U.hashes.indexOf(hash) >= 0) {
+      showLoader(false);
+      modal({ title: 'Duplicate unbilled file', html: '<b>' + esc(file.name) + '</b> has identical content to an unbilled file already processed in this session.<br><br>Processing it again only <b>replaces</b> the unbilled view — totals are never added together.',
+        buttons: [{ label: 'Cancel', onClick: function () { $('uProgress').hidden = true; } }, { label: 'Process anyway', primary: true, onClick: function () { showLoader(true, 'Parsing workbook…'); go(); } }] });
+    } else go();
+  };
+  reader.readAsArrayBuffer(file);
+}
+function uParse(file, buf, hash) {
+  uSetProgress(45, 'Parsing workbook…'); if ($('loaderText')) $('loaderText').textContent = 'Parsing unbilled workbook…';
+  setTimeout(function () {
+    var wb;
+    try {
+      // raw:true keeps text cells (e.g. CPT "17.20") as text for HTML/CSV exports
+      wb = XLSX.read(buf, { type: 'array', raw: true, cellDates: true, dense: true, cellFormula: false, cellHTML: false, cellStyles: false });
+    } catch (err) { showLoader(false); $('uProgress').hidden = true; uBanner('err', '<b>Unable to parse this file.</b> ' + esc(err.message || err)); toast('Parsing failed', 'err'); return; }
+    U.wb = wb; U.file = { name: file.name, size: file.size }; U.hash = hash; U.uploadedAt = Date.now();
+    U.cache = {}; U.result = null; U.search = ''; U.xsearch = ''; U.tab = 'all'; U.xfilter = 'all'; U.df = { mode: 'all', from: '', to: '', blank: false };
+    uSetProgress(70, 'Detecting columns…');
+    setTimeout(function () {
+      var det = uAutoDetect(wb);
+      U.sheet = det.sheet; U.headerRow = det.headerRow; U.map = det.map || {}; U.opt = det.opt || {};
+      if (!det.ok) {
+        showLoader(false); uSetProgress(100, 'Needs column mapping');
+        uFillMapping(true); uRenderAll();
+        var missing = Object.keys(U_REQ).filter(function (k) { return U.map[k] === undefined; }).map(function (k) { return U_REQ[k].label; });
+        uBanner('warn', '<b>Missing required column(s): ' + esc(missing.join(', ')) + '.</b> Choose the worksheet, header row and columns below, then click <b>Apply mapping</b>.');
+        toast('Unbilled file: required columns missing', 'warn');
+        return;
+      }
+      uFillMapping(false);
+      uRun(true);
+    }, 30);
+  }, 30);
+}
+function uRun(isNew) {
+  showLoader(true, 'Calculating unbilled totals…'); uSetProgress(85, 'Calculating…');
+  setTimeout(function () {
+    try { U.result = uAnalyze(); } catch (err) { showLoader(false); uBanner('err', '<b>Processing error:</b> ' + esc(err.message || err)); return; }
+    uSetProgress(100, 'Done');
+    if (isNew || !$('uDate').value) $('uDate').value = U.result.autoDate || isoDate(new Date());
+    if (U.hashes.indexOf(U.hash) < 0) U.hashes.push(U.hash);
+    var R = U.result, odd = 0, inval = 0;
+    TARGETS.forEach(function (t) { var T = R.targets[t.key]; odd += T.odd; inval += T.invalid.payable.length + T.invalid.invnet.length; });
+    var msg = '<b>Unbilled report processed.</b> ' + R.dataRows.toLocaleString() + ' rows scanned · ' + R.grand.inFile + ' rows with CPT 17.21/17.22/17.24 · <b>' + R.grand.count + ' unbilled</b> (blank InvoiceDate) · ' + R.grand.billed + ' already invoiced (excluded).';
+    var kind = 'ok';
+    if (odd) { kind = 'warn'; msg += '<br>' + odd + ' row(s) have a non-blank, non-date InvoiceDate — excluded, see Excluded Records.'; }
+    if (inval) { kind = 'warn'; msg += '<br>' + inval + ' invalid amount value(s) — see Validation.'; }
+    TARGETS.forEach(function (t) { if (!R.targets[t.key].inFile) { kind = 'warn'; msg += '<br>No rows found for CPT ' + t.code + '.'; } });
+    uBanner(kind, msg);
+    uRenderAll();
+    setTimeout(function () { showLoader(false); $('uProgress').hidden = true; }, 250);
+    if (isNew) toast('Unbilled report processed');
+  }, 40);
+}
+function uReset(silent) {
+  U.wb = null; U.file = null; U.hash = null; U.uploadedAt = null; U.sheet = null; U.headerRow = null; U.map = null; U.opt = null;
+  U.cache = {}; U.result = null; U.search = ''; U.xsearch = ''; U.tab = 'all'; U.xfilter = 'all'; U.df = { mode: 'all', from: '', to: '', blank: false };
+  $('uFile').value = ''; $('uDate').value = ''; $('uProgress').hidden = true; $('uMapping').hidden = true; $('uMapping').open = false; uBanner();
+  if (silent === true && !$('app').hidden) { /* logout path */ }
+  uRenderAll();
+  if (!silent) toast('Unbilled file cleared — billed results kept');
+}
+
+/* ---------- mapping ---------- */
+var U_SEL = [['uSelCpt', 'cpt'], ['uSelInvdate', 'invdate'], ['uSelPayable', 'payable'], ['uSelInvnet', 'invnet']];
+function uFillMapping(open) {
+  var m = $('uMapping'); if (open) { m.hidden = false; m.open = true; }
+  $('uMapMode').textContent = open ? 'manual selection needed' : 'auto-detected';
+  $('uSelSheet').innerHTML = U.wb.SheetNames.map(function (n) { return '<option' + (n === U.sheet ? ' selected' : '') + '>' + esc(n) + '</option>'; }).join('');
+  $('uSelHeader').value = uGetAoa(U.sheet).r0 + U.headerRow + 1;
+  uFillCols();
+}
+function uFillCols() {
+  var a = uGetAoa(U.sheet), row = a.rows[U.headerRow] || [], width = 0;
+  for (var i = Math.max(0, U.headerRow - 2); i < Math.min(a.rows.length, U.headerRow + 30); i++) if (a.rows[i]) width = Math.max(width, a.rows[i].length);
+  var opts = '<option value="">— select —</option>';
+  for (var c = 0; c < width; c++) { var hd = cleanText(row[c]); opts += '<option value="' + c + '">' + colLetter(a.c0 + c) + (hd ? ' · ' + esc(hd) : '') + '</option>'; }
+  U_SEL.forEach(function (p) { var el = $(p[0]); el.innerHTML = opts; if (U.map && U.map[p[1]] !== undefined) el.value = String(U.map[p[1]]); });
+}
+function uOnSheetHeader(autoRow) {
+  U.sheet = $('uSelSheet').value;
+  var a = uGetAoa(U.sheet);
+  if (autoRow) {
+    var best = 0, bs = -1;
+    for (var r = 0; r < Math.min(a.rows.length, 200); r++) { var s = uMapHeaderRow(a.rows[r]).score; if (s > bs) { bs = s; best = r; } }
+    $('uSelHeader').value = a.r0 + best + 1;
+  }
+  U.headerRow = Math.max(0, Math.min((parseInt($('uSelHeader').value, 10) || 1) - 1 - a.r0, Math.max(0, a.rows.length - 1)));
+  var m = uMapHeaderRow(a.rows[U.headerRow]); U.map = m.map; U.opt = m.opt;
+  uFillCols();
+}
+function uApplyMapping() {
+  if (!U.wb) return;
+  var map = {}, missing = [];
+  U_SEL.forEach(function (p) { var v = $(p[0]).value; if (v === '') missing.push(U_REQ[p[1]].label); else map[p[1]] = parseInt(v, 10); });
+  if (missing.length) { toast('Select: ' + missing.join(', '), 'err'); return; }
+  U.map = map; U.opt = uMapHeaderRow(uGetAoa(U.sheet).rows[U.headerRow]).opt;
+  $('uMapMode').textContent = 'manual mapping';
+  uRun(false);
+}
+
+/* ---------- rendering ---------- */
+function uRenderMeta() {
+  var has = !!U.file;
+  $('uFileName').textContent = has ? U.file.name : 'No unbilled file loaded';
+  $('uFileName').title = has ? U.file.name : '';
+  $('uMeta').textContent = has
+    ? 'Uploaded ' + niceDateTime(U.uploadedAt) + (U.sheet ? ' · ' + uGetAoa(U.sheet).rows.length.toLocaleString() + ' rows · sheet "' + U.sheet + '", header row ' + (uGetAoa(U.sheet).r0 + U.headerRow + 1) : '')
+    : 'Upload the ER Activity Sheet export (CPTCode, InvoiceDate, PayableAmount, InvNetAmount)';
+  $('uChip').classList.toggle('loaded', !!U.result);
+  $('uBrowseTxt').textContent = has ? 'Replace Unbilled File' : 'Upload Unbilled Excel';
+  ['uRefresh', 'uMapToggle', 'uClear'].forEach(function (id) { $(id).disabled = !has; });
+  ['uCopy', 'uExport', 'uPrint'].forEach(function (id) { $(id).disabled = !U.result; });
+  $('mtU').textContent = U.result ? U.result.grand.count : '';
+}
+function uSummaryRows() {
+  var R = U.result;
+  var rows = TARGETS.map(function (t) { var T = R.targets[t.key]; return { t: t, code: t.code, label: t.label.replace(/\s*\(\d+\.\d+\)$/, ''), count: T.total.count, payable: T.total.payable, invnet: T.total.invnet, billed: T.billed, inFile: T.inFile }; });
+  rows.push({ grand: true, code: 'Grand Total', label: 'All Three Codes', count: R.grand.count, payable: R.grand.payable, invnet: R.grand.invnet, billed: R.grand.billed, inFile: R.grand.inFile });
+  return rows;
+}
+function uRenderSummary() {
+  var R = U.result;
+  if (!R) {
+    $('uKpis').innerHTML = '';
+    $('uSummary').innerHTML = '<div class="empty">' + icon('inbox') + '<b>No unbilled file loaded</b>Click <b style="display:inline;color:var(--unb)">Upload Unbilled Excel</b> above. Billed results are not affected.</div>';
+    $('uDesc').textContent = 'Rows with CPTCode 17.21 / 17.22 / 17.24 and a blank InvoiceDate.';
+    return;
+  }
+  $('uDesc').innerHTML = 'Report date ' + esc(niceDate($('uDate').value)) + ' · ' + esc(U.file.name) + ' · CPTCode 17.21 / 17.22 / 17.24 with blank InvoiceDate only.' + (U.df.mode !== 'all' ? '<span class="filter-pill">' + icon('search') + esc(uFilterLabel()) + '</span>' : '');
+  var G = R.grand;
+  $('uKpis').innerHTML = '<div class="kpis k3">' +
+    '<div class="kpi hero" style="--mc:var(--unb)"><div class="kl"><span class="ci">' + icon('alert') + '</span>Total Unbilled Count</div><div class="kv">' + G.count.toLocaleString() + '<small>records</small></div><div class="ks">' + (U.df.mode !== 'all' ? esc(uFilterLabel()) + ' · ' + R.dateOutUnbilled + ' unbilled outside filter' : 'of ' + G.inFile + ' rows with these CPT codes · ' + G.billed + ' already invoiced') + '</div></div>' +
+    '<div class="kpi" style="--mc:var(--unb)"><div class="kl"><span class="ci">' + icon('gross') + '</span>Total PayableAmount</div><div class="kv">' + money(G.payable) + '<small>AED</small></div><div class="ks">Unbilled rows only</div></div>' +
+    '<div class="kpi" style="--mc:var(--disc)"><div class="kl"><span class="ci">' + icon('net') + '</span>Total InvNetAmount</div><div class="kv">' + money(G.invnet) + '<small>AED</small></div><div class="ks">' + (G.count && !G.invnet ? 'Zero — expected, no invoice raised yet' : 'Unbilled rows only') + '</div></div>' +
+    '<div class="kpi" style="--mc:var(--muted)"><div class="kl"><span class="ci">' + icon('check') + '</span>Already Invoiced</div><div class="kv">' + G.billed.toLocaleString() + '<small>rows</small></div><div class="ks">Excluded — InvoiceDate present</div></div>' +
+    '</div>';
+  var html = '<div class="table-wrap"><table class="summary-table"><thead><tr><th>CPT Code</th><th>Investigation</th><th class="r">Unbilled Count</th><th class="r">Total PayableAmount</th><th class="r">Total InvNetAmount</th><th class="r">Invoiced (excluded)</th></tr></thead><tbody>';
+  uSummaryRows().forEach(function (x) {
+    html += '<tr' + (x.grand ? ' class="grand"' : ' style="--ic:' + x.t.color + '"') + '><td>' + (x.grand ? 'Grand Total' : '<span class="code">' + x.code + '</span>') + '</td><td>' + esc(x.label) + '</td>' +
+      '<td class="r"><b style="color:var(--unb)">' + x.count + '</b></td><td class="r">' + money(x.payable) + '</td><td class="r">' + money(x.invnet) + '</td><td class="r pct">' + x.billed + ' of ' + x.inFile + '</td></tr>';
+  });
+  $('uSummary').innerHTML = html + '</tbody></table></div>';
+}
+function uRenderOverview() {
+  var R = U.result;
+  if (!R) { $('uOverview').innerHTML = emptyState('No unbilled data yet', 'Per-code cards appear after uploading the unbilled file.'); return; }
+  var html = uDateWiseTable() + '<div class="inv-grid">';
+  TARGETS.forEach(function (t, ti) {
+    var T = R.targets[t.key];
+    var cards = [
+      { label: 'Unbilled Count', v: T.total.count.toLocaleString(), s: 'records · ' + T.billed + ' invoiced of ' + T.inFile, mc: 'var(--unb)', ic: 'alert' },
+      { label: 'Total PayableAmount', v: money(T.total.payable), s: 'AED' + (R.grand.payable ? ' · ' + (T.total.payable / R.grand.payable * 100).toFixed(1) + '% of total' : ''), mc: 'var(--unb)', ic: 'gross' },
+      { label: 'Total InvNetAmount', v: money(T.total.invnet), s: 'AED', mc: 'var(--disc)', ic: 'net' }
+    ];
+    html += '<div class="inv" style="--ic:' + t.color + '"><div class="inv-head"><span class="code-pill">' + t.code + '</span><h3>' + esc(t.label.replace(/\s*\(\d+\.\d+\)$/, '')) + '</h3>' +
+      '<span class="count">' + T.count + ' unbilled record' + (T.count === 1 ? '' : 's') + '</span><div class="tools"><button class="btn sm" data-uview="' + t.code + '">View rows</button></div></div><div class="u-card-grid">' +
+      cards.map(function (c, ci) { return '<div class="card" style="--mc:' + c.mc + ';animation-delay:' + (ti * 90 + ci * 50) + 'ms"><div class="ct"><span class="ci">' + icon(c.ic) + '</span>' + c.label + '</div><div class="cv">' + c.v + '</div><div class="cs">' + c.s + '</div></div>'; }).join('') +
+      '</div></div>';
+  });
+  $('uOverview').innerHTML = html + '</div>';
+  Array.prototype.forEach.call($('uOverview').querySelectorAll('[data-dw]'), function (tr) { tr.onclick = function () { uPickDate(tr.getAttribute('data-dw')); }; });
+  Array.prototype.forEach.call($('uOverview').querySelectorAll('[data-uview]'), function (b) { b.onclick = function () { U.tab = b.getAttribute('data-uview'); U.search = ''; uRenderPreview(); showTab('u-preview', true); }; });
+}
+var U_PREVIEW_COLS = ['regno', 'patient', 'encno', 'encdate', 'asdate', 'service', 'doctor', 'payer', 'status'];
+function uRenderPreview() {
+  var R = U.result;
+  if (!R) { $('uPreview').innerHTML = emptyState('No unbilled rows', 'Rows appear after uploading the unbilled file.'); return; }
+  var all = [].concat.apply([], TARGETS.map(function (t) { return R.targets[t.key].rows; }));
+  var chips = '<div class="tabs">' + [{ k: 'all', l: 'All codes', n: all.length }].concat(TARGETS.map(function (t) { return { k: t.code, l: t.code + ' · ' + t.short, n: R.targets[t.key].rows.length }; }))
+    .map(function (c) { return '<button class="tab' + (U.tab === c.k ? ' active' : '') + '" data-ut="' + c.k + '">' + esc(c.l) + ' <span class="n">' + c.n + '</span></button>'; }).join('') + '</div>';
+  $('uPreview').innerHTML = '<div class="preview-bar">' + chips + '<div class="search">' + icon('search') + '<input type="search" id="uSearch" placeholder="Search CPT code, patient, reg no, service, payer…" value="' + esc(U.search) + '"></div></div><div id="uPreviewTable"></div>';
+  Array.prototype.forEach.call($('uPreview').querySelectorAll('[data-ut]'), function (b) { b.onclick = function () { U.tab = b.getAttribute('data-ut'); uRenderPreview(); }; });
+  $('uSearch').addEventListener('input', function () { U.search = this.value; uRenderPreviewTable(); });
+  uRenderPreviewTable();
+}
+function uRenderPreviewTable() {
+  var R = U.result, opt = R.optUsed;
+  var rows = [].concat.apply([], TARGETS.filter(function (t) { return U.tab === 'all' || U.tab === t.code; }).map(function (t) { return R.targets[t.key].rows; }));
+  var cols = U_PREVIEW_COLS.filter(function (k) { return opt[k] !== undefined; });
+  var q = U.search.trim().toLowerCase();
+  var f = !q ? rows : rows.filter(function (r) { return (r.cpt + ' ' + cols.map(function (k) { return r.o[k] || ''; }).join(' ') + ' ' + r.pay.raw + ' ' + r.net.raw).toLowerCase().indexOf(q) >= 0; });
+  var sp = 0, sn = 0; f.forEach(function (r) { sp += toScaled(r.pay.v); sn += toScaled(r.net.v); });
+  var html = '<div class="preview-table-wrap"><table class="preview-table"><thead><tr><th class="r">Excel row</th><th>CPT Code</th>' + cols.map(function (k) { return '<th>' + U_OPT[k].label + '</th>'; }).join('') + '<th>InvoiceDate</th><th class="r">PayableAmount</th><th class="r">InvNetAmount</th></tr></thead><tbody>';
+  if (!f.length) html += '<tr><td colspan="' + (cols.length + 5) + '" style="text-align:center;color:var(--muted);padding:22px">' + (q ? 'No rows match "' + esc(U.search) + '".' : 'No unbilled rows for this selection.') + '</td></tr>';
+  f.slice(0, 3000).forEach(function (r) {
+    html += '<tr><td class="r mono">' + r.excelRow + '</td><td><span class="tag u">' + esc(r.cpt) + '</span></td>' +
+      cols.map(function (k) { return '<td' + (k === 'patient' || k === 'payer' || k === 'service' ? ' class="pt" title="' + esc(r.o[k]) + '"' : '') + '>' + esc(r.o[k]) + '</td>'; }).join('') +
+      '<td class="blank">blank</td>' +
+      [r.pay, r.net].map(function (p) { return p.s === 'blank' ? '<td class="r blank" title="Blank (counted as 0)">—</td>' : p.s === 'invalid' ? '<td class="r bad" title="Invalid — excluded from total">' + esc(String(p.raw)) + '</td>' : '<td class="r">' + money(p.v) + '</td>'; }).join('') + '</tr>';
+  });
+  html += '</tbody></table></div><div class="preview-foot"><span>Showing <b>' + Math.min(f.length, 3000) + '</b> of <b>' + f.length + '</b> row(s)' + (q ? ' matching search (' + rows.length + ' total)' : '') + '</span><span>Σ shown: Payable <b>' + money(fromScaled(sp)) + '</b> · InvNet <b>' + money(fromScaled(sn)) + '</b></span></div>';
+  $('uPreviewTable').innerHTML = html;
+}
+function uRenderExcluded() {
+  var R = U.result;
+  if (!R) { $('uExcluded').innerHTML = emptyState('No excluded records', 'Excluded rows and reasons appear after upload.'); return; }
+  var X = R.excluded, cnt = { all: X.length, billed: 0, odd: 0, cpt: 0 };
+  X.forEach(function (x) { cnt[x.kind]++; });
+  var fl = [['all', 'All listed'], ['billed', 'Already invoiced'], ['odd', 'Needs review'], ['cpt', 'Similar CPT / service']];
+  var other = Object.keys(R.otherCodes).length;
+  $('uExcluded').innerHTML = '<div class="preview-bar"><div class="tabs">' + fl.map(function (f) { return '<button class="tab' + (U.xfilter === f[0] ? ' active' : '') + '" data-xf="' + f[0] + '">' + f[1] + ' <span class="n">' + cnt[f[0]] + '</span></button>'; }).join('') + '</div>' +
+    '<div class="search">' + icon('search') + '<input type="search" id="uxSearch" placeholder="Search CPT code, patient, invoice…" value="' + esc(U.xsearch) + '"></div></div>' +
+    '<div class="banner" style="margin:0 0 12px;background:var(--surface-2);color:var(--text-2)">' + icon('info') + '<div>Also excluded and not listed: <b>' + (R.otherRows - cnt.cpt).toLocaleString() + '</b> rows with ' + other + ' other CPT codes (labs, consultations, etc.).</div></div><div id="uxTable"></div>';
+  Array.prototype.forEach.call($('uExcluded').querySelectorAll('[data-xf]'), function (b) { b.onclick = function () { U.xfilter = b.getAttribute('data-xf'); uRenderExcluded(); }; });
+  $('uxSearch').addEventListener('input', function () { U.xsearch = this.value; uRenderExcludedTable(); });
+  uRenderExcludedTable();
+}
+function uRenderExcludedTable() {
+  var R = U.result, q = U.xsearch.trim().toLowerCase();
+  var f = R.excluded.filter(function (x) { return (U.xfilter === 'all' || x.kind === U.xfilter) && (!q || (x.cpt + ' ' + x.invTxt + ' ' + x.reason + ' ' + (x.o.patient || '') + ' ' + (x.o.regno || '') + ' ' + (x.o.invno || '') + ' ' + (x.o.service || '')).toLowerCase().indexOf(q) >= 0); });
+  var html = '<div class="preview-table-wrap"><table class="preview-table"><thead><tr><th class="r">Excel row</th><th>CPT Code</th><th>Reg. No</th><th>Patient</th><th>Service Name</th><th>InvoiceDate</th><th>Invoice No</th><th class="r">PayableAmount</th><th>Exclusion reason</th></tr></thead><tbody>';
+  if (!f.length) html += '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:22px">No excluded records for this filter.</td></tr>';
+  f.slice(0, 3000).forEach(function (x) {
+    html += '<tr><td class="r mono">' + x.excelRow + '</td><td><span class="tag ' + (x.kind === 'cpt' ? '' : 'b') + '">' + esc(x.cpt || '—') + '</span></td><td>' + esc(x.o.regno || '') + '</td><td class="pt" title="' + esc(x.o.patient || '') + '">' + esc(x.o.patient || '') + '</td><td class="pt" title="' + esc(x.o.service || '') + '">' + esc(x.o.service || '') + '</td>' +
+      '<td>' + esc(x.invTxt || '') + '</td><td>' + esc(x.o.invno || '') + '</td><td class="r">' + (x.pay.s === 'ok' ? money(x.pay.v) : '—') + '</td><td class="reason ' + x.kind + '">' + esc(x.reason) + '</td></tr>';
+  });
+  $('uxTable').innerHTML = html + '</tbody></table></div><div class="preview-foot"><span>Showing <b>' + Math.min(f.length, 3000) + '</b> of <b>' + f.length + '</b> record(s)</span></div>';
+}
+function uRenderValidation() {
+  if (!U.wb) { $('uValidation').innerHTML = emptyState('Nothing to validate yet', 'Validation runs automatically on every unbilled upload.'); return; }
+  var R = U.result, a = uGetAoa(U.sheet), hdr = a.rows[U.headerRow] || [];
+  var html = '<div class="val-grid"><div class="val-card"><h4>' + icon('file') + 'Required columns</h4><ul class="val-list">';
+  for (var k in U_REQ) { var c = U.map ? U.map[k] : undefined; html += c === undefined ? vi('err', U_REQ[k].label, '<span class="s-err">Missing</span>') : vi('ok', U_REQ[k].label, '<span class="mono">' + colLetter(a.c0 + c) + '</span> · ' + esc(cleanText(hdr[c]))); }
+  html += '</ul></div>';
+  if (R) {
+    html += '<div class="val-card"><h4>' + icon('info') + 'Rows processed</h4><ul class="val-list">' + vi('info', 'Worksheet', esc(R.sheet)) + vi('info', 'Header row', R.headerExcelRow) +
+      vi('ok', 'Data rows scanned', R.dataRows.toLocaleString()) + vi('ok', 'Rows with CPT 17.21/17.22/17.24', R.grand.inFile) + vi('info', 'Other CPT codes excluded', R.otherRows.toLocaleString()) + '</ul></div>';
+    html += '<div class="val-card"><h4>' + icon('check', 's-ok') + 'InvoiceDate blank check</h4><ul class="val-list">' +
+      vi('ok', 'Blank → counted as unbilled', R.grand.count) + vi('ok', 'Valid date → invoiced, excluded', R.grand.billed - TARGETS.reduce(function (s, t) { return s + R.targets[t.key].odd; }, 0));
+    var odd = TARGETS.reduce(function (s, t) { return s + R.targets[t.key].odd; }, 0);
+    html += vi(odd ? 'warn' : 'ok', 'Non-date text (e.g. N/A, 0)', odd ? odd + ' — excluded, review' : 'None');
+    html += '<li><span class="k" style="font-size:11.5px">Empty cells, empty text and whitespace/&amp;nbsp; are treated as blank. Zero, “N/A” or invalid dates are never treated as blank.</span></li></ul></div>';
+    TARGETS.forEach(function (t) {
+      var T = R.targets[t.key];
+      html += '<div class="val-card" style="border-left:4px solid ' + t.color + '"><h4><span class="code-pill" style="--ic:' + t.color + '">' + t.code + '</span>' + esc(t.short) + '</h4><ul class="val-list">' +
+        vi(T.inFile ? 'ok' : 'warn', 'Rows in file', T.inFile) + vi('ok', 'Unbilled', T.count) + vi('info', 'Invoiced (excluded)', T.billed);
+      ['payable', 'invnet'].forEach(function (k) {
+        var lab = U_REQ[k].label;
+        if (T.invalid[k].length) html += vi('err', lab + ' invalid', T.invalid[k].length + ' (row ' + T.invalid[k].slice(0, 5).map(function (x) { return x.row + ': "' + esc(x.raw) + '"'; }).join(', ') + ')');
+        else if (T.blank[k]) html += vi('warn', lab + ' blank', T.blank[k] + ' (counted as 0)');
+        else html += vi('ok', lab, 'All valid');
+      });
+      html += '</ul></div>';
+    });
+  }
+  $('uValidation').innerHTML = html + '</div>';
+}
+function uUpdateTabCounts() {
+  var R = U.result;
+  $('utbRows').textContent = R ? R.grand.count : '';
+  $('utbExc').textContent = R ? R.excluded.length : '';
+  var issues = 0;
+  if (R) TARGETS.forEach(function (t) { var T = R.targets[t.key]; issues += T.odd + T.invalid.payable.length + T.invalid.invnet.length + (T.inFile ? 0 : 1); });
+  $('utbVal').textContent = R ? (issues ? issues + ' issue' + (issues > 1 ? 's' : '') : '✓') : '';
+  $('utbVal').className = 'tb-n' + (issues ? ' warn' : '');
+}
+function uRenderAll() {
+  uRenderFilter(); uRenderMeta(); uRenderSummary(); uRenderOverview(); uRenderPreview(); uRenderExcluded(); uRenderValidation(); uUpdateTabCounts();
+  cRender();
+}
+
+/* ============================================================
+   CONSOLIDATED
+   ============================================================ */
+var NA = '<span class="na">Not uploaded</span>';
+function consRows() {
+  var B = S.result, R = U.result;
+  var rows = TARGETS.map(function (t) {
+    var b = B ? B.targets[t.key] : null, u = R ? R.targets[t.key] : null;
+    return { t: t, code: t.code, label: t.label.replace(/\s*\(\d+\.\d+\)$/, ''),
+      bRec: b ? b.rows.length : null, bUnit: b ? b.total.unit : null, bGross: b ? b.total.gross : null, bDisc: b ? b.total.disc : null, bNet: b ? b.total.net : null,
+      uCount: u ? u.total.count : null, uPay: u ? u.total.payable : null, uNet: u ? u.total.invnet : null };
+  });
+  rows.push({ grand: true, code: 'Grand Total', label: 'All Three Codes',
+    bRec: B ? rows.reduce(function (s, x) { return s + x.bRec; }, 0) : null, bUnit: B ? B.grand.unit : null, bGross: B ? B.grand.gross : null, bDisc: B ? B.grand.disc : null, bNet: B ? B.grand.net : null,
+    uCount: R ? R.grand.count : null, uPay: R ? R.grand.payable : null, uNet: R ? R.grand.invnet : null });
+  return rows;
+}
+function nv(v, f) { return v === null ? NA : f(v); }
+function cRender() {
+  if (!$('cStatus')) return;
+  var B = S.result, R = U.result, any = !!(B || R);
+  var sc = function (kind, loaded, title, file, meta) {
+    return '<div class="status-card' + (loaded ? '' : ' missing') + '" style="--sc:' + (kind === 'b' ? 'var(--primary)' : 'var(--unb)') + '"><span class="si">' + icon(loaded ? 'check' : 'inbox') + '</span><div class="st"><small>' + title + '</small><b>' + esc(file) + '</b><span>' + meta + '</span></div>' +
+      '<button class="btn sm" data-go="' + (kind === 'b' ? 'billed' : 'unbilled') + '">' + (loaded ? 'Open' : 'Upload') + '</button></div>';
+  };
+  $('cStatus').innerHTML =
+    sc('b', !!B, 'Billed Observation', B ? S.file.name : 'Not uploaded', B ? 'Report date ' + niceDate($('reportDate').value) + ' · ' + TARGETS.reduce(function (s, t) { return s + B.targets[t.key].rows.length; }, 0) + ' billed records' : 'Upload the Investigation Wise Census report in the Billed tab') +
+    sc('u', !!R, 'Unbilled Observation', R ? U.file.name : 'Not uploaded', R ? 'Report date ' + niceDate($('uDate').value) + ' · ' + R.grand.count + ' unbilled records' + (U.df.mode !== 'all' ? ' · ' + esc(uFilterLabel()) : '') : 'Upload the ER Activity Sheet in the Unbilled tab');
+  Array.prototype.forEach.call($('cStatus').querySelectorAll('[data-go]'), function (b) { b.onclick = function () { showView(b.getAttribute('data-go')); }; });
+  ['cCopy', 'cExport', 'cPrint'].forEach(function (id) { $(id).disabled = !any; });
+  $('cCopyB').disabled = !B; $('cCopyU').disabled = !R;
+  if (!any) {
+    $('cKpis').innerHTML = ''; $('cNote').hidden = true; $('cDetail').innerHTML = emptyState('No data yet', 'Upload the billed and/or unbilled report.');
+    $('cTable').innerHTML = '<div class="empty">' + icon('inbox') + '<b>Nothing to consolidate yet</b>Upload the Billed and Unbilled reports in their tabs — results appear here side by side.</div>';
+    $('cChartAmt').innerHTML = ''; $('cChartVol').innerHTML = ''; return;
+  }
+  $('cNote').hidden = false;
+  $('cDesc').textContent = 'Billed: ' + (B ? niceDate($('reportDate').value) : 'not uploaded') + ' · Unbilled: ' + (R ? niceDate($('uDate').value) : 'not uploaded') + ' · Amounts of different types are never added together.';
+  var G = consRows()[3];
+  var k = function (lab, v, unit, sub, mc, ic, hero) { return '<div class="kpi' + (hero ? ' hero' : '') + '" style="--mc:' + mc + '"><div class="kl"><span class="ci">' + icon(ic) + '</span>' + lab + '</div><div class="kv">' + (v === null ? '<span class="na" style="font-size:16px">Not uploaded</span>' : v + (unit ? '<small>' + unit + '</small>' : '')) + '</div><div class="ks">' + sub + '</div></div>'; };
+  $('cKpis').innerHTML = '<div class="kpis">' +
+    k('Billed Units', G.bUnit === null ? null : units(G.bUnit), 'units', 'Sum of Unit column (billed)', 'var(--primary)', 'hash') +
+    k('Billed Net Amt', G.bNet === null ? null : money(G.bNet), 'AED', 'After discount', 'var(--primary)', 'net') +
+    k('Unbilled Count', G.uCount === null ? null : G.uCount.toLocaleString(), 'records', 'Rows with blank InvoiceDate', 'var(--unb)', 'alert', true) +
+    k('Unbilled Payable Amt', G.uPay === null ? null : money(G.uPay), 'AED', 'Not yet invoiced', 'var(--unb)', 'gross') + '</div>';
+  var hb = '<th class="grp b-h" colspan="2">BILLED</th>', hu = '<th class="grp u-h" colspan="3">UNBILLED</th>';
+  var html = '<div class="table-wrap"><table class="summary-table cons-table"><thead><tr><th></th><th></th>' + hb + hu + '</tr><tr><th>CPT Code</th><th>Investigation</th><th class="r b-h">Billed Units</th><th class="r b-h">Billed Net Amt</th><th class="r u-h">Unbilled Count</th><th class="r u-h">Unbilled Payable Amt</th><th class="r u-h">Unbilled InvNet Amt</th></tr></thead><tbody>';
+  consRows().forEach(function (x) {
+    html += '<tr' + (x.grand ? ' class="grand"' : ' style="--ic:' + x.t.color + '"') + '><td>' + (x.grand ? 'Grand Total' : '<span class="code">' + x.code + '</span>') + '</td><td>' + esc(x.label) + '</td>' +
+      '<td class="r b-c">' + nv(x.bUnit, units) + '</td><td class="r b-c">' + nv(x.bNet, money) + '</td>' +
+      '<td class="r u-c">' + nv(x.uCount, function (v) { return '<b style="color:var(--unb)">' + v + '</b>'; }) + '</td><td class="r u-c">' + nv(x.uPay, money) + '</td><td class="r u-c">' + nv(x.uNet, money) + '</td></tr>';
+  });
+  $('cTable').innerHTML = html + '</tbody></table></div>';
+  $('cNote').innerHTML = '<p><b>Billed Units</b> = sum of the Unit column in the billed report (hours charged). <b>Unbilled Count</b> = number of activity-sheet rows with no invoice yet. These are different measures and are not added together.</p>' +
+    '<p><b>Billed Net Amt</b> is after discount; <b>Unbilled Payable Amt</b> is the activity-sheet price before invoicing. They are shown side by side for comparison only, not summed.</p>' +
+    (B && R && $('reportDate').value !== $('uDate').value ? '<p class="s-warn"><b>Note:</b> the two reports have different report dates (' + niceDate($('reportDate').value) + ' vs ' + niceDate($('uDate').value) + ').</p>' : '');
+  // detail
+  var dh = '<div class="table-wrap"><table class="summary-table cons-table"><thead><tr><th></th><th class="grp b-h" colspan="5">BILLED</th><th class="grp u-h" colspan="3">UNBILLED</th></tr><tr><th>CPT Code</th><th class="r b-h">Records</th><th class="r b-h">Units</th><th class="r b-h">Gross Amt</th><th class="r b-h">Disc Amt</th><th class="r b-h">Net Amt</th><th class="r u-h">Count</th><th class="r u-h">Payable Amt</th><th class="r u-h">InvNet Amt</th></tr></thead><tbody>';
+  consRows().forEach(function (x) {
+    dh += '<tr' + (x.grand ? ' class="grand"' : ' style="--ic:' + x.t.color + '"') + '><td>' + (x.grand ? 'Grand Total' : '<span class="code">' + x.code + '</span>' + esc(x.t.short)) + '</td>' +
+      '<td class="r b-c">' + nv(x.bRec, String) + '</td><td class="r b-c">' + nv(x.bUnit, units) + '</td><td class="r b-c">' + nv(x.bGross, money) + '</td><td class="r b-c">' + nv(x.bDisc, money) + '</td><td class="r b-c">' + nv(x.bNet, money) + '</td>' +
+      '<td class="r u-c">' + nv(x.uCount, String) + '</td><td class="r u-c">' + nv(x.uPay, money) + '</td><td class="r u-c">' + nv(x.uNet, money) + '</td></tr>';
+  });
+  $('cDetail').innerHTML = dh + '</tbody></table></div>';
+  // charts
+  var rows3 = consRows().slice(0, 3);
+  barChart($('cChartAmt'), rows3, [
+    { label: 'Billed Gross Amt', color: 'color-mix(in srgb, var(--primary) 45%, var(--surface))', vals: B ? rows3.map(function (x) { return x.bGross; }) : null },
+    { label: 'Billed Net Amt', color: 'var(--primary)', vals: B ? rows3.map(function (x) { return x.bNet; }) : null },
+    { label: 'Unbilled Payable Amt', color: 'var(--unb)', vals: R ? rows3.map(function (x) { return x.uPay; }) : null }
+  ], true);
+  barChart($('cChartVol'), rows3, [
+    { label: 'Billed Units', color: 'var(--primary)', vals: B ? rows3.map(function (x) { return x.bUnit; }) : null },
+    { label: 'Unbilled Records', color: 'var(--unb)', vals: R ? rows3.map(function (x) { return x.uCount; }) : null }
+  ], false);
+}
+function barChart(el, groups, series, isMoney) {
+  var max = 0;
+  series.forEach(function (s) { if (s.vals) s.vals.forEach(function (v) { max = Math.max(max, v); }); });
+  var tk = niceTicks(max || 1), W = 560, H = 300, L = 56, Rr = 10, Tp = 22, B = 50, pw = W - L - Rr, ph = H - Tp - B;
+  var live = series.filter(function (s) { return s.vals; });
+  var g = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img">';
+  for (var v = 0; v <= tk.top + 1e-9; v += tk.step) {
+    var y = Tp + ph - (v / tk.top) * ph;
+    g += '<line x1="' + L + '" x2="' + (W - Rr) + '" y1="' + y + '" y2="' + y + '" stroke="var(--border)"' + (v === 0 ? '' : ' stroke-dasharray="3 4"') + '/><text x="' + (L - 8) + '" y="' + (y + 4) + '" text-anchor="end" font-size="11" fill="var(--muted)">' + (isMoney ? shortMoney(v) : (Math.round(v * 100) / 100)) + '</text>';
+  }
+  var gw = pw / groups.length, n = Math.max(1, live.length), bw = Math.min(44, (gw - 30) / n), gap = 6;
+  groups.forEach(function (grp, i) {
+    var cx = L + gw * i + gw / 2, x0 = cx - (bw * n + gap * (n - 1)) / 2;
+    live.forEach(function (s, j) {
+      var val = s.vals[i], h = (val / tk.top) * ph, x = x0 + j * (bw + gap), y = Tp + ph - h, rr = Math.min(5, h / 2);
+      if (h > 0) g += '<path class="bar-rect" d="M' + x + ',' + (y + h) + 'V' + (y + rr) + 'Q' + x + ',' + y + ' ' + (x + rr) + ',' + y + 'H' + (x + bw - rr) + 'Q' + (x + bw) + ',' + y + ' ' + (x + bw) + ',' + (y + rr) + 'V' + (y + h) + 'Z" fill="' + s.color + '" style="animation-delay:' + (i * 100 + j * 50) + 'ms" data-tip="' + esc(grp.code + ' · ' + s.label + ': ' + (isMoney ? 'AED ' + money(val) : units(val))) + '"/>';
+      g += '<text x="' + (x + bw / 2) + '" y="' + (y - 5) + '" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--text-2)">' + (isMoney ? shortMoney(val) : units(val)) + '</text>';
+    });
+    g += '<text x="' + cx + '" y="' + (H - B + 20) + '" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">' + esc(grp.code) + '</text><text x="' + cx + '" y="' + (H - B + 36) + '" text-anchor="middle" font-size="10.5" fill="var(--muted)">' + esc(grp.t.short) + '</text>';
+  });
+  g += '</svg>';
+  el.innerHTML = '<div class="legend">' + series.map(function (s) { return '<span' + (s.vals ? '' : ' style="opacity:.5"') + '><i style="background:' + s.color + '"></i>' + s.label + (s.vals ? '' : ' (not uploaded)') + '</span>'; }).join('') + '</div><div class="chart-wrap">' + g + '</div>';
+  var tip = $('chartTip');
+  Array.prototype.forEach.call(el.querySelectorAll('[data-tip]'), function (b) {
+    b.addEventListener('mousemove', function (e) { tip.textContent = b.getAttribute('data-tip'); tip.style.opacity = 1; tip.style.left = (e.clientX + 14) + 'px'; tip.style.top = (e.clientY - 34) + 'px'; });
+    b.addEventListener('mouseleave', function () { tip.style.opacity = 0; });
+  });
+}
+
+/* ============================================================
+   COPY / EXPORT (unbilled + consolidated)
+   ============================================================ */
+function genericTable(title, heads, rows) {
+  // heads: [{h, right}] ; rows: [{cells:[], grand}]
+  var th = function (h) { return '<th style="background:#0a5aa8;color:#ffffff;font-weight:bold;padding:6px 10px;border:1px solid #9fb6cc;font-family:Segoe UI,Arial,sans-serif;font-size:10pt;text-align:' + (h.right ? 'right' : 'left') + (h.bg ? ';background:' + h.bg : '') + '">' + esc(h.h) + '</th>'; };
+  var td = function (v, right, grand) { return '<td style="padding:6px 10px;border:1px solid #9fb6cc;font-family:Segoe UI,Arial,sans-serif;font-size:10pt;text-align:' + (right ? 'right' : 'left') + ';' + (grand ? 'font-weight:bold;background:#e6f0fa;' : '') + '">' + esc(v) + '</td>'; };
+  var html = '<p style="font-family:Segoe UI,Arial,sans-serif;font-size:11pt;font-weight:bold;color:#0a5aa8;margin:0 0 6px">' + esc(title) + '</p><table style="border-collapse:collapse;border:1px solid #9fb6cc"><thead><tr>' + heads.map(th).join('') + '</tr></thead><tbody>';
+  var text = title + '\n' + heads.map(function (h) { return h.h; }).join('\t') + '\n';
+  rows.forEach(function (r) { html += '<tr>' + r.cells.map(function (c, i) { return td(c, heads[i].right, r.grand); }).join('') + '</tr>'; text += r.cells.join('\t') + '\n'; });
+  return { html: html + '</tbody></table>', text: text };
+}
+function uCopyTable() {
+  var rows = uSummaryRows().map(function (x) { return { grand: x.grand, cells: [x.grand ? 'Grand Total' : x.code, x.label, String(x.count), money(x.payable), money(x.invnet)] }; });
+  return genericTable('Unbilled Observation — Report Date: ' + niceDate($('uDate').value) + (U.df.mode !== 'all' ? ' — ' + uFilterLabel() : ''), [{ h: 'CPT Code' }, { h: 'Investigation' }, { h: 'Unbilled Count', right: 1 }, { h: 'Total PayableAmount', right: 1 }, { h: 'Total InvNetAmount', right: 1 }], rows);
+}
+function cCopyTable() {
+  var t = function (v, f) { return v === null ? 'Not uploaded' : f(v); };
+  var rows = consRows().map(function (x) { return { grand: x.grand, cells: [x.grand ? 'Grand Total' : x.code, x.label, t(x.bUnit, units), t(x.bNet, money), t(x.uCount, String), t(x.uPay, money), t(x.uNet, money)] }; });
+  var title = 'Kadesh Observation Matrix — Consolidated Summary (Billed: ' + (S.result ? niceDate($('reportDate').value) : 'not uploaded') + ' · Unbilled: ' + (U.result ? niceDate($('uDate').value) + (U.df.mode !== 'all' ? ', ' + uFilterLabel() : '') : 'not uploaded') + ')';
+  return genericTable(title, [{ h: 'CPT Code' }, { h: 'Investigation' }, { h: 'Billed Units', right: 1 }, { h: 'Billed Net Amt', right: 1 }, { h: 'Unbilled Count', right: 1, bg: '#c4581c' }, { h: 'Unbilled Payable Amt', right: 1, bg: '#c4581c' }, { h: 'Unbilled InvNet Amt', right: 1, bg: '#c4581c' }], rows);
+}
+function doCopy(tbl, what) { copyRich(tbl.html, tbl.text).then(function (ok) { toast(ok ? what + ' copied — paste into Outlook, Excel or Teams' : 'Copy failed — use Export Excel instead', ok ? 'ok' : 'err'); }); }
+function billedCopyTable() { var rows = summaryRows(); return { html: htmlTable(rows, reportTitle()), text: textTable(rows, reportTitle()) }; }
+
+function fmtSheet(ws, firstRow, lastRow, cols, z) {
+  for (var r = firstRow; r <= lastRow; r++) cols.forEach(function (c) { var ref = XLSX.utils.encode_cell({ r: r, c: c }); if (ws[ref] && ws[ref].t === 'n') ws[ref].z = z || '#,##0.00'; });
+}
+function uSummarySheet() {
+  var aoa = [['Unbilled Observation Summary'], ['Aster Hospital Mankhool'], ['Report date', niceDate($('uDate').value)], ['Source file', U.file.name], ['Rule', 'CPTCode 17.21 / 17.22 / 17.24 with blank InvoiceDate'], ['Date filter', uFilterLabel()], [],
+    ['CPT Code', 'Investigation', 'Unbilled Count', 'Total PayableAmount', 'Total InvNetAmount', 'Invoiced rows (excluded)']];
+  uSummaryRows().forEach(function (x) { aoa.push([x.grand ? 'Grand Total' : x.code, x.label, x.count, x.payable, x.invnet, x.billed]); });
+  var ws = XLSX.utils.aoa_to_sheet(aoa); fmtSheet(ws, 8, aoa.length - 1, [3, 4]);
+  ws['!cols'] = [{ wch: 12 }, { wch: 36 }, { wch: 15 }, { wch: 20 }, { wch: 20 }, { wch: 22 }];
+  return ws;
+}
+function billedSummarySheet() {
+  var aoa = [['Billed Observation Summary'], ['Aster Hospital Mankhool'], ['Report date', niceDate($('reportDate').value)], ['Source file', S.file.name], [], ['Investigation', 'Records', 'Total Unit', 'Total Gross Amt', 'Disc Amt', 'Net Amt']];
+  summaryRows().forEach(function (x) { aoa.push([x.label, x.n, x.unit, x.gross, x.disc, x.net]); });
+  var ws = XLSX.utils.aoa_to_sheet(aoa); fmtSheet(ws, 6, aoa.length - 1, [3, 4, 5]);
+  ws['!cols'] = [{ wch: 44 }, { wch: 10 }, { wch: 12 }, { wch: 17 }, { wch: 14 }, { wch: 14 }];
+  return ws;
+}
+function uExport() {
+  if (!U.result) return;
+  var R = U.result, wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, uSummarySheet(), 'Unbilled Summary');
+  var cols = U_PREVIEW_COLS.filter(function (k) { return R.optUsed[k] !== undefined; });
+  var d = [['Excel row', 'CPT Code'].concat(cols.map(function (k) { return U_OPT[k].label; })).concat(['PayableAmount', 'InvNetAmount'])];
+  TARGETS.forEach(function (t) { R.targets[t.key].rows.forEach(function (r) { d.push([r.excelRow, r.cpt].concat(cols.map(function (k) { return r.o[k] || ''; })).concat([r.pay.s === 'ok' ? r.pay.v : (r.pay.s === 'blank' ? null : String(r.pay.raw)), r.net.s === 'ok' ? r.net.v : (r.net.s === 'blank' ? null : String(r.net.raw))])); }); });
+  var ws = XLSX.utils.aoa_to_sheet(d); fmtSheet(ws, 1, d.length - 1, [d[0].length - 2, d[0].length - 1]);
+  XLSX.utils.book_append_sheet(wb, ws, 'Unbilled Rows');
+  var x = [['Excel row', 'CPT Code', 'Reg. No', 'Patient', 'Service Name', 'InvoiceDate', 'Invoice No', 'PayableAmount', 'Exclusion reason']];
+  R.excluded.forEach(function (e) { x.push([e.excelRow, e.cpt, e.o.regno || '', e.o.patient || '', e.o.service || '', e.invTxt, e.o.invno || '', e.pay.s === 'ok' ? e.pay.v : null, e.reason]); });
+  var wx = XLSX.utils.aoa_to_sheet(x); fmtSheet(wx, 1, x.length - 1, [7]);
+  XLSX.utils.book_append_sheet(wb, wx, 'Excluded Records');
+  XLSX.writeFile(wb, 'Kadesh_Unbilled_Summary_' + ($('uDate').value || isoDate(new Date())) + '.xlsx', { compression: true });
+  toast('Unbilled Excel downloaded');
+}
+function cExport() {
+  if (!S.result && !U.result) return;
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, S.result ? billedSummarySheet() : XLSX.utils.aoa_to_sheet([['Billed Observation Summary'], ['Not uploaded']]), 'Billed Summary');
+  XLSX.utils.book_append_sheet(wb, U.result ? uSummarySheet() : XLSX.utils.aoa_to_sheet([['Unbilled Observation Summary'], ['Not uploaded']]), 'Unbilled Summary');
+  var n = function (v) { return v === null ? 'Not uploaded' : v; };
+  var aoa = [['Consolidated Billed & Unbilled Summary'], ['Aster Hospital Mankhool'],
+    ['Billed report', S.result ? S.file.name + ' (' + niceDate($('reportDate').value) + ')' : 'Not uploaded'],
+    ['Unbilled report', U.result ? U.file.name + ' (' + niceDate($('uDate').value) + ')' : 'Not uploaded'], ['Unbilled date filter', U.result ? uFilterLabel() : ''], [],
+    ['CPT Code', 'Investigation', 'Billed Units', 'Billed Net Amt', 'Unbilled Count', 'Unbilled Payable Amt', 'Unbilled InvNet Amt']];
+  var cr = consRows();
+  cr.forEach(function (x) { aoa.push([x.grand ? 'Grand Total' : x.code, x.label, n(x.bUnit), n(x.bNet), n(x.uCount), n(x.uPay), n(x.uNet)]); });
+  var top = aoa.length;
+  aoa.push([], ['Detailed', '', 'Billed Records', 'Billed Gross Amt', 'Billed Disc Amt', 'Billed Net Amt', 'Billed Units', 'Unbilled Count', 'Unbilled Payable Amt', 'Unbilled InvNet Amt']);
+  cr.forEach(function (x) { aoa.push([x.grand ? 'Grand Total' : x.code, x.label, n(x.bRec), n(x.bGross), n(x.bDisc), n(x.bNet), n(x.bUnit), n(x.uCount), n(x.uPay), n(x.uNet)]); });
+  aoa.push([], ['Note: Billed Units (sum of Unit) and Unbilled Count (number of rows) are different measures. Billed Net Amt (after discount) and Unbilled Payable Amt are not summed.']);
+  var ws = XLSX.utils.aoa_to_sheet(aoa);
+  fmtSheet(ws, 7, top - 1, [3, 5, 6]); fmtSheet(ws, top + 2, top + 5, [3, 4, 5, 8, 9]);
+  ws['!cols'] = [{ wch: 12 }, { wch: 36 }, { wch: 14 }, { wch: 16 }, { wch: 15 }, { wch: 19 }, { wch: 18 }, { wch: 15 }, { wch: 19 }, { wch: 18 }];
+  XLSX.utils.book_append_sheet(wb, ws, 'Consolidated Summary');
+  XLSX.writeFile(wb, 'Kadesh_Consolidated_Summary_' + ($('reportDate').value || $('uDate').value || isoDate(new Date())) + '.xlsx', { compression: true });
+  toast('Consolidated Excel downloaded');
+}
+
+/* ---------- ActivitySheetDate filter UI ---------- */
+function uDateKeys() { var R = U.result; return R ? Object.keys(R.byDate).filter(function (k) { return k !== 'blank'; }).sort() : []; }
+function uRenderFilter() {
+  var R = U.result, bar = $('uFilterBar');
+  bar.hidden = !R;
+  if (!R) return;
+  var f = U.df, keys = uDateKeys();
+  Array.prototype.forEach.call($('uDfMode').querySelectorAll('button'), function (b) { b.classList.toggle('active', b.getAttribute('data-m') === f.mode || (f.mode === 'blank' && b.getAttribute('data-m') === 'all' && false)); });
+  var dated = f.mode === 'single' || f.mode === 'range';
+  $('uDfFromWrap').hidden = !dated; $('uDfToWrap').hidden = f.mode !== 'range';
+  $('uDfFromLbl').textContent = f.mode === 'range' ? 'From' : 'Date';
+  $('uDfBlankWrap').hidden = !dated || !R.byDate.blank;
+  $('uDfReset').hidden = f.mode === 'all';
+  $('uDfFrom').value = f.from; $('uDfTo').value = f.to; $('uDfBlank').checked = !!f.blank;
+  if (keys.length) { ['uDfFrom', 'uDfTo'].forEach(function (id) { $(id).min = keys[0]; $(id).max = keys[keys.length - 1]; }); }
+  $('uDfSummary').textContent = uFilterLabel();
+  if (!R.hasAsDate) {
+    $('uDfChips').innerHTML = ''; $('uDfNote').innerHTML = '<span class="s-warn"><b>ActivitySheetDate column not found</b> in this file — date filter unavailable.</span>';
+    Array.prototype.forEach.call(bar.querySelectorAll('button,input'), function (el) { el.disabled = true; });
+    return;
+  }
+  Array.prototype.forEach.call(bar.querySelectorAll('button,input'), function (el) { el.disabled = false; });
+  var chips = keys.map(function (k) {
+    var on = (f.mode === 'single' && f.from === k) || (f.mode === 'range' && uDateIn(k));
+    return '<button class="dchip' + (on ? ' on' : '') + '" data-d="' + k + '">' + esc(niceDate(k)) + ' <b>' + R.byDate[k].count + '</b></button>';
+  });
+  if (R.byDate.blank) chips.push('<button class="dchip pend' + (f.mode === 'blank' || (f.mode !== 'all' && f.blank) ? ' on' : '') + '" data-d="blank" title="ActivitySheetDate not updated yet (usually updated after 12 PM next day)">Blank / not yet updated <b>' + R.byDate.blank.count + '</b></button>');
+  $('uDfChips').innerHTML = '<span class="fb-note" style="margin:0;align-self:center">Unbilled by date:</span>' + chips.join('');
+  Array.prototype.forEach.call($('uDfChips').querySelectorAll('[data-d]'), function (b) { b.onclick = function () { uPickDate(b.getAttribute('data-d')); }; });
+  var all = 0; for (var k in R.byDate) all += R.byDate[k].count;
+  $('uDfNote').innerHTML = (f.mode === 'all'
+    ? 'Showing all <b>' + all + '</b> unbilled records. '
+    : 'Showing <b>' + R.grand.count + '</b> of <b>' + all + '</b> unbilled records — ' + esc(uFilterLabel()) + '. ') +
+    'ActivitySheetDate is normally updated after 12 PM the following day, so recent activity may still show as blank.';
+}
+function uPickDate(k) {
+  var f = U.df;
+  if (k === 'blank') { U.df = f.mode === 'blank' ? { mode: 'all', from: '', to: '', blank: false } : { mode: 'blank', from: '', to: '', blank: false }; }
+  else if (f.mode === 'single' && f.from === k) U.df = { mode: 'all', from: '', to: '', blank: false };
+  else U.df = { mode: 'single', from: k, to: '', blank: false };
+  uRefilter();
+}
+function uRefilter() {
+  if (!U.wb || !U.result) return;
+  try { U.result = uAnalyze(); } catch (err) { uBanner('err', '<b>Filter error:</b> ' + esc(err.message || err)); return; }
+  uRenderAll();
+}
+function uDateWiseTable() {
+  var R = U.result; if (!R || !R.hasAsDate) return '';
+  var keys = uDateKeys(); if (R.byDate.blank) keys.push('blank');
+  if (!keys.length) return '';
+  var tot = { c: {}, count: 0, pay: 0, net: 0 };
+  var html = '<div class="dw-wrap"><h4>' + icon('info') + 'Date-wise unbilled (ActivitySheetDate) <span class="pct" style="font-weight:600">— click a row to filter</span></h4><div class="table-wrap"><table class="summary-table dw-table"><thead><tr><th>ActivitySheetDate</th>' +
+    TARGETS.map(function (t) { return '<th class="r">' + t.code + '</th>'; }).join('') + '<th class="r">Unbilled Count</th><th class="r">Total PayableAmount</th><th class="r">Total InvNetAmount</th></tr></thead><tbody>';
+  keys.forEach(function (k) {
+    var d = R.byDate[k], inF = uDateIn(k === 'blank' ? null : k);
+    TARGETS.forEach(function (t) { tot.c[t.code] = (tot.c[t.code] || 0) + (d.c[t.code] || 0); }); tot.count += d.count; tot.pay += d.pay; tot.net += d.net;
+    html += '<tr class="' + (U.df.mode === 'all' ? '' : inF ? 'in' : 'out') + '" data-dw="' + k + '"><td>' + (k === 'blank' ? '<span class="na">Blank — not yet updated</span>' : '<b>' + esc(niceDate(k)) + '</b>') + '</td>' +
+      TARGETS.map(function (t) { return '<td class="r">' + (d.c[t.code] || 0) + '</td>'; }).join('') +
+      '<td class="r"><b style="color:var(--unb)">' + d.count + '</b></td><td class="r">' + money(fromScaled(d.pay)) + '</td><td class="r">' + money(fromScaled(d.net)) + '</td></tr>';
+  });
+  html += '<tr class="grand"><td>All dates</td>' + TARGETS.map(function (t) { return '<td class="r">' + (tot.c[t.code] || 0) + '</td>'; }).join('') + '<td class="r">' + tot.count + '</td><td class="r">' + money(fromScaled(tot.pay)) + '</td><td class="r">' + money(fromScaled(tot.net)) + '</td></tr>';
+  return html + '</tbody></table></div></div>';
+}
+function uInitFilter() {
+  Array.prototype.forEach.call($('uDfMode').querySelectorAll('button'), function (b) {
+    b.onclick = function () {
+      var m = b.getAttribute('data-m'), keys = uDateKeys(), f = U.df;
+      if (m === 'all') U.df = { mode: 'all', from: '', to: '', blank: false };
+      else if (m === 'single') U.df = { mode: 'single', from: f.from || keys[keys.length - 1] || '', to: '', blank: f.blank };
+      else U.df = { mode: 'range', from: f.from || keys[0] || '', to: f.to || keys[keys.length - 1] || '', blank: f.blank };
+      uRefilter();
+    };
+  });
+  $('uDfFrom').onchange = function () { U.df.from = this.value; uRefilter(); };
+  $('uDfTo').onchange = function () { U.df.to = this.value; uRefilter(); };
+  $('uDfBlank').onchange = function () { U.df.blank = this.checked; uRefilter(); };
+  $('uDfReset').onclick = function () { U.df = { mode: 'all', from: '', to: '', blank: false }; uRefilter(); };
+}
+
+/* ---------- wiring ---------- */
+function uInit() {
+  Array.prototype.forEach.call(document.querySelectorAll('.modtab'), function (b) { b.onclick = function () { showView(b.getAttribute('data-view')); }; });
+  var fi = $('uFile');
+  $('uBrowse').onclick = function () { fi.click(); };
+  fi.onchange = function () { if (fi.files[0]) uHandleFile(fi.files[0]); fi.value = ''; };
+  $('uClear').onclick = function () { uReset(false); };
+  $('uRefresh').onclick = function () { if (U.wb) uRun(false); };
+  $('uMapToggle').onclick = function () { var m = $('uMapping'); m.hidden = false; m.open = !m.open; };
+  $('uSelSheet').onchange = function () { uOnSheetHeader(true); };
+  $('uSelHeader').onchange = function () { uOnSheetHeader(false); };
+  $('uApplyMap').onclick = uApplyMapping;
+  $('uAutoMap').onclick = function () { if (!U.wb) return; var d = uAutoDetect(U.wb); if (!d.ok) { toast('Auto-detect could not find all columns', 'warn'); return; } U.sheet = d.sheet; U.headerRow = d.headerRow; U.map = d.map; U.opt = d.opt; uFillMapping(false); uRun(false); };
+  $('uDate').onchange = function () { uRenderSummary(); cRender(); };
+  $('reportDate').addEventListener('change', cRender);
+  $('uCopy').onclick = function () { if (U.result) doCopy(uCopyTable(), 'Unbilled summary'); };
+  $('uExport').onclick = uExport;
+  $('uPrint').onclick = function () { printView('Unbilled Observation Summary', 'Report date: ' + niceDate($('uDate').value) + ' · ' + uFilterLabel() + ' · Source: ' + (U.file ? U.file.name : '')); };
+  uInitFilter();
+  $('cCopy').onclick = function () { doCopy(cCopyTable(), 'Consolidated summary'); };
+  $('cCopyB').onclick = function () { if (S.result) doCopy(billedCopyTable(), 'Billed summary'); };
+  $('cCopyU').onclick = function () { if (U.result) doCopy(uCopyTable(), 'Unbilled summary'); };
+  $('cExport').onclick = cExport;
+  $('cPrint').onclick = function () { printView('Consolidated Billed & Unbilled Summary', 'Billed: ' + (S.result ? niceDate($('reportDate').value) : 'not uploaded') + ' · Unbilled: ' + (U.result ? niceDate($('uDate').value) : 'not uploaded')); };
+  var v = sGet('kom_view'); if (v && $('view-' + v)) showView(v);
+  uRenderAll();
+}
+
 // Expose a read-only hook for automated verification / troubleshooting from DevTools.
-window.KOM = { state: S, parseNum: parseNum, matchTarget: matchTarget };
+window.KOM = { state: S, unbilled: U, parseNum: parseNum, matchTarget: matchTarget };
 
 init();
 })();
